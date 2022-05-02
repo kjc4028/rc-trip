@@ -11,7 +11,7 @@ import lombok.Data;
 public class TripEntity {
     
     @Id
-    private ObjectId _Id;
+    private String _Id;
 
     private String tripNm;
 
