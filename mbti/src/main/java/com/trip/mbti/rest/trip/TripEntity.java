@@ -1,6 +1,5 @@
 package com.trip.mbti.rest.trip;
 
-import com.trip.mbti.rest.common.PageEntity;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;

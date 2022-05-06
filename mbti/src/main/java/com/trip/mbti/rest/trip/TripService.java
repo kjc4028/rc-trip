@@ -1,6 +1,7 @@
 package com.trip.mbti.rest.trip;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,10 @@ import org.springframework.stereotype.Service;
 public class TripService {
     @Autowired
     private TripRepository tripRepository;
+
+    public Optional<TripEntity> findOneById(String id) {
+        return tripRepository.findById(id); 
+     }
 
     public List<TripEntity> findAllTripEntity() {
        return tripRepository.findAll(); 
