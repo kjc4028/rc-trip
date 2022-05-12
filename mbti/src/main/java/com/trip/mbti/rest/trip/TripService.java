@@ -26,6 +26,14 @@ public class TripService {
         return tripRepository.findAll(PageRequest.of(pageNum-1, perPage, Sort.by(Sort.Direction.ASC, "tripNm")));
     }
 
+    public Page<TripEntity> findSearchTripNmPage(TripEntity tripEntity, int pageNum, int perPage){
+        return tripRepository.findByTripNm(tripEntity, PageRequest.of(pageNum-1, perPage, Sort.by(Sort.Direction.ASC, "tripNm")));
+    }
+
+    public Page<TripEntity> findSearchTripMbtiPage(TripEntity tripEntity, int pageNum, int perPage){
+        return tripRepository.findByMbtiaAndMbtibAndMbticAndMbtid(tripEntity.getMbtia(), tripEntity.getMbtib(),tripEntity.getMbtic(),tripEntity.getMbtid(),PageRequest.of(pageNum-1, perPage, Sort.by(Sort.Direction.ASC, "tripNm")));
+    }
+
     public void save(TripEntity tripEntity){
         tripRepository.save(tripEntity);
     }

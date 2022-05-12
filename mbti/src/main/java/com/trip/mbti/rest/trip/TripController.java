@@ -1,5 +1,6 @@
 package com.trip.mbti.rest.trip;
 
+import java.io.BufferedReader;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trip.mbti.rest.common.Message;
+import com.trip.mbti.rest.common.PageDto;
+import com.trip.mbti.rest.common.SearchDto;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -69,7 +75,7 @@ public class TripController {
      * @param tripentity
      * @return
      */
-    @GetMapping("")
+    @GetMapping(path="")
     @ResponseBody
     public ResponseEntity tirpAllPage(HttpServletRequest request, TripEntity tripentity){
         try {
@@ -100,6 +106,62 @@ public class TripController {
             Message message = new Message();
             message.setStatus(HttpStatus.BAD_GATEWAY);
             message.setMessage("호출중 오류 발생");
+            
+            return new ResponseEntity<>(message, headers, HttpStatus.OK);
+        }
+       
+    }
+
+    @GetMapping(path="/search", consumes = "application/json" )
+    @ResponseBody
+    public ResponseEntity tirpSearchPage(HttpServletRequest request, TripEntity tripentity, SearchDto searchDto ,  PageDto pageDto) throws ParseException{
+        JSONParser jParser = new JSONParser();
+        String json = readJSONStringFromRequestBody(request); 
+        Object obj = (JSONObject)jParser.parse(json);
+        JSONObject jsonObj = (JSONObject)obj;
+
+        try {
+            
+            TripEntity srchTripEntity = new TripEntity();
+            srchTripEntity.setMbtia(jsonObj.get("srchMbtia").toString());
+            srchTripEntity.setMbtib(jsonObj.get("srchMbtib").toString());
+            srchTripEntity.setMbtic(jsonObj.get("srchMbtic").toString());
+            srchTripEntity.setMbtid(jsonObj.get("srchMbtid").toString());
+
+            srchTripEntity.setTripNm(jsonObj.get("srchKwd").toString());
+            Page<TripEntity> page = null;
+            if(jsonObj.get("srchCls").toString().equals("mbti")){
+                page =  tripService.findSearchTripMbtiPage(srchTripEntity, Integer.parseInt(jsonObj.get("pageNum").toString()), Integer.parseInt(jsonObj.get("perPage").toString()));
+            } else if (jsonObj.get("srchCls").toString().equals("kwd")){
+                page =  tripService.findSearchTripMbtiPage(srchTripEntity, pageDto.getPageNum(), pageDto.getPerPage());
+            }
+            ObjectMapper om = new ObjectMapper();
+            HttpHeaders headers = new HttpHeaders();
+            Message message = new Message();
+            String resData = "";
+            HashMap<String, Object> resMap = new HashMap<>();
+
+            headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+            resMap.put("data", page.getContent());
+            resMap.put("totalCnt", page.getTotalElements());
+            resMap.put("totalPages", page.getTotalPages());
+            resMap.put("currentPage", page.getNumber());
+
+            resData = om.writeValueAsString(resMap);
+
+            message.setStatus(HttpStatus.OK);
+            message.setData(resData);
+            message.setMessage("정상호출");
+            
+            return new ResponseEntity<>(message, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+            Message message = new Message();
+            message.setStatus(HttpStatus.BAD_GATEWAY);
+            message.setMessage("호출중 오류 발생" + e);
+            e.printStackTrace();
             
             return new ResponseEntity<>(message, headers, HttpStatus.OK);
         }
@@ -159,4 +221,22 @@ public class TripController {
         tripService.delete(base_trip.get());
         
     }
+
+    private String readJSONStringFromRequestBody(HttpServletRequest request){
+        StringBuffer json = new StringBuffer();
+        String line = null;
+     
+        try {
+            BufferedReader reader = request.getReader();
+            while((line = reader.readLine()) != null) {
+                json.append(line);
+            }
+     
+        }catch(Exception e) {
+            System.out.println("Error reading JSON string: " + e.toString());
+        }
+        return json.toString();
+    }
+    
+    
 }

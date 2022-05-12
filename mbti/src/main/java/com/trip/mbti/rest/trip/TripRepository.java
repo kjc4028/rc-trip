@@ -10,4 +10,10 @@ import org.springframework.stereotype.Repository;
 public interface TripRepository extends MongoRepository<TripEntity, String> {
  
     Page<TripEntity> findAll(Pageable pageable);
+
+    Page<TripEntity> findByTripNm(TripEntity tripEntity, Pageable pageable);
+    
+    Page<TripEntity> findByMbtiaAndMbtibAndMbticAndMbtid(String mbtia, String mbtib, String mbtic, String mbtid, Pageable pageable);
+
+
 }
