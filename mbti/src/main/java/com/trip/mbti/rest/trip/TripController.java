@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.trip.mbti.rest.common.Message;
 import com.trip.mbti.rest.common.PageDto;
 import com.trip.mbti.rest.common.SearchDto;
@@ -114,25 +115,26 @@ public class TripController {
 
     @GetMapping(path="/search", consumes = "application/json" )
     @ResponseBody
-    public ResponseEntity tirpSearchPage(HttpServletRequest request, TripEntity tripentity, SearchDto searchDto ,  PageDto pageDto) throws ParseException{
+    public ResponseEntity tirpSearchPage(HttpServletRequest request) throws ParseException{
         JSONParser jParser = new JSONParser();
         String json = readJSONStringFromRequestBody(request); 
-        Object obj = (JSONObject)jParser.parse(json);
-        JSONObject jsonObj = (JSONObject)obj;
 
+        Gson gson = new Gson();
+        SearchDto searchDto = gson.fromJson(json, SearchDto.class);
+        PageDto pageDto = gson.fromJson(json, PageDto.class);
         try {
             
             TripEntity srchTripEntity = new TripEntity();
-            srchTripEntity.setMbtia(jsonObj.get("srchMbtia").toString());
-            srchTripEntity.setMbtib(jsonObj.get("srchMbtib").toString());
-            srchTripEntity.setMbtic(jsonObj.get("srchMbtic").toString());
-            srchTripEntity.setMbtid(jsonObj.get("srchMbtid").toString());
+            srchTripEntity.setMbtia(searchDto.getSrchMbtia());
+            srchTripEntity.setMbtib(searchDto.getSrchMbtib());
+            srchTripEntity.setMbtic(searchDto.getSrchMbtic());
+            srchTripEntity.setMbtid(searchDto.getSrchMbtid());
 
-            srchTripEntity.setTripNm(jsonObj.get("srchKwd").toString());
+            srchTripEntity.setTripNm(searchDto.getSrchKwd());
             Page<TripEntity> page = null;
-            if(jsonObj.get("srchCls").toString().equals("mbti")){
-                page =  tripService.findSearchTripMbtiPage(srchTripEntity, Integer.parseInt(jsonObj.get("pageNum").toString()), Integer.parseInt(jsonObj.get("perPage").toString()));
-            } else if (jsonObj.get("srchCls").toString().equals("kwd")){
+            if(searchDto.getSrchCls().equals("mbti")){
+                page =  tripService.findSearchTripMbtiPage(srchTripEntity, pageDto.getPageNum(), pageDto.getPerPage());
+            } else if (searchDto.getSrchCls().equals("kwd")){
                 page =  tripService.findSearchTripMbtiPage(srchTripEntity, pageDto.getPageNum(), pageDto.getPerPage());
             }
             ObjectMapper om = new ObjectMapper();

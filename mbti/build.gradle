@@ -31,6 +31,7 @@ dependencies {
 	//implementation 'org.apache.tomcat:tomcat-jasper:8.5.78'
 	implementation 'javax.servlet:jstl'
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+	implementation 'com.google.code.gson:gson:2.8.9'
 
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
