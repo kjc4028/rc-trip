@@ -2,9 +2,11 @@ package com.trip.mbti.rest.trip;
 
 import java.io.BufferedReader;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,14 +36,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/rest/trip")
 @RestController
 public class TripController {
  
     @Autowired
     private TripService tripService;
 
-    @GetMapping("/test")
+    @GetMapping("/rest/trip/test")
     @ResponseBody
     public ResponseEntity tirpAllList(TripEntity tripentity){
         try {
@@ -76,7 +77,7 @@ public class TripController {
      * @param tripentity
      * @return
      */
-    @GetMapping(path="")
+    @GetMapping(path="/rest/trip")
     @ResponseBody
     public ResponseEntity tirpAllPage(HttpServletRequest request, TripEntity tripentity){
         try {
@@ -113,15 +114,9 @@ public class TripController {
        
     }
 
-    @GetMapping(path="/search", consumes = "application/json" )
+    @GetMapping(path="/rest/trip-search-base")
     @ResponseBody
-    public ResponseEntity tirpSearchPage(HttpServletRequest request) throws ParseException{
-        JSONParser jParser = new JSONParser();
-        String json = readJSONStringFromRequestBody(request); 
-
-        Gson gson = new Gson();
-        SearchDto searchDto = gson.fromJson(json, SearchDto.class);
-        PageDto pageDto = gson.fromJson(json, PageDto.class);
+    public ResponseEntity tirpSearchPage(HttpServletRequest request, SearchDto searchDto, PageDto pageDto) throws ParseException{
         try {
             
             TripEntity srchTripEntity = new TripEntity();
@@ -169,19 +164,72 @@ public class TripController {
         }
        
     }
+    @GetMapping(path="/rest/trip-search-multi")
+    @ResponseBody
+    public ResponseEntity tirpMultiSearchPage(HttpServletRequest request, SearchDto searchDto, PageDto pageDto) throws ParseException{
+        try {
+            ObjectMapper om = new ObjectMapper();
+            HttpHeaders headers = new HttpHeaders();
+            Message message = new Message();
+            String resData = "";
+            HashMap<String, Object> resMap = new HashMap<>();
+            TripEntity srchTripEntity = new TripEntity();
+            StringTokenizer st = null;
+            if(searchDto.getSrchMbtia().length()>1){
+                 st = new StringTokenizer(searchDto.getSrchMbtia(), "-");
+            }else{
+                //다중검색이기 때문에 예외처리
+                message.setStatus(HttpStatus.OK);
+                message.setData(resData);
+                message.setMessage("mbti 수 부족");
+                return new ResponseEntity<>(message, headers, HttpStatus.OK);
+            }
+            Page<TripEntity> page = null;
+            List<String> mbtiaList = new ArrayList<>();
+            
+            mbtiaList.add(st.nextToken());
+            mbtiaList.add(st.nextToken());
+            page =  tripService.findSearchTripMbtiaMultiPage(mbtiaList, pageDto.getPageNum(), pageDto.getPerPage());
+
+            headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+            resMap.put("data", page.getContent());
+            resMap.put("totalCnt", page.getTotalElements());
+            resMap.put("totalPages", page.getTotalPages());
+            resMap.put("currentPage", page.getNumber());
+
+            resData = om.writeValueAsString(resMap);
+
+            message.setStatus(HttpStatus.OK);
+            message.setData(resData);
+            message.setMessage("정상호출");
+            
+            return new ResponseEntity<>(message, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+            Message message = new Message();
+            message.setStatus(HttpStatus.BAD_GATEWAY);
+            message.setMessage("호출중 오류 발생" + e);
+            e.printStackTrace();
+            
+            return new ResponseEntity<>(message, headers, HttpStatus.OK);
+        }
+       
+    }
 
     /**
      *  trip 등록
      * @param request
      * @param tripEntity
      */
-    @PostMapping(path = "", consumes = "application/json")
+    @PostMapping(path = "/rest/trip", consumes = "application/json")
     @ResponseBody
     public void tripCreate(HttpServletRequest request, @RequestBody TripEntity tripEntity){
         tripService.save(tripEntity);
     }
 
-    @GetMapping(path = "/{_id}")
+    @GetMapping(path = "/rest/trip/{_id}")
     @ResponseBody
     public ResponseEntity tripSelectOne(@PathVariable String _id) throws JsonProcessingException{
         ObjectMapper om = new ObjectMapper();
@@ -205,7 +253,7 @@ public class TripController {
         return new ResponseEntity<>(message, headers, HttpStatus.OK);
     }
 
-    @PutMapping(path = "/{_id}", consumes = "application/json")
+    @PutMapping(path = "/rest/trip/{_id}", consumes = "application/json")
     @ResponseBody
     public void tripUpdate(@RequestBody TripEntity tripEntity){
         Optional<TripEntity> base_trip = tripService.findOneById(tripEntity.get_Id());
@@ -214,7 +262,7 @@ public class TripController {
         tripService.save(base_trip.get());
     }
 
-    @DeleteMapping(path = "/{_id}")
+    @DeleteMapping(path = "/rest/trip/{_id}")
     @ResponseBody
     public void tripDelete(@PathVariable String _id) throws JsonProcessingException{
 

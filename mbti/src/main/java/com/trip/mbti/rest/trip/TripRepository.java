@@ -15,5 +15,6 @@ public interface TripRepository extends MongoRepository<TripEntity, String> {
     
     Page<TripEntity> findByMbtiaAndMbtibAndMbticAndMbtid(String mbtia, String mbtib, String mbtic, String mbtid, Pageable pageable);
 
+    Page<TripEntity> findByMbtiaOrMbtia(String mbtia1,String mbtia2, Pageable pageable);
 
 }
