@@ -42,7 +42,7 @@ public class TripController {
     @Autowired
     private TripService tripService;
 
-    @GetMapping("/rest/trip/test")
+    @GetMapping("/rest/trips/test")
     @ResponseBody
     public ResponseEntity tirpAllList(TripEntity tripentity){
         try {
@@ -77,7 +77,7 @@ public class TripController {
      * @param tripentity
      * @return
      */
-    @GetMapping(path="/rest/trip")
+    @GetMapping(path="/rest/trips")
     @ResponseBody
     public ResponseEntity tirpAllPage(HttpServletRequest request, TripEntity tripentity){
         try {
@@ -114,7 +114,7 @@ public class TripController {
        
     }
 
-    @GetMapping(path="/rest/trip-search-base")
+    @GetMapping(path="/rest/trips/searching")
     @ResponseBody
     public ResponseEntity tirpSearchPage(HttpServletRequest request, SearchDto searchDto, PageDto pageDto) throws ParseException{
         try {
@@ -164,7 +164,7 @@ public class TripController {
         }
        
     }
-    @GetMapping(path="/rest/trip-search-multi")
+    @GetMapping(path="/rest/trips/multisearching")
     @ResponseBody
     public ResponseEntity tirpMultiSearchPage(HttpServletRequest request, SearchDto searchDto, PageDto pageDto) throws ParseException{
         try {
@@ -223,13 +223,25 @@ public class TripController {
      * @param request
      * @param tripEntity
      */
-    @PostMapping(path = "/rest/trip", consumes = "application/json")
+    @PostMapping(path = "/rest/trips", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @ResponseBody
-    public void tripCreate(HttpServletRequest request, @RequestBody TripEntity tripEntity){
+    public void tripCreate(HttpServletRequest request,TripEntity tripEntity){
         tripService.save(tripEntity);
     }
 
-    @GetMapping(path = "/rest/trip/{_id}")
+    /**
+     *  trip 등록
+     * @param request
+     * @param tripEntity
+     */
+    @PostMapping(path = "/rest/trips", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity tripCreateJson(HttpServletRequest request, @RequestBody TripEntity tripEntity){
+        tripService.save(tripEntity);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/rest/trips/{_id}")
     @ResponseBody
     public ResponseEntity tripSelectOne(@PathVariable String _id) throws JsonProcessingException{
         ObjectMapper om = new ObjectMapper();
@@ -253,7 +265,7 @@ public class TripController {
         return new ResponseEntity<>(message, headers, HttpStatus.OK);
     }
 
-    @PutMapping(path = "/rest/trip/{_id}", consumes = "application/json")
+    @PutMapping(path = "/rest/trips/{_id}", consumes = "application/json")
     @ResponseBody
     public void tripUpdate(@RequestBody TripEntity tripEntity){
         Optional<TripEntity> base_trip = tripService.findOneById(tripEntity.get_Id());
@@ -262,7 +274,7 @@ public class TripController {
         tripService.save(base_trip.get());
     }
 
-    @DeleteMapping(path = "/rest/trip/{_id}")
+    @DeleteMapping(path = "/rest/trips/{_id}")
     @ResponseBody
     public void tripDelete(@PathVariable String _id) throws JsonProcessingException{
 
@@ -270,22 +282,6 @@ public class TripController {
         
         tripService.delete(base_trip.get());
         
-    }
-
-    private String readJSONStringFromRequestBody(HttpServletRequest request){
-        StringBuffer json = new StringBuffer();
-        String line = null;
-     
-        try {
-            BufferedReader reader = request.getReader();
-            while((line = reader.readLine()) != null) {
-                json.append(line);
-            }
-     
-        }catch(Exception e) {
-            System.out.println("Error reading JSON string: " + e.toString());
-        }
-        return json.toString();
     }
     
     

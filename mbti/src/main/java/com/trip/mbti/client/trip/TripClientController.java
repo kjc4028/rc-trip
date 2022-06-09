@@ -27,7 +27,7 @@ public class TripClientController {
     @GetMapping("/trip")
     public String tripList(Model model){
         RestTemplate restTemp = new RestTemplate();
-        String url = "http://localhost:8080/rest/trip";
+        String url = "http://localhost:8080/rest/trips";
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> requestEntity = new HttpEntity<String>("", headers);
         ResponseEntity<String> responseEntity = restTemp.getForEntity(url,String.class, requestEntity);
