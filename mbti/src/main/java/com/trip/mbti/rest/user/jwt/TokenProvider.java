@@ -57,7 +57,6 @@ public class TokenProvider implements InitializingBean {
   
         long now = (new Date()).getTime();
         Date validity = new Date(now + this.tokenValidityInMilliseconds);
-  
         return Jwts.builder()
            .setSubject(authentication.getName())
            .claim(AUTHORITIES_KEY, authorities)
@@ -89,7 +88,7 @@ public class TokenProvider implements InitializingBean {
            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
            return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-           logger.info("잘못된 JWT 서명입니다.");
+           logger.info("잘못된 JWT 서명입니다." + e);
         } catch (ExpiredJwtException e) {
            logger.info("만료된 JWT 토큰입니다.");
         } catch (UnsupportedJwtException e) {
