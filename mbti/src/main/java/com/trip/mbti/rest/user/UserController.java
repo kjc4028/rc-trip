@@ -3,6 +3,8 @@ package com.trip.mbti.rest.user;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.trip.mbti.rest.common.Message;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -34,10 +36,24 @@ public class UserController {
 
     @PostMapping(path = "/user/signup", consumes= MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity signup(@RequestBody UserEntity userEntity){
-        userService.signup(userEntity);
+    public ResponseEntity<Message> signup(@RequestBody UserEntity userEntity){
+        Message message = new Message();
+        String signupRs = userService.signup(userEntity);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpStatus httpstatus = HttpStatus.OK;
+        
+        if(signupRs.equals("succ")){
+            message.setStatus(httpstatus);
+            message.setData("joinSucc");
+            message.setMessage("회원가입이 정상적으로 되었습니다."); 
+        } else {
+            message.setStatus(httpstatus);
+            message.setData("joinFail");
+            message.setMessage("해당 아이디는 이미 등록된 아이디 입니다.");            
+        }
    
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<Message>(message, httpHeaders ,httpstatus);
     }
 
     @PostMapping(path = "/user/login", consumes= MediaType.APPLICATION_JSON_VALUE)

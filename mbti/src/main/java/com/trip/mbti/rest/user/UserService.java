@@ -1,5 +1,7 @@
 package com.trip.mbti.rest.user;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -8,15 +10,22 @@ import org.springframework.stereotype.Service;
 public class UserService {
     
     @Autowired
-    private UserRepository userRepository;
+    public UserRepository userRepository;
     
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public void signup(UserEntity userEntity){
-        //TO DO 중복 아이디인지 확인 로직 구현하기
-        String encPw = passwordEncoder.encode(userEntity.getUserPw());
-        userEntity.setUserPw(encPw);
-        userRepository.save(userEntity);
+    public String signup(UserEntity userEntity){
+        String procStts = "fail";
+        Optional<UserEntity> userOpt =  userRepository.findByUserId(userEntity.getUserId());
+        
+        if(!userOpt.isPresent()){
+            String encPw = passwordEncoder.encode(userEntity.getUserPw());
+            userEntity.setUserPw(encPw);
+            userRepository.save(userEntity);
+            procStts = "succ";
+        }
+
+        return procStts;
     }
 }
