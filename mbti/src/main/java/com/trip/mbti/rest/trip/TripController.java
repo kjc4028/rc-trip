@@ -114,7 +114,7 @@ public class TripController {
        
     }
 
-    @GetMapping(path="/rest/trips/searching")
+    @GetMapping(path="/rest/trips/searching/base")
     @ResponseBody
     public ResponseEntity tirpSearchPage(HttpServletRequest request, SearchDto searchDto, PageDto pageDto) throws ParseException{
         try {
@@ -164,7 +164,7 @@ public class TripController {
         }
        
     }
-    @GetMapping(path="/rest/trips/multisearching")
+    @GetMapping(path="/rest/trips/searching/multi")
     @ResponseBody
     public ResponseEntity tirpMultiSearchPage(HttpServletRequest request, SearchDto searchDto, PageDto pageDto) throws ParseException{
         try {
