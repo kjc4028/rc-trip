@@ -1,10 +1,5 @@
 package com.trip.mbti.rest.user;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.trip.mbti.rest.common.Message;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.trip.mbti.rest.common.Message;
 import com.trip.mbti.rest.user.jwt.JwtFilter;
 import com.trip.mbti.rest.user.jwt.TokenProvider;
 

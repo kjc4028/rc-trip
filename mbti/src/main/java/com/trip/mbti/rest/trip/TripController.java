@@ -1,6 +1,5 @@
 package com.trip.mbti.rest.trip;
 
-import java.io.BufferedReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,15 +9,6 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.trip.mbti.rest.common.Message;
-import com.trip.mbti.rest.common.PageDto;
-import com.trip.mbti.rest.common.SearchDto;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,9 +22,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.trip.mbti.rest.common.Message;
+import com.trip.mbti.rest.common.PageDto;
+import com.trip.mbti.rest.common.SearchDto;
 
 @RestController
 public class TripController {
@@ -44,7 +39,7 @@ public class TripController {
 
     @GetMapping("/rest/trips/test")
     @ResponseBody
-    public ResponseEntity tirpAllList(TripEntity tripentity){
+    public ResponseEntity<Message> tirpAllList(TripEntity tripentity){
         try {
             List<TripEntity> list =  tripService.findAllTripEntity();
             ObjectMapper om = new ObjectMapper();
@@ -79,26 +74,20 @@ public class TripController {
      */
     @GetMapping(path="/rest/trips")
     @ResponseBody
-    public ResponseEntity tirpAllPage(HttpServletRequest request, TripEntity tripentity){
+    public ResponseEntity<Message> tirpAllPage(HttpServletRequest request, TripEntity tripentity){
         try {
             Page<TripEntity> page =  tripService.findAllTripPage(1, 10);
             ObjectMapper om = new ObjectMapper();
             HttpHeaders headers = new HttpHeaders();
             Message message = new Message();
-            String resData = "";
             HashMap<String, Object> resMap = new HashMap<>();
 
             headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-            resMap.put("data", page.getContent());
-            resMap.put("totalCnt", page.getTotalElements());
-            resMap.put("totalPages", page.getTotalPages());
-            resMap.put("currentPage", page.getNumber());
-
-            resData = om.writeValueAsString(resMap);
+            resMap = om.convertValue(page, HashMap.class);
 
             message.setStatus(HttpStatus.OK);
-            message.setData(resData);
+            message.setData(resMap);
             message.setMessage("정상호출");
             
             return new ResponseEntity<>(message, headers, HttpStatus.OK);
@@ -116,7 +105,7 @@ public class TripController {
 
     @GetMapping(path="/rest/trips/searching/base")
     @ResponseBody
-    public ResponseEntity tirpSearchPage(HttpServletRequest request, SearchDto searchDto, PageDto pageDto) throws ParseException{
+    public ResponseEntity<Message> tirpSearchPage(HttpServletRequest request, SearchDto searchDto, PageDto pageDto) throws ParseException{
         try {
             
             TripEntity srchTripEntity = new TripEntity();
@@ -135,20 +124,14 @@ public class TripController {
             ObjectMapper om = new ObjectMapper();
             HttpHeaders headers = new HttpHeaders();
             Message message = new Message();
-            String resData = "";
             HashMap<String, Object> resMap = new HashMap<>();
 
             headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-            resMap.put("data", page.getContent());
-            resMap.put("totalCnt", page.getTotalElements());
-            resMap.put("totalPages", page.getTotalPages());
-            resMap.put("currentPage", page.getNumber());
-
-            resData = om.writeValueAsString(resMap);
+            resMap = om.convertValue(page, HashMap.class);
 
             message.setStatus(HttpStatus.OK);
-            message.setData(resData);
+            message.setData(resMap);
             message.setMessage("정상호출");
             
             return new ResponseEntity<>(message, headers, HttpStatus.OK);
@@ -166,21 +149,19 @@ public class TripController {
     }
     @GetMapping(path="/rest/trips/searching/multi")
     @ResponseBody
-    public ResponseEntity tirpMultiSearchPage(HttpServletRequest request, SearchDto searchDto, PageDto pageDto) throws ParseException{
+    public ResponseEntity<Message> tirpMultiSearchPage(HttpServletRequest request, SearchDto searchDto, PageDto pageDto) throws ParseException{
         try {
             ObjectMapper om = new ObjectMapper();
             HttpHeaders headers = new HttpHeaders();
             Message message = new Message();
-            String resData = "";
             HashMap<String, Object> resMap = new HashMap<>();
-            TripEntity srchTripEntity = new TripEntity();
             StringTokenizer st = null;
+
             if(searchDto.getSrchMbtia().length()>1){
                  st = new StringTokenizer(searchDto.getSrchMbtia(), "-");
             }else{
                 //다중검색이기 때문에 예외처리
                 message.setStatus(HttpStatus.OK);
-                message.setData(resData);
                 message.setMessage("mbti 수 부족");
                 return new ResponseEntity<>(message, headers, HttpStatus.OK);
             }
@@ -193,15 +174,10 @@ public class TripController {
 
             headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-            resMap.put("data", page.getContent());
-            resMap.put("totalCnt", page.getTotalElements());
-            resMap.put("totalPages", page.getTotalPages());
-            resMap.put("currentPage", page.getNumber());
-
-            resData = om.writeValueAsString(resMap);
+            resMap = om.convertValue(page, HashMap.class);
 
             message.setStatus(HttpStatus.OK);
-            message.setData(resData);
+            message.setData(resMap);
             message.setMessage("정상호출");
             
             return new ResponseEntity<>(message, headers, HttpStatus.OK);
@@ -236,30 +212,27 @@ public class TripController {
      */
     @PostMapping(path = "/rest/trips", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity tripCreateJson(HttpServletRequest request, @RequestBody TripEntity tripEntity){
+    public ResponseEntity<Message> tripCreateJson(HttpServletRequest request, @RequestBody TripEntity tripEntity){
         tripService.save(tripEntity);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(path = "/rest/trips/{_id}")
     @ResponseBody
-    public ResponseEntity tripSelectOne(@PathVariable String _id) throws JsonProcessingException{
+    public ResponseEntity<Message> tripSelectOne(@PathVariable String _id) throws JsonProcessingException{
         ObjectMapper om = new ObjectMapper();
         HttpHeaders headers = new HttpHeaders();
         Message message = new Message();
-        String resData = "";
         HashMap<String, Object> resMap = new HashMap<>();
 
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
         Optional<TripEntity> base_trip = tripService.findOneById(_id);
         
-        resMap.put("data", base_trip.get());
-
-        resData = om.writeValueAsString(resMap);
+        resMap = om.convertValue(base_trip.get(), HashMap.class);
 
         message.setStatus(HttpStatus.OK);
-        message.setData(resData);
+        message.setData(resMap);
         message.setMessage("정상호출");
         
         return new ResponseEntity<>(message, headers, HttpStatus.OK);
