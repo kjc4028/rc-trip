@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.trip.mbti.rest.common.MbtiCommUtil;
 import com.trip.mbti.rest.common.Message;
 import com.trip.mbti.rest.common.PageDto;
 import com.trip.mbti.rest.common.SearchDto;
@@ -155,22 +156,30 @@ public class TripController {
             HttpHeaders headers = new HttpHeaders();
             Message message = new Message();
             HashMap<String, Object> resMap = new HashMap<>();
-            StringTokenizer st = null;
-
-            if(searchDto.getSrchMbtia().length()>1){
-                 st = new StringTokenizer(searchDto.getSrchMbtia(), "-");
-            }else{
-                //다중검색이기 때문에 예외처리
-                message.setStatus(HttpStatus.OK);
-                message.setMessage("mbti 수 부족");
-                return new ResponseEntity<>(message, headers, HttpStatus.OK);
-            }
-            Page<TripEntity> page = null;
-            List<String> mbtiaList = new ArrayList<>();
             
-            mbtiaList.add(st.nextToken());
-            mbtiaList.add(st.nextToken());
-            page =  tripService.findSearchTripMbtiaMultiPage(mbtiaList, pageDto.getPageNum(), pageDto.getPerPage());
+            StringTokenizer st_A = null;
+            StringTokenizer st_B = null;
+            StringTokenizer st_C = null;
+            StringTokenizer st_D = null;
+            
+            Page<TripEntity> page = null;
+            
+            List<String> mbtiaList = new ArrayList<>();
+            List<String> mbtibList = new ArrayList<>();
+            List<String> mbticList = new ArrayList<>();
+            List<String> mbtidList = new ArrayList<>();
+
+            st_A = MbtiCommUtil.StringTokenizerMbti(searchDto.getSrchMbtia(), ",");
+            st_B = MbtiCommUtil.StringTokenizerMbti(searchDto.getSrchMbtib(), ",");
+            st_C = MbtiCommUtil.StringTokenizerMbti(searchDto.getSrchMbtic(), ",");
+            st_D = MbtiCommUtil.StringTokenizerMbti(searchDto.getSrchMbtid(), ",");
+            
+            MbtiCommUtil.StringTokenizerAddList(st_A, mbtiaList);
+            MbtiCommUtil.StringTokenizerAddList(st_B, mbtibList);
+            MbtiCommUtil.StringTokenizerAddList(st_C, mbticList);
+            MbtiCommUtil.StringTokenizerAddList(st_D, mbtidList);
+
+            page =  tripService.findSearchTripMbtiMultiPage(mbtiaList, mbtibList, mbticList, mbtidList, pageDto.getPageNum(), pageDto.getPerPage());
 
             headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 

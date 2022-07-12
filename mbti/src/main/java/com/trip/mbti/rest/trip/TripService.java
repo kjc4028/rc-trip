@@ -34,8 +34,8 @@ public class TripService {
         return tripRepository.findByMbtiaAndMbtibAndMbticAndMbtid(tripEntity.getMbtia(), tripEntity.getMbtib(),tripEntity.getMbtic(),tripEntity.getMbtid(),PageRequest.of(pageNum-1, perPage, Sort.by(Sort.Direction.ASC, "tripNm")));
     }
     
-    public Page<TripEntity> findSearchTripMbtiaMultiPage(List<String> mbtiaList, int pageNum, int perPage){
-        return tripRepository.findByMbtiaOrMbtia(mbtiaList.get(0), mbtiaList.get(1),PageRequest.of(pageNum-1, perPage, Sort.by(Sort.Direction.ASC, "tripNm")));
+    public Page<TripEntity> findSearchTripMbtiMultiPage(List<String> mbtiaList, List<String> mbtibList, List<String> mbticList, List<String> mbtidList, int pageNum, int perPage){
+        return tripRepository.findByMbtiaInAndMbtibInAndMbticInAndMbtidIn(mbtiaList, mbtibList ,mbticList, mbtidList, PageRequest.of(pageNum-1, perPage, Sort.by(Sort.Direction.ASC, "tripNm")));
     }
 
     public void save(TripEntity tripEntity){
