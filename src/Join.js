@@ -1,18 +1,32 @@
-import { type } from "@testing-library/user-event/dist/type";
+
 import axios from "axios";
+import { useState } from "react";
 
+//가입결과
+function JoinRs(props){
+  if(props.rsdata != null){
+    return <p>{props.rsdata}</p>;
+  }
+}
 
-
+//가입
 function Join() {
+
+  const [data, setData] = useState(null);
+
+  //가입버튼
   function joinBtn(){
     axios.post('http://localhost:8080/user/signup',{
       userId: document.getElementById("userId").value,
       userPw: document.getElementById("userPw").value
     }, {responseType:'json', headers:{"Content-Type": "application/json"}})
     .then((res) => {
-      console.log(res);
+      console.log(res.data.message);
+      setData(res.data.message);
     });
   }
+
+
 
   return (
     <div className="Join">
@@ -22,6 +36,7 @@ function Join() {
       
 
       <button id="joinBtn" onClick={joinBtn}>join</button>
+      <JoinRs rsdata={data}></JoinRs>
 
     </div>
   );
