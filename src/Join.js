@@ -1,6 +1,7 @@
 
 import axios from "axios";
 import { useState } from "react";
+import Login from "./Login";
 
 //가입결과
 function JoinRs(props){
@@ -13,6 +14,7 @@ function JoinRs(props){
 function Join() {
 
   const [data, setData] = useState(null);
+  const [mode, setMode] = useState(null);
 
   //가입버튼
   function joinBtn(){
@@ -26,8 +28,13 @@ function Join() {
     });
   }
 
+  function loginBtn(){
+    setMode("loginMode");
+  }
 
-
+  if(mode === "loginMode"){
+    return <Login></Login>
+  } else {
   return (
     <div className="Join">
       join Page <br/>
@@ -35,11 +42,13 @@ function Join() {
       <input name="userPw" id="userPw" type="text"></input><br/>
       
 
-      <button id="joinBtn" onClick={joinBtn}>join</button>
+      <button id="joinBtn" onClick={joinBtn}>Join</button>
+      <button id="loginBtn" onClick={loginBtn}>Login</button>
       <JoinRs rsdata={data}></JoinRs>
 
     </div>
   );
+}
 }
 
 export default Join;

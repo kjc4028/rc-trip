@@ -1,0 +1,66 @@
+import { type } from "@testing-library/user-event/dist/type";
+import axios from "axios";
+import { useState } from "react";
+import Join from "./Join";
+
+//가입결과
+function LoginRs(props){
+  if(props.rsdata != null){
+    return <p>{props.rsdata}</p>;
+  }
+}
+
+function JoinRs(props){
+  if(props.rsdata != null){
+    return <p>{props.rsdata}</p>;
+  }
+}
+
+function Login() {
+  
+  
+  const [data, setData] = useState(null);
+  const [mode, setMode] = useState(null);
+
+  function loginBtn(){
+    axios.post('http://localhost:8080/user/login',{
+      userId: document.getElementById("userId").value,
+      userPw: document.getElementById("userPw").value
+    }, {responseType:'json', headers:{"Content-Type": "application/json"}})
+    .then((res) => {
+      console.log(res.headers.Authorization);
+      setData(res.data);
+      let jwtToken = res.headers.Authorization;
+      //let jwtToken = res.data;
+      localStorage.setItem("Authorization", jwtToken);
+    });
+  }
+
+  function joinBtn(){
+    setMode("joinMode");
+  }
+
+  
+  if(mode === "joinMode"){
+    return (
+      <Join></Join>
+    );
+  } else {
+    return (
+      <div className="Loin">
+         login Page <br/>
+         <input name="userId" id="userId" type="text"></input><br/>
+         <input name="userPw" id="userPw" type="password"></input><br/>
+         
+   
+         <button id="loginBtn" onClick={loginBtn}>Login</button>
+         <button id="joinBtn" onClick={joinBtn}>Join</button>
+         <LoginRs rsdata = {data}></LoginRs>
+   
+       </div>
+     );  
+  }
+
+}
+
+export default Login;
