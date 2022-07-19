@@ -29,9 +29,11 @@ function Login() {
       userPw: document.getElementById("userPw").value
     }, {responseType:'json', headers:{"Content-Type": "application/json"}})
     .then((res) => {
-      console.log(res.headers.Authorization);
+      console.log(res);
+      console.log("res header " + res.headers.authorization);
+      console.log("res data " + res.data);
       setData(res.data);
-      let jwtToken = res.headers.Authorization;
+      let jwtToken = res.headers.authorization;
       //let jwtToken = res.data;
       localStorage.setItem("Authorization", jwtToken);
       setMode('loginSucc');
