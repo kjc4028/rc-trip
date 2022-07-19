@@ -2,6 +2,7 @@ import { type } from "@testing-library/user-event/dist/type";
 import axios from "axios";
 import { useState } from "react";
 import Join from "./Join";
+import TripList from "./TripList";
 
 //가입결과
 function LoginRs(props){
@@ -33,6 +34,7 @@ function Login() {
       let jwtToken = res.headers.Authorization;
       //let jwtToken = res.data;
       localStorage.setItem("Authorization", jwtToken);
+      setMode('loginSucc');
     });
   }
 
@@ -45,6 +47,8 @@ function Login() {
     return (
       <Join></Join>
     );
+  } else if(mode === "loginSucc"){
+    return <TripList></TripList>
   } else {
     return (
       <div className="Loin">
