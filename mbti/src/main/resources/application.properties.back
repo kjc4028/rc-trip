@@ -1,4 +1,4 @@
-spring.data.mongodb.uri=mongodb://172.24.181.91:27017/mtdb
+spring.data.mongodb.uri=mongodb://172.29.67.164:27017/mtdb
 
 spring.mvc.view.prefix=/WEB-INF/jsp/
 spring.mvc.view.suffix=.jsp
