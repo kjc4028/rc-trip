@@ -18,22 +18,22 @@
   POST /usr/login
 
   * 여행지 목록 조회<br>
-  GET /rest/trips
+  GET /trips
 
   * 여행지 검색(개인)<br>
-  GET /rest/trips/searching/base
+  GET /trips/searching/base
 
   * 여행지 검색(그룹)<br>
-  GET /rest/trips/searching/multi
+  GET /trips/searching/multi
 
   * 여행지 등록<br>
-  POST /rest/trips
+  POST /trips
 
   * 여행지 상세정보 조회<br>
-  GET /rest/trips/{_id}
+  GET /trips/{_id}
 
   * 여행지 상세정보 수정<br>
-  PUT /rest/trips/{_id}
+  PUT /trips/{_id}
 
   * 여행지 상세정보 삭제<br>
-  DELETE /rest/trips/{_id}
+  DELETE /trips/{_id}
