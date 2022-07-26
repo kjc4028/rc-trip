@@ -24,7 +24,7 @@ function Login() {
   const [mode, setMode] = useState(null);
 
   function loginBtn(){
-    axios.post('http://localhost:8080/user/login',{
+    axios.post('http://localhost:5555/user/login',{
       userId: document.getElementById("userId").value,
       userPw: document.getElementById("userPw").value
     }, {responseType:'json', headers:{"Content-Type": "application/json"}})

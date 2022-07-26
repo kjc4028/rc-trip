@@ -12,7 +12,7 @@ function TripList() {
     const getTrips = async () => {
     axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
     
-    let response = await axios.get('http://localhost:8080/rest/trips');
+    let response = await axios.get('http://localhost:5555/trips');
     console.log(response);
     setTripList(response.data.data.content);
     }          

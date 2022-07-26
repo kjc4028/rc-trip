@@ -18,7 +18,7 @@ function Join() {
 
   //가입버튼
   function joinBtn(){
-    axios.post('http://localhost:8080/user/signup',{
+    axios.post('http://localhost:5555/user/signup',{
       userId: document.getElementById("userId").value,
       userPw: document.getElementById("userPw").value
     }, {responseType:'json', headers:{"Content-Type": "application/json"}})
