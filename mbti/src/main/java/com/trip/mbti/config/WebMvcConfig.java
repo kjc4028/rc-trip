@@ -27,10 +27,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
     //     registry.jsp("/WEB-INF/jsp/", ".jsp");
     
     // }
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("*").allowedMethods("*").allowedHeaders("*");
-    }
+    
+    // gatewayServer cors 설정 후 중복 cors 체크 방지를 위해 주석처리
+    // @Override
+    // public void addCorsMappings(CorsRegistry registry) {
+    //     registry.addMapping("/**").allowedOrigins("*").allowedMethods("*").allowedHeaders("*");
+    // }
 
 }
