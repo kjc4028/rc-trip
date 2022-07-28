@@ -2,6 +2,8 @@ server:
   port: 5555
 
 eureka:
+    instance:
+        instance-id: gateway-msa-instance
     client:
         register-with-eureka: true
         fetch-registry: true
@@ -9,6 +11,11 @@ eureka:
             defalutZone: http://localhost:8761/eureka
 
 spring:
+    devtools:
+        livereload:
+            enabled: true
+        restart:
+            enabled: true
     application:
         name: apigateway-service
     cloud:
@@ -17,9 +24,13 @@ spring:
                 - id: trip-service
                   uri: lb://TRIP-SERVICE
                   predicates:
-                    - Path=/trips/**, /user/**
+                    - Path=/trips/**
                   filters: 
-                    - CustomAuthGatewayFilter
+                    - CustomAuthGatewayFilter       
+                - id: user-service
+                  uri: lb://USER-SERVICE
+                  predicates:
+                    - Path=/user/**                                                   
                 
 jwt:
     header: Authorization
