@@ -34,11 +34,19 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<Message> signup(@RequestBody UserEntity userEntity){
         Message message = new Message();
-        String signupRs = userService.signup(userEntity);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpStatus httpstatus = HttpStatus.OK;
         
+        if(userEntity.getUserId().isEmpty() || userEntity.getUserPw().isEmpty()){
+            message.setStatus(httpstatus);
+            message.setData("joinFail");
+            message.setMessage("아이디와 비밀번호를 입력해주십시오.");    
+
+            return new ResponseEntity<Message>(message, httpHeaders ,httpstatus);
+        }
+
+        String signupRs = userService.signup(userEntity);
         if(signupRs.equals("succ")){
             message.setStatus(httpstatus);
             message.setData("joinSucc");
