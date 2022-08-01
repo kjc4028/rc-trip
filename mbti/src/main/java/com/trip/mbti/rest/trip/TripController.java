@@ -77,7 +77,17 @@ public class TripController {
     @ResponseBody
     public ResponseEntity<Message> tirpAllPage(HttpServletRequest request, TripEntity tripentity){
         try {
-            Page<TripEntity> page =  tripService.findAllTripPage(1, 10);
+            int pageNum = 1;
+            int perPage = 10;
+            if(request.getParameter("pageNum") != null && !request.getParameter("pageNum").equals("anObject")){
+                pageNum = Integer.parseInt(request.getParameter("pageNum"));
+            }
+            
+            if(request.getParameter("perPage") != null && !request.getParameter("perPage").equals("anObject")){
+                perPage = Integer.parseInt(request.getParameter("perPage"));
+            }
+
+            Page<TripEntity> page =  tripService.findAllTripPage(pageNum, perPage);
             ObjectMapper om = new ObjectMapper();
             HttpHeaders headers = new HttpHeaders();
             Message message = new Message();
