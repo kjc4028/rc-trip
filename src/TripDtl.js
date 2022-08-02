@@ -1,24 +1,19 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import TripList from "./TripList";
 
 function TripDtl(props) {
-    
-    // const [tripDtl, setTripDtl] = useState();
-    // const [mode, setMode] = useState(null);
-    
-    // useEffect(() => {
-    //     getTripDtl(props_trip_id)
-    //     }, []);
-          
-    // const getTripDtl = async (tripId) => {
-    //     axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
-    //    // axios.get('http://localhost:5555/trips/'+tripId,{}, {responseType:'json', headers:{"Content-Type": "application/json"}})
-    //     let response = await axios.get('http://localhost:5555/trips'+tripId);
-    //     console.log(response);
-    //     setTripDtl(response.data.data.content);
-    // }          
-    
+    const [mode, setMode] = useState(null); 
+    const [pageAble, setPageAble] = useState();   
 
+    function goList(perPage, pageNum){
+        setMode("list");
+        setPageAble({pageNum:pageNum, perPage:perPage});
+    }       
+    
+if(mode === "list"){
+    return <TripList pageAble={pageAble}></TripList>
+} else {
     return(
         <div className="tripDtl">
             trip Dtl<br/>
@@ -26,9 +21,11 @@ function TripDtl(props) {
             여행명: <span>{props.tripDtl.tripNm}</span><br/>
             여행내용: <span>{props.tripDtl.tripCts}</span><br/>
 
-        목록
+            <button onClick={ () => {goList(props.pageAble.perPage, props.pageAble.pageNum);}}>목록으로</button>
         </div>
     );
+
+}
 }
 
 export default TripDtl;

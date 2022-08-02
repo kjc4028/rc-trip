@@ -1,12 +1,16 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import TripDtl from "./TripDtl";
-function TripList() {
+function TripList(props) {
     
     const [tripList, setTripList] = useState();
     const [mode, setMode] = useState(null);
     const [tripId, setTripId] = useState(null);
     const [tripDtl, setTripDtl] = useState();
+    const [pageAble, setPageAble] = useState();
+
+    const pageNum = props.pageNum;
+    const perPage = props.perPage;
 
 
     useEffect(() => {
@@ -15,13 +19,22 @@ function TripList() {
           
     const getTrips = async () => {
     axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
-    
-    let response = await axios.get('http://localhost:5555/trips');
+    const params = { pageNum:pageNum, perPage:perPage}
+    let response = await axios.get('http://localhost:5555/trips',{params});
     console.log(response);
-    setTripList(response.data.data.content);
+    setTripList(response.data.data);
     setMode("list");
     }          
     
+    const getTripsPage = async (_pageNum, _perPage) => {
+        axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
+        const params = { pageNum:_pageNum, perPage:_perPage}
+        let response = await axios.get('http://localhost:5555/trips',{params});
+        console.log(response);
+        setTripList(response.data.data);
+        setMode("list");
+        } 
+
     //상세화면으로 이동
     // function goDtl(tripId){
     //     axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
@@ -41,12 +54,20 @@ function TripList() {
         setTripDtl(response.data.data);
         console.log(response.data.data);
         setTripId(tripId);
+        setPageAble({pageNum:pageNum, perPage:perPage});
         setMode("dtl");
     }   
 
+    function paging(totalPageNum){
+        let pageArr = [];
+        for (let index = 1; index <= totalPageNum; index++) {
+            pageArr.push(<span onClick={() => {getTripsPage(index)}}>{index}</span>);
+        }
+        return pageArr;
+    }
 
     if(mode === "dtl"){
-        return (<TripDtl tripDtl={tripDtl}></TripDtl>);
+        return (<TripDtl tripDtl={tripDtl} pageAble={pageAble}></TripDtl>);
     }
     if(mode === "list"){
     
@@ -54,14 +75,19 @@ function TripList() {
             <div className="tripList">
                 trip list
                 <ul>
-                    {tripList && tripList.map(trip => (
+                    {tripList.content && tripList.content.map(trip => (
                         <li key={trip._Id}>
                         <span><a href="#" onClick={() => {goDtl(trip._Id); return false;} }>{trip.tripNm}</a></span>
                         </li>
                     ))}
-            </ul>
+                </ul>
+                <div>
+                        {paging(tripList.totalPages)}
+                </div>
             </div>
+
         );
+
     }
 }
 
