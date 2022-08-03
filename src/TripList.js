@@ -61,7 +61,7 @@ function TripList(props) {
     function paging(totalPageNum){
         let pageArr = [];
         for (let index = 1; index <= totalPageNum; index++) {
-            pageArr.push(<span onClick={() => {getTripsPage(index)}}>{index}</span>);
+            pageArr.push(<span kye={index} onClick={() => {getTripsPage(index)}}>{index}</span>);
         }
         return pageArr;
     }
@@ -77,7 +77,7 @@ function TripList(props) {
                 <ul>
                     {tripList.content && tripList.content.map(trip => (
                         <li key={trip._Id}>
-                        <span><a href="#" onClick={() => {goDtl(trip._Id); return false;} }>{trip.tripNm}</a></span>
+                            <a href="#" onClick={() => {goDtl(trip._Id); return false;} }>{trip.tripNm}</a>
                         </li>
                     ))}
                 </ul>
