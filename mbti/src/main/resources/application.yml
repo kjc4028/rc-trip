@@ -3,7 +3,7 @@ spring:
         name: trip-service
     data:
         mongodb:
-            uri: mongodb://172.29.67.164:27017/mtdb
+            uri: mongodb://localhost:27017/mtdb
     mvc:
         view:
             prefix: /WEB-INF/jsp/
