@@ -22,9 +22,9 @@ function Header() {
 
     return (
         <div className="Header">
-          <button onClick={logout}>로그아웃</button>
-          <Link to="trip-list">tripList</Link>
-          <Link to="trip-srch-multi">tripSrchMult</Link>
+          <button onClick={logout}>로그아웃</button><span> | </span>
+          <Link to="trip-list">tripList</Link><span> | </span>
+          <Link to="trip-srch-multi">tripSrchMult</Link><span> | </span>
         </div>
         )
         

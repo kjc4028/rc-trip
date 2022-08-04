@@ -20,7 +20,7 @@ if(mode === "list"){
             서비스아이디: <span>{props.tripDtl._Id}</span><br/>
             여행명: <span>{props.tripDtl.tripNm}</span><br/>
             여행내용: <span>{props.tripDtl.tripCts}</span><br/>
-
+            MBTI: {props.tripDtl.mbtia}{props.tripDtl.mbtib}{props.tripDtl.mbtic}{props.tripDtl.mbtid}<br/>
             <button onClick={ () => {goList(props.pageAble.perPage, props.pageAble.pageNum);}}>목록으로</button>
         </div>
     );

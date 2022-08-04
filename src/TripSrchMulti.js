@@ -14,7 +14,9 @@ function TripSrchMulti(props) {
 
 
     useEffect(() => {
-        getTripsPage(1,10)
+        //getTripsPage(1,10,[])
+        //getTrips(1,10)
+        setMode("list")
         }, []);
           
     const getTrips = async () => {
@@ -26,12 +28,13 @@ function TripSrchMulti(props) {
     setMode("list");
     }          
     
-    const getTripsPage = async (_pageNum, _perPage) => {
+    const getTripsPage = async (_pageNum, _perPage, mbtiArr) => {
         axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
-        const srchMbtia = "I,E";
-        const srchMbtib = "S";
-        const srchMbtic = "F";
-        const srchMbtid = "J";
+        console.log(mbtiArr);
+        const srchMbtia = mbtiArr.A.join(",");
+        const srchMbtib = mbtiArr.B.join(",");
+        const srchMbtic = mbtiArr.C.join(",");
+        const srchMbtid = mbtiArr.D.join(",");
         const params = { pageNum:_pageNum, perPage:_perPage, srchMbtia:srchMbtia, srchMbtib:srchMbtib, srchMbtic:srchMbtic, srchMbtid:srchMbtid}
         let response = await axios.get('http://localhost:5555/trips/searching/multi',{params});
         console.log(response);
@@ -60,23 +63,63 @@ function TripSrchMulti(props) {
         return pageArr;
     }
 
+    function srching(){
+        const arrA = [];
+        const arrB = [];
+        const arrC = [];
+        const arrD = [];
+        const mbtiA = document.getElementsByName("mbtiA");
+        const mbtiB = document.getElementsByName("mbtiB");
+        const mbtiC = document.getElementsByName("mbtiC");
+        const mbtiD = document.getElementsByName("mbtiD");
+
+        for (let index = 0; index < mbtiA.length; index++) {
+            arrA.push(mbtiA[index].value);
+        }
+        for (let index = 0; index < mbtiB.length; index++) {
+            arrB.push(mbtiB[index].value);
+        }
+        for (let index = 0; index < mbtiC.length; index++) {
+            arrC.push(mbtiC[index].value);
+        }
+        for (let index = 0; index < mbtiD.length; index++) {
+            arrD.push(mbtiD[index].value);
+        }
+        const arr = {A:arrA, B:arrB, C:arrC, D:arrD};
+        getTripsPage(1,10,arr);
+    }
+
     if(mode === "dtl"){
         return (<TripDtl tripDtl={tripDtl} pageAble={pageAble}></TripDtl>);
     }
     if(mode === "list"){
     
         return(
-            <div className="tripList">
-                trip list
+            <div className="tripSrchMulti">
+                trip Srch Multi list
+                <div>
+                    <input type="text" name="mbtiA"></input>
+                    <input type="text" name="mbtiB"></input>
+                    <input type="text" name="mbtiC"></input>
+                    <input type="text" name="mbtiD"></input>
+                </div>
+                <div>
+                    <input type="text" name="mbtiA"></input>
+                    <input type="text" name="mbtiB"></input>
+                    <input type="text" name="mbtiC"></input>
+                    <input type="text" name="mbtiD"></input>
+                </div>
+                <div><button onClick={srching}>검색</button></div>
                 <ul>
-                    {tripList.content && tripList.content.map(trip => (
+                    {tripList && tripList.content.map(trip => (
                         <li key={trip._Id}>
-                            <a href="#" onClick={() => {goDtl(trip._Id); return false;} }>{trip.tripNm}</a>
+                            <a href="#" onClick={() => {goDtl(trip._Id); return false;} }>{trip.tripNm} ({trip.mbtia + trip.mbtib + trip.mbtic + trip.mbtid})</a>
                         </li>
                     ))}
                 </ul>
                 <div>
-                        {paging(tripList.totalPages)}
+                        {/* {paging(tripList.totalPages)} */}
+                        {tripList && paging(tripList.totalPages)}
                 </div>
             </div>
 
