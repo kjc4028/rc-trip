@@ -50,7 +50,8 @@ function Login() {
       <Join></Join>
     );
   } else if(mode === "loginSucc"){
-    return <TripList></TripList>
+    //return <TripList></TripList>
+    window.location.replace("/trip-list");
   } else {
     return (
       <div className="Loin">

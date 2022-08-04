@@ -1,10 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
+import { Link } from "react-router-dom";
+
 import App from './App';
 
 import Join from './Join';
 import Login from './Login';
+import TripList from './TripList';
 import Header from './Header';
 
 import reportWebVitals from './reportWebVitals';
@@ -12,9 +20,18 @@ import reportWebVitals from './reportWebVitals';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    <BrowserRouter>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="login" element={<Login />} />
+        <Route path="trip-list" element={<TripList />} />
+        <Route path="header" element={<Header />} />
+      </Routes>
+    </BrowserRouter>    
     {/* <App /> */}
-    <Header />
-    <Login />
+    {/* 
+    <Login /> */}
   </React.StrictMode>
 );
 
