@@ -14,7 +14,7 @@ function TripSrchMulti(props) {
 
 
     useEffect(() => {
-        //getTrips()
+        getTripsPage(1,10)
         }, []);
           
     const getTrips = async () => {
@@ -28,26 +28,16 @@ function TripSrchMulti(props) {
     
     const getTripsPage = async (_pageNum, _perPage) => {
         axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
-        const srchMbtia = ["I","E"];
-        const srchMbtib = ["S"];
-        const srchMbtic = ["F"];
-        const srchMbtid = ["J"];
-        const params = { pageNum:_pageNum, perPage:_perPage}
+        const srchMbtia = "I,E";
+        const srchMbtib = "S";
+        const srchMbtic = "F";
+        const srchMbtid = "J";
+        const params = { pageNum:_pageNum, perPage:_perPage, srchMbtia:srchMbtia, srchMbtib:srchMbtib, srchMbtic:srchMbtic, srchMbtid:srchMbtid}
         let response = await axios.get('http://localhost:5555/trips/searching/multi',{params});
         console.log(response);
         setTripList(response.data.data);
         setMode("list");
         } 
-
-    //상세화면으로 이동
-    // function goDtl(tripId){
-    //     axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
-    //     axios.get('http://localhost:5555/trips/'+tripId,{}, {responseType:'json', headers:{"Content-Type": "application/json"}})
-    // .then((res) => {
-    //     console.log(res.data.message);
-    //     //setData(res.data.message);
-    // });
-    // }
 
           
     const goDtl = async (tripId) => {

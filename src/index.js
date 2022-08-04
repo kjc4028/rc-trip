@@ -13,6 +13,7 @@ import App from './App';
 import Join from './Join';
 import Login from './Login';
 import TripList from './TripList';
+import TripSrchMulti from './TripSrchMulti';
 import Header from './Header';
 
 import reportWebVitals from './reportWebVitals';
@@ -26,6 +27,7 @@ root.render(
         <Route path="/" element={<Login />} />
         <Route path="login" element={<Login />} />
         <Route path="trip-list" element={<TripList />} />
+        <Route path="trip-srch-multi" element={<TripSrchMulti />} />
         <Route path="header" element={<Header />} />
       </Routes>
     </BrowserRouter>    
