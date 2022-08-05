@@ -18,6 +18,6 @@ public interface TripRepository extends MongoRepository<TripEntity, String> {
 
     //Page<TripEntity> findByMbtiaOrMbtia(String mbtia1,String mbtia2, Pageable pageable);
     Page<TripEntity> findByMbtiaInAndMbtibInAndMbticInAndMbtidIn(List<String> mbtiAList, List<String> mbtiBList, List<String> mbtiCList, List<String> mbtiDList,Pageable pageable);
-//
+
 
 }
