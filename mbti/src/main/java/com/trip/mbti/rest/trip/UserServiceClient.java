@@ -1,16 +1,17 @@
 package com.trip.mbti.rest.trip;
 
-import java.io.ObjectInputFilter.Config;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.stereotype.Component;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 
-@Component
-@FeignClient(name="user-msa-instance", configuration = Config.class)
+import com.trip.mbti.rest.common.Message;
+
+@FeignClient(name="USER-SERVICE")
 public interface UserServiceClient {
     
     @GetMapping("/user/claim/{claimKey}")
-    String getClaim(@PathVariable String claimKey);
+    ResponseEntity<Message> getClaim(@RequestHeader(value = "Authorization", required = true) String authorizationHeader, @PathVariable("claimKey") String claimKey); 
 }

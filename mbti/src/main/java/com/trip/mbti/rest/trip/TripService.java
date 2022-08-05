@@ -9,18 +9,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+
 
 @Service
+@RequiredArgsConstructor
 public class TripService {
     @Autowired
     private TripRepository tripRepository;
 
-    private UserServiceClient userServiceClient;
-
-
-    public void UserServiceClient(UserServiceClient userServiceClient) {
-        this.userServiceClient = userServiceClient;
-    }
 
     public Optional<TripEntity> findOneById(String id) {
         return tripRepository.findById(id); 
@@ -47,12 +44,6 @@ public class TripService {
     }
 
     public void save(TripEntity tripEntity){
-        System.out.println("kjc claim-----");
-        if(userServiceClient == null){
-            System.out.println("kjc claim-null----");
-        } else {
-            System.out.println(userServiceClient.getClaim("userId"));
-        }
         tripRepository.save(tripEntity);
     }
     

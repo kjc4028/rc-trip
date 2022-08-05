@@ -32,11 +32,16 @@ import com.trip.mbti.rest.common.Message;
 import com.trip.mbti.rest.common.PageDto;
 import com.trip.mbti.rest.common.SearchDto;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 public class TripController {
  
     @Autowired
     private TripService tripService;
+
+    private final UserServiceClient userServiceClient;
 
     @GetMapping("/trips/test")
     @ResponseBody
@@ -232,6 +237,11 @@ public class TripController {
     @PostMapping(path = "/trips", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Message> tripCreateJson(HttpServletRequest request, @RequestBody TripEntity tripEntity){
+        System.out.println("claimtest=============");
+        System.out.println(request.getHeader("Authorization"));
+         System.out.println(userServiceClient.getClaim(request.getHeader("Authorization"), "userId"));
+         ResponseEntity<Message> resUserId = userServiceClient.getClaim(request.getHeader("Authorization"), "userId");
+         tripEntity.setRegUserId(resUserId.getBody().getData().toString());
         tripService.save(tripEntity);
         return new ResponseEntity<>(HttpStatus.OK);
     }

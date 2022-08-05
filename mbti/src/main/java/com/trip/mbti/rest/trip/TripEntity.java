@@ -24,5 +24,7 @@ public class TripEntity{
     private String mbtic;
 
     private String mbtid;
+    
+    private String regUserId;
 
 }
