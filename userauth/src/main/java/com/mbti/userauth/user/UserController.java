@@ -95,7 +95,7 @@ public class UserController {
         return new ResponseEntity<Message>(message, httpHeaders, httpstatus);
     } 
 
-    @GetMapping(path = "/user/claim/{claimKey}" , consumes= MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/user/claim/{claimKey}")
     public ResponseEntity<Message> getClaim(HttpServletRequest request, @PathVariable String claimKey) {
 
         Message message = new Message();
@@ -103,12 +103,16 @@ public class UserController {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpStatus httpstatus = HttpStatus.OK;
         System.out.println("kjc----claim");
+        System.out.println(request.getHeader("Authorization"));
         System.out.println(claimKey);
-        String jwt = tokenProvider.resolveToken(request, AUTHORIZATION_HEADER);
-        String claimDate = tokenProvider.getClaim(jwt, claimKey);
+        //String jwt = tokenProvider.resolveToken(request, AUTHORIZATION_HEADER);
+        String jwt = tokenProvider.resolveTokenString(request.getHeader("Authorization"), AUTHORIZATION_HEADER);;
+        
+
+        String claimData = tokenProvider.getClaim(jwt, claimKey);
 
         message.setStatus(httpstatus);
-        message.setData(claimDate);
+        message.setData(claimData);
         message.setMessage("클레임 조회"); 
         
         return new ResponseEntity<Message>(message, httpHeaders, httpstatus);
