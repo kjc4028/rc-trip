@@ -1,5 +1,7 @@
 package com.mbti.userauth.user;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -9,6 +11,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,6 +25,8 @@ import com.mbti.userauth.user.jwt.TokenProvider;
 @RestController
 public class UserController {
     
+    public static final String AUTHORIZATION_HEADER = "Authorization";
+
     @Autowired
     private UserService userService;
 
@@ -72,4 +78,40 @@ public class UserController {
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
         return new ResponseEntity<>(jwt, httpHeaders, HttpStatus.OK);
     }    
+
+    @PostMapping(path = "/user/logout")
+    public ResponseEntity<Message> logout() {
+
+        Message message = new Message();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpStatus httpstatus = HttpStatus.OK;
+        
+        message.setStatus(httpstatus);
+        message.setData("logoutSuccess");
+        message.setMessage("로그아웃 되었습니다."); 
+
+        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "logout user");
+        return new ResponseEntity<Message>(message, httpHeaders, httpstatus);
+    } 
+
+    @GetMapping(path = "/user/claim/{claimKey}" , consumes= MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Message> getClaim(HttpServletRequest request, @PathVariable String claimKey) {
+
+        Message message = new Message();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpStatus httpstatus = HttpStatus.OK;
+        System.out.println("kjc----claim");
+        System.out.println(claimKey);
+        String jwt = tokenProvider.resolveToken(request, AUTHORIZATION_HEADER);
+        String claimDate = tokenProvider.getClaim(jwt, claimKey);
+
+        message.setStatus(httpstatus);
+        message.setData(claimDate);
+        message.setMessage("클레임 조회"); 
+        
+        return new ResponseEntity<Message>(message, httpHeaders, httpstatus);
+    }     
+
 }

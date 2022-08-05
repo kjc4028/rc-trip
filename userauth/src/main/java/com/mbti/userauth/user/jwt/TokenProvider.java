@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -16,6 +18,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -60,6 +63,7 @@ public class TokenProvider implements InitializingBean {
         return Jwts.builder()
            .setSubject(authentication.getName())
            .claim(AUTHORITIES_KEY, authorities)
+           .claim("userId", authentication.getName())
            .signWith(key, SignatureAlgorithm.HS512)
            .setExpiration(validity)
            .compact();
@@ -83,6 +87,21 @@ public class TokenProvider implements InitializingBean {
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
      }
   
+     public String getClaim(String token, String claimKey) {
+      String resClaimValue ="";
+      Claims claims = Jwts
+              .parserBuilder()
+              .setSigningKey(key)
+              .build()
+              .parseClaimsJws(token)
+              .getBody();
+
+              resClaimValue = claims.get(claimKey).toString();
+      
+
+      return resClaimValue;
+   }
+
      public boolean validateToken(String token) {
         try {
            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -98,4 +117,12 @@ public class TokenProvider implements InitializingBean {
         }
         return false;
      }     
+
+     public String resolveToken(HttpServletRequest request, String authHeaderNm) {
+      String bearerToken = request.getHeader(authHeaderNm);
+      if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+         return bearerToken.substring(7);
+      }
+      return null;
+   }     
 }
