@@ -28,4 +28,8 @@ public class UserService {
 
         return procStts;
     }
+
+    public void deleteUser(String userId){
+        userRepository.deleteByUserId(userId);
+    }
 }

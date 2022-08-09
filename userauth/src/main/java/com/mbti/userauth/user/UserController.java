@@ -11,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +23,10 @@ import com.mbti.userauth.common.Message;
 import com.mbti.userauth.user.jwt.JwtFilter;
 import com.mbti.userauth.user.jwt.TokenProvider;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
+@RequiredArgsConstructor
 public class UserController {
     
     public static final String AUTHORIZATION_HEADER = "Authorization";
@@ -35,6 +39,8 @@ public class UserController {
     
     @Autowired
     private AuthenticationManagerBuilder authenticationManagerBuilder;
+
+    private final TripServiceClient tripServiceClient;
 
     @PostMapping(path = "/user/signup", consumes= MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -106,7 +112,7 @@ public class UserController {
         System.out.println(request.getHeader("Authorization"));
         System.out.println(claimKey);
         //String jwt = tokenProvider.resolveToken(request, AUTHORIZATION_HEADER);
-        String jwt = tokenProvider.resolveTokenString(request.getHeader("Authorization"), AUTHORIZATION_HEADER);;
+        String jwt = tokenProvider.resolveTokenString(request.getHeader("Authorization"), AUTHORIZATION_HEADER);
         
 
         String claimData = tokenProvider.getClaim(jwt, claimKey);
@@ -116,6 +122,26 @@ public class UserController {
         message.setMessage("클레임 조회"); 
         
         return new ResponseEntity<Message>(message, httpHeaders, httpstatus);
-    }     
+    }  
+    
+    @DeleteMapping(path = "/user")
+    public ResponseEntity<Message> userDelete(HttpServletRequest request){
+        Message message = new Message();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpStatus httpstatus = HttpStatus.OK;
 
+        String jwt = tokenProvider.resolveTokenString(request.getHeader("Authorization"), AUTHORIZATION_HEADER);
+        String claimDataUserId = tokenProvider.getClaim(jwt, "userId");
+        TripDto tripDto = new TripDto();
+        tripDto.setRegUserId(claimDataUserId);
+        tripServiceClient.tripDeleteBuRegUserId(tripDto);
+        userService.deleteUser(claimDataUserId);
+
+        message.setStatus(httpstatus);
+        message.setData("회원탈퇴 완료");
+        message.setMessage("회원탈퇴 완료. 작성한 게시글도 삭제됩니다."); 
+        
+        return new ResponseEntity<Message>(message, httpHeaders, httpstatus);
+    }
 }
