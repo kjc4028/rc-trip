@@ -285,6 +285,12 @@ public class TripController {
         tripService.delete(base_trip.get());
         
     }
+
+    @DeleteMapping(path="/trips/user")
+    @ResponseBody
+    public void tripDeleteBuRegUserId(@RequestBody TripEntity tripEntity){
+        tripService.deleteByRegUserId(tripEntity.getRegUserId());
+    }
     
     
 }

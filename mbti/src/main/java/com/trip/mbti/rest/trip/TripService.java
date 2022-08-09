@@ -43,11 +43,19 @@ public class TripService {
         return tripRepository.findByMbtiaInAndMbtibInAndMbticInAndMbtidIn(mbtiaList, mbtibList ,mbticList, mbtidList, PageRequest.of(pageNum-1, perPage, Sort.by(Sort.Direction.ASC, "tripNm")));
     }
 
+    public List<TripEntity> findByRegUserId(TripEntity tripEntiity){
+        return tripRepository.findByRegUserId(tripEntiity);
+    }
+
     public void save(TripEntity tripEntity){
         tripRepository.save(tripEntity);
     }
     
     public void delete(TripEntity tripEntity){
         tripRepository.delete(tripEntity);
+    }
+
+    public void deleteByRegUserId(String regUserId){
+        tripRepository.deleteByRegUserId(regUserId);
     }
 }
