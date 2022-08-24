@@ -1,0 +1,37 @@
+spring:
+    application:
+        name: user-service
+    data:
+        mongodb:
+            uri: mongodb://localhost:27017/mtdb
+    devtools:
+        livereload:
+            enabled: true
+        restart:
+            enabled: true
+    freemarker:
+        cache: false  
+
+server:
+    port: 8081
+    servlet:
+        jsp:
+            init-parameters.development: true
+
+jwt:
+    header: Authorization
+    secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
+    token-validity-in-seconds: 86400 
+
+logging:
+    level:
+        org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+
+eureka:
+    instance:
+        instance-id: user-msa-instance
+    client:
+        register-with-eureka: true
+        fetch-registry: true
+        service-url:
+            defaultZone: http://localhost:8761/eureka
