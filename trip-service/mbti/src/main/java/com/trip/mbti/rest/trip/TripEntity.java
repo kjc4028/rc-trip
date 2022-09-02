@@ -4,12 +4,19 @@ package com.trip.mbti.rest.trip;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Document("trip")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TripEntity{
     
+
     @Id
     private String _Id;
 
@@ -26,5 +33,7 @@ public class TripEntity{
     private String mbtid;
     
     private String regUserId;
+
+
 
 }

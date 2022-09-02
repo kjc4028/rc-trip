@@ -9,26 +9,55 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.test.context.ActiveProfiles;
 
+import com.trip.mbti.rest.common.SearchDto;
 import com.trip.mbti.rest.trip.TripEntity;
+import com.trip.mbti.rest.trip.TripRequestDto;
 import com.trip.mbti.rest.trip.TripService;
 
 
 @SpringBootTest
+@ActiveProfiles("test") 
 class MbtiApplicationTests {
 	
 	@Autowired
 	TripService tripService;
 	
 	@Test
+	public void insertTest(){
+		TripRequestDto tripRequestDto = new TripRequestDto();
+		tripRequestDto.setMbtia("E");
+		tripRequestDto.setMbtib("N");
+		tripRequestDto.setMbtic("F");
+		tripRequestDto.setMbtid("P");
+		tripRequestDto.setTripNm("테스트 제목");
+		tripRequestDto.setTripCts("테스트 내용");
+		tripRequestDto.setRegUserId("testUser");
+		
+
+		TripEntity tripEntity = tripRequestDto.toEntity();
+		tripService.save(tripEntity);
+
+		assertTrue(true);
+	}
+
+	@Test
 	public void test() {
-		TripEntity tripEntity = new TripEntity();
-		tripEntity.setMbtia("E");
-		tripEntity.setMbtib("N");
-		tripEntity.setMbtic("F");
-		tripEntity.setMbtid("P");
+		SearchDto searchDto = new SearchDto();
+		searchDto.setSrchMbtia("E");
+		searchDto.setSrchMbtib("N");
+		searchDto.setSrchMbtic("F");
+		searchDto.setSrchMbtid("P");
+		
+		TripEntity tripEntity = searchDto.toEntity();
+		//TripEntity tripEntity = new TripEntity();
+		// tripEntity.setMbtia("E");
+		// tripEntity.setMbtib("N");
+		// tripEntity.setMbtic("F");
+		// tripEntity.setMbtid("P");
 		Page<TripEntity> tripPage = tripService.findSearchTripMbtiPage(tripEntity, 1, 10);
-		System.out.println(tripPage.getContent());
+		System.out.println("testTotalCnt : " + tripPage.getContent());
 		assertTrue(tripEntity.getMbtia().equals(tripPage.getContent().get(0).getMbtia()));
 		assertTrue(tripEntity.getMbtib().equals(tripPage.getContent().get(0).getMbtib()));
 		assertTrue(tripEntity.getMbtic().equals(tripPage.getContent().get(0).getMbtic()));

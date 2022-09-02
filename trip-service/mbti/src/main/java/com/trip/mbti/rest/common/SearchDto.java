@@ -1,5 +1,7 @@
 package com.trip.mbti.rest.common;
 
+import com.trip.mbti.rest.trip.TripEntity;
+
 import lombok.Data;
 
 @Data
@@ -18,4 +20,14 @@ public class SearchDto {
     private String srchMbtid;
     
     private String srchCls;
+
+    public TripEntity toEntity() {
+        return TripEntity.builder()
+                .tripNm(srchKwd)
+                .mbtia(srchMbtia)
+                .mbtib(srchMbtib)
+                .mbtic(srchMbtic)
+                .mbtid(srchMbtid)
+                .build();
+    }
 }

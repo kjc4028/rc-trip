@@ -123,14 +123,7 @@ public class TripController {
     @ResponseBody
     public ResponseEntity<Message> tirpSearchPage(HttpServletRequest request, SearchDto searchDto, PageDto pageDto) throws ParseException{
         try {
-            
-            TripEntity srchTripEntity = new TripEntity();
-            srchTripEntity.setMbtia(searchDto.getSrchMbtia());
-            srchTripEntity.setMbtib(searchDto.getSrchMbtib());
-            srchTripEntity.setMbtic(searchDto.getSrchMbtic());
-            srchTripEntity.setMbtid(searchDto.getSrchMbtid());
-
-            srchTripEntity.setTripNm(searchDto.getSrchKwd());
+            TripEntity srchTripEntity = searchDto.toEntity();
             Page<TripEntity> page = null;
             if(searchDto.getSrchCls().equals("mbti")){
                 page =  tripService.findSearchTripMbtiPage(srchTripEntity, pageDto.getPageNum(), pageDto.getPerPage());
