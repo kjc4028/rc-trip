@@ -17,6 +17,7 @@ import TripSrchMulti from './TripSrchMulti';
 import Header from './Header';
 
 import reportWebVitals from './reportWebVitals';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

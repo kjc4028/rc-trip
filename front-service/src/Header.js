@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Login from "./Login";
+import { Container, Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
 
 function Header() {
 
@@ -22,9 +23,37 @@ function Header() {
 
     return (
         <div className="Header">
-          <button onClick={logout}>로그아웃</button><span> | </span>
+      <Navbar bg="light" expand="lg">
+        <Container>
+          <Navbar.Brand href="#home">MBTI TRIP</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <Nav.Link href="/">Home</Nav.Link>
+              <Nav.Link href="trip-list">전체여행목록</Nav.Link>
+              <Nav.Link href="trip-srch-base">혼자 여행가기</Nav.Link>
+              <Nav.Link href="trip-srch-multi">다같이 여행가기</Nav.Link>
+              <Nav.Link onClick={logout}>로그아웃</Nav.Link>
+              <NavDropdown title="Dropdown" id="basic-nav-dropdown">
+                <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+                <NavDropdown.Item href="#action/3.2">
+                  Another action
+                </NavDropdown.Item>
+                <NavDropdown.Item href="#action/3.3">
+                  Something
+                </NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item href="#action/3.4">
+                  Separated link
+                </NavDropdown.Item>
+              </NavDropdown>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>              
+          {/* <button onClick={logout}>로그아웃</button><span> | </span>
           <Link to="trip-list">tripList</Link><span> | </span>
-          <Link to="trip-srch-multi">tripSrchMult</Link><span> | </span>
+          <Link to="trip-srch-multi">tripSrchMult</Link><span> | </span> */}
         </div>
         )
         

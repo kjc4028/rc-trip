@@ -3,7 +3,7 @@ import axios from "axios";
 import { useState } from "react";
 import Join from "./Join";
 import TripList from "./TripList";
-
+import { Row, Col, Form, Container, Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
 //가입결과
 function LoginRs(props){
   if(props.rsdata != null){
@@ -55,13 +55,35 @@ function Login() {
   } else {
     return (
       <div className="Loin">
-         login Page <br/>
-         <input name="userId" id="userId" type="text"></input><br/>
+        <Container className="panel" >            
+            <Form>
+              <Form.Group className="mb-3" controlId="userId">
+                <Form.Label>ID</Form.Label>
+                <Form.Control type="text" placeholder="Enter ID" name="userId" xs={4}/>
+                <Form.Text className="text-muted">
+                  {/* We'll never share your email with anyone else. */}
+                </Form.Text>
+              </Form.Group>
+
+              <Form.Group className="mb-3" controlId="userPw">
+                <Form.Label>Password</Form.Label>
+                <Form.Control type="password" placeholder="Password" name="userPw"/>
+              </Form.Group>
+
+              <Button variant="primary" onClick={loginBtn}>
+               Login
+              </Button>
+              <Button variant="secondary" onClick={joinBtn}>
+                Join
+              </Button>
+            </Form>        
+        </Container>
+         {/* <input name="userId" id="userId" type="text"></input><br/>
          <input name="userPw" id="userPw" type="password"></input><br/>
          
    
          <button id="loginBtn" onClick={loginBtn}>Login</button>
-         <button id="joinBtn" onClick={joinBtn}>Join</button>
+         <button id="joinBtn" onClick={joinBtn}>Join</button> */}
          <LoginRs rsdata = {data}></LoginRs>
    
        </div>
