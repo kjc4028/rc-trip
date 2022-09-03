@@ -3,8 +3,10 @@ package com.trip.mbti.rest.trip;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -172,22 +174,22 @@ public class TripController {
             
             Page<TripEntity> page = null;
             
-            List<String> mbtiaList = new ArrayList<>();
-            List<String> mbtibList = new ArrayList<>();
-            List<String> mbticList = new ArrayList<>();
-            List<String> mbtidList = new ArrayList<>();
+            Set<String> mbtiaSet = new HashSet<>();
+            Set<String> mbtibSet = new HashSet<>();
+            Set<String> mbticSet = new HashSet<>();
+            Set<String> mbtidSet = new HashSet<>();
 
             st_A = MbtiCommUtil.StringTokenizerMbti(searchDto.getSrchMbtia(), ",");
             st_B = MbtiCommUtil.StringTokenizerMbti(searchDto.getSrchMbtib(), ",");
             st_C = MbtiCommUtil.StringTokenizerMbti(searchDto.getSrchMbtic(), ",");
             st_D = MbtiCommUtil.StringTokenizerMbti(searchDto.getSrchMbtid(), ",");
             
-            MbtiCommUtil.StringTokenizerAddList(st_A, mbtiaList);
-            MbtiCommUtil.StringTokenizerAddList(st_B, mbtibList);
-            MbtiCommUtil.StringTokenizerAddList(st_C, mbticList);
-            MbtiCommUtil.StringTokenizerAddList(st_D, mbtidList);
+            MbtiCommUtil.StringTokenizerAddList(st_A, mbtiaSet);
+            MbtiCommUtil.StringTokenizerAddList(st_B, mbtibSet);
+            MbtiCommUtil.StringTokenizerAddList(st_C, mbticSet);
+            MbtiCommUtil.StringTokenizerAddList(st_D, mbtidSet);
 
-            page =  tripService.findSearchTripMbtiMultiPage(mbtiaList, mbtibList, mbticList, mbtidList, pageDto.getPageNum(), pageDto.getPerPage());
+            page =  tripService.findSearchTripMbtiMultiPage(mbtiaSet, mbtibSet, mbticSet, mbtidSet, pageDto.getPageNum(), pageDto.getPerPage());
 
             headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
@@ -218,7 +220,8 @@ public class TripController {
      */
     @PostMapping(path = "/trips", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @ResponseBody
-    public void tripCreate(HttpServletRequest request,TripEntity tripEntity){
+    public void tripCreate(HttpServletRequest request,TripRequestDto tripRequestDto){
+        TripEntity tripEntity = tripRequestDto.toEntity();
         tripService.save(tripEntity);
     }
 
@@ -229,12 +232,13 @@ public class TripController {
      */
     @PostMapping(path = "/trips", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Message> tripCreateJson(HttpServletRequest request, @RequestBody TripEntity tripEntity){
+    public ResponseEntity<Message> tripCreateJson(HttpServletRequest request, @RequestBody TripRequestDto tripRequestDto){
         System.out.println("claimtest=============");
         System.out.println(request.getHeader("Authorization"));
-         System.out.println(userServiceClient.getClaim(request.getHeader("Authorization"), "userId"));
-         ResponseEntity<Message> resUserId = userServiceClient.getClaim(request.getHeader("Authorization"), "userId");
-         tripEntity.setRegUserId(resUserId.getBody().getData().toString());
+        System.out.println(userServiceClient.getClaim(request.getHeader("Authorization"), "userId"));
+        ResponseEntity<Message> resUserId = userServiceClient.getClaim(request.getHeader("Authorization"), "userId");
+        TripEntity tripEntity = tripRequestDto.toEntity();
+        tripEntity.setRegUserId(resUserId.getBody().getData().toString());
         tripService.save(tripEntity);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -262,10 +266,11 @@ public class TripController {
 
     @PutMapping(path = "/trips/{_id}", consumes = "application/json")
     @ResponseBody
-    public void tripUpdate(@RequestBody TripEntity tripEntity){
-        Optional<TripEntity> base_trip = tripService.findOneById(tripEntity.get_Id());
-        base_trip.get().setTripNm(tripEntity.getTripNm());
-        base_trip.get().setTripCts(tripEntity.getTripCts());
+    public void tripUpdate(@RequestBody TripRequestDto tripRequestDto){
+        
+        Optional<TripEntity> base_trip = tripService.findOneById(tripRequestDto.get_Id());
+        base_trip.get().setTripNm(tripRequestDto.getTripNm());
+        base_trip.get().setTripCts(tripRequestDto.getTripCts());
         tripService.save(base_trip.get());
     }
 
@@ -281,7 +286,8 @@ public class TripController {
 
     @DeleteMapping(path="/trips/user")
     @ResponseBody
-    public void tripDeleteBuRegUserId(@RequestBody TripEntity tripEntity){
+    public void tripDeleteBuRegUserId(@RequestBody TripRequestDto tripRequestDto){
+        TripEntity tripEntity = tripRequestDto.toEntity();
         tripService.deleteByRegUserId(tripEntity.getRegUserId());
     }
     

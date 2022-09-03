@@ -2,6 +2,7 @@ package com.trip.mbti.rest.trip;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,7 +40,7 @@ public class TripService {
         return tripRepository.findByMbtiaAndMbtibAndMbticAndMbtid(tripEntity.getMbtia(), tripEntity.getMbtib(),tripEntity.getMbtic(),tripEntity.getMbtid(),PageRequest.of(pageNum-1, perPage, Sort.by(Sort.Direction.ASC, "tripNm")));
     }
     
-    public Page<TripEntity> findSearchTripMbtiMultiPage(List<String> mbtiaList, List<String> mbtibList, List<String> mbticList, List<String> mbtidList, int pageNum, int perPage){
+    public Page<TripEntity> findSearchTripMbtiMultiPage(Set<String> mbtiaList, Set<String> mbtibList, Set<String> mbticList, Set<String> mbtidList, int pageNum, int perPage){
         return tripRepository.findByMbtiaInAndMbtibInAndMbticInAndMbtidIn(mbtiaList, mbtibList ,mbticList, mbtidList, PageRequest.of(pageNum-1, perPage, Sort.by(Sort.Direction.ASC, "tripNm")));
     }
 

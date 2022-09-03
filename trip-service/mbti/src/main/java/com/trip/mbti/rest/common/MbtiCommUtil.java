@@ -1,6 +1,7 @@
 package com.trip.mbti.rest.common;
 
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 public class MbtiCommUtil {
@@ -21,7 +22,7 @@ public class MbtiCommUtil {
     /*
      * StringTokenizer Add List
      */
-    public static void StringTokenizerAddList(StringTokenizer st, List<String> list){
+    public static void StringTokenizerAddList(StringTokenizer st, Set<String> list){
         if(st == null){
             return;
         }
