@@ -4,3 +4,4 @@ COPY ${JAR_FILE} mbtiDiscovery.jar
 ENTRYPOINT ["java","-jar","/mbtiDiscovery.jar"]
 
 #docker build -t mbtidiscovery .
+##docker run -d -p 8761:8761 --name mbtidiscovery mbtidiscovery
