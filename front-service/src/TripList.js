@@ -1,6 +1,13 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import TripDtl from "./TripDtl";
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import CardGroup from 'react-bootstrap/CardGroup';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import Pagination from 'react-bootstrap/Pagination';
+
 function TripList(props) {
     
     const [tripList, setTripList] = useState();
@@ -58,10 +65,27 @@ function TripList(props) {
         setMode("dtl");
     }   
 
+    let active = 2;
+    let items = [];
+    for (let number = 1; number <= 3; number++) {
+    items.push(
+        <Pagination.Item key={number} active={number === active} onClick={() => {getTripsPage(number)}}>
+        {number}
+        </Pagination.Item>,
+    );
+    }
+
+    const paginationBasic = (
+    <div>
+        <Pagination>{items}</Pagination>
+    </div>
+    );
+
     function paging(totalPageNum){
         let pageArr = [];
         for (let index = 1; index <= totalPageNum; index++) {
-            pageArr.push(<span kye={index} onClick={() => {getTripsPage(index)}}>{index}</span>);
+             pageArr.push(<span kye={index} onClick={() => {getTripsPage(index)}}>{index}</span>);
+            
         }
         return pageArr;
     }
@@ -72,19 +96,44 @@ function TripList(props) {
     if(mode === "list"){
     
         return(
-            <div className="tripList">
-                trip list
-                <ul>
-                    {tripList.content && tripList.content.map(trip => (
-                        <li key={trip._Id}>
-                            <a href="#" onClick={() => {goDtl(trip._Id); return false;} }>{trip.tripNm}</a>
-                        </li>
-                    ))}
-                </ul>
-                <div>
-                        {paging(tripList.totalPages)}
-                </div>
-            </div>
+            // <div className="tripList">
+            //     trip list
+            //     <ul>
+            //         {tripList.content && tripList.content.map(trip => (
+            //             <li key={trip._Id}>
+            //                 <a href="#" onClick={() => {goDtl(trip._Id); return false;} }>{trip.tripNm}</a>
+            //             </li>
+            //         ))}
+            //     </ul>
+            //     <div>
+            //             {paging(tripList.totalPages)}
+            //     </div>
+            //</div>
+            <>          
+     <Row xs={1} md={2} className="g-4">
+      {tripList.content && tripList.content.map((trip,i) => (
+        <Col>
+          <Card>
+            {/* <Card.Img variant="top" src="holder.js/100px160" /> */}
+            <Card.Body>
+              <Card.Title onClick={() => {goDtl(trip._Id); return false;} }>{trip.tripNm}</Card.Title>
+              <Card.Text onClick={() => {goDtl(trip._Id); return false;} }>
+                {trip.tripCts}
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+      ))}
+    </Row>
+    {/* <div>
+        {paging(tripList.totalPages)}
+
+    </div>
+    {paging(tripList.totalPages).map((num) => (
+      num
+    ))} */}
+      {paginationBasic}
+             </>                         
 
         );
 

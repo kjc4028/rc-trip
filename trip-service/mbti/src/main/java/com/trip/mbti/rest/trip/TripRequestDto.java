@@ -25,6 +25,7 @@ public class TripRequestDto {
         return TripEntity.builder()
                 ._Id(_Id)
                 .tripNm(tripNm)
+                .tripCts(tripCts)
                 .mbtia(mbtia)
                 .mbtib(mbtib)
                 .mbtic(mbtic)
