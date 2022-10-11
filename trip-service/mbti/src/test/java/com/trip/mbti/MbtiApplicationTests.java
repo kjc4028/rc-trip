@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -16,10 +17,13 @@ import com.trip.mbti.rest.trip.TripEntity;
 import com.trip.mbti.rest.trip.TripRequestDto;
 import com.trip.mbti.rest.trip.TripService;
 
+import ch.qos.logback.classic.Logger;
+
 
 @SpringBootTest
 @ActiveProfiles("test") 
 class MbtiApplicationTests {
+	private final Logger log = (Logger) LoggerFactory.getLogger(this.getClass().getSimpleName());
 	
 	@Autowired
 	TripService tripService;
@@ -57,7 +61,7 @@ class MbtiApplicationTests {
 		// tripEntity.setMbtic("F");
 		// tripEntity.setMbtid("P");
 		Page<TripEntity> tripPage = tripService.findSearchTripMbtiPage(tripEntity, 1, 10);
-		System.out.println("testTotalCnt : " + tripPage.getContent());
+		log.info("testTotalCnt : " + tripPage.getContent());
 		assertTrue(tripEntity.getMbtia().equals(tripPage.getContent().get(0).getMbtia()));
 		assertTrue(tripEntity.getMbtib().equals(tripPage.getContent().get(0).getMbtib()));
 		assertTrue(tripEntity.getMbtic().equals(tripPage.getContent().get(0).getMbtic()));
@@ -70,10 +74,10 @@ class MbtiApplicationTests {
 		List<TripEntity> list = tripService.findAllTripEntity();
 		int cnt = 0;
 		for(TripEntity trip : list){
-			System.out.println("=====================");
-			System.out.println(trip.get_Id());
-			System.out.println(trip.getTripNm());
-			System.out.println(trip.getTripCts());
+			log.info("=====================");
+			log.info(trip.get_Id());
+			log.info(trip.getTripNm());
+			log.info(trip.getTripCts());
 			cnt++;
 		}
 		
@@ -89,8 +93,7 @@ class MbtiApplicationTests {
 		if(tripService.findOneById(testid) == null){
 			assertTrue(true);
 		} else {
-			System.out.println(tripService.findOneById(testid));
-
+			log.info(""+tripService.findOneById(testid));
 		}
 
 		

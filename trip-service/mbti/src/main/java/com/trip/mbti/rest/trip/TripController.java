@@ -1,7 +1,6 @@
 package com.trip.mbti.rest.trip;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,6 +11,7 @@ import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.simple.parser.ParseException;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -34,12 +34,15 @@ import com.trip.mbti.rest.common.Message;
 import com.trip.mbti.rest.common.PageDto;
 import com.trip.mbti.rest.common.SearchDto;
 
+import ch.qos.logback.classic.Logger;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 public class TripController {
  
+    private final Logger log = (Logger) LoggerFactory.getLogger(this.getClass().getSimpleName());
+    
     @Autowired
     private TripService tripService;
 
@@ -233,9 +236,9 @@ public class TripController {
     @PostMapping(path = "/trips", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Message> tripCreateJson(HttpServletRequest request, @RequestBody TripRequestDto tripRequestDto){
-        System.out.println("claimtest=============");
-        System.out.println(request.getHeader("Authorization"));
-        System.out.println(userServiceClient.getClaim(request.getHeader("Authorization"), "userId"));
+        log.info("claimtest=============");
+        log.info(""+request.getHeader("Authorization"));
+        log.info(""+userServiceClient.getClaim(request.getHeader("Authorization"), "userId"));
         ResponseEntity<Message> resUserId = userServiceClient.getClaim(request.getHeader("Authorization"), "userId");
         TripEntity tripEntity = tripRequestDto.toEntity();
         tripEntity.setRegUserId(resUserId.getBody().getData().toString());

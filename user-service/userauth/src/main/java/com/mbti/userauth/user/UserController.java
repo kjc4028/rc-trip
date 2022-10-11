@@ -2,6 +2,7 @@ package com.mbti.userauth.user;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,11 +26,14 @@ import com.mbti.userauth.user.jwt.TokenProvider;
 import com.mbti.userauth.user.token.TokenEntity;
 import com.mbti.userauth.user.token.TokenService;
 
+import ch.qos.logback.classic.Logger;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 public class UserController {
+    
+    private final Logger log = (Logger) LoggerFactory.getLogger(this.getClass().getSimpleName());
     
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
@@ -79,7 +83,6 @@ public class UserController {
 
     @PostMapping(path = "/user/login", consumes= MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> authorize( @RequestBody UserEntity loginDto) {
-
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getUserId(), loginDto.getUserPw());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -127,9 +130,6 @@ public class UserController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpStatus httpstatus = HttpStatus.OK;
-        System.out.println("kjc----claim");
-        System.out.println(request.getHeader("Authorization"));
-        System.out.println(claimKey);
         //String jwt = tokenProvider.resolveToken(request, AUTHORIZATION_HEADER);
         String jwt = tokenProvider.resolveTokenString(request.getHeader("Authorization"), AUTHORIZATION_HEADER);
         
