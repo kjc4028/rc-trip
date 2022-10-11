@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mbti.userauth.common.Message;
 import com.mbti.userauth.user.jwt.JwtFilter;
 import com.mbti.userauth.user.jwt.TokenProvider;
+import com.mbti.userauth.user.token.TokenEntity;
+import com.mbti.userauth.user.token.TokenService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,6 +41,9 @@ public class UserController {
     
     @Autowired
     private AuthenticationManagerBuilder authenticationManagerBuilder;
+
+    @Autowired
+    private TokenService tokenService;
 
     private final TripServiceClient tripServiceClient;
 
@@ -80,19 +85,33 @@ public class UserController {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.createToken(authentication);
+        String refreshJwt = tokenProvider.createRefreshToken(authentication);
+
+        TokenEntity tokenEntity = new TokenEntity();
+        tokenEntity.setAccessToken(jwt);
+        tokenEntity.setRefreshToken(refreshJwt);
+        tokenService.saveToken(tokenEntity);
+
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
         return new ResponseEntity<>(jwt, httpHeaders, HttpStatus.OK);
     }    
 
     @PostMapping(path = "/user/logout")
-    public ResponseEntity<Message> logout() {
+    public ResponseEntity<Message> logout(HttpServletRequest request) {
 
         Message message = new Message();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpStatus httpstatus = HttpStatus.OK;
         
+        String jwt = tokenProvider.resolveTokenString(request.getHeader("Authorization"), AUTHORIZATION_HEADER);
+        TokenEntity tokenEntity = tokenService.findByAccessToken(jwt);
+
+        if(tokenEntity != null){
+            tokenService.deleteByAccessToken(tokenEntity.getAccessToken());
+        }
+
         message.setStatus(httpstatus);
         message.setData("logoutSuccess");
         message.setMessage("로그아웃 되었습니다."); 
