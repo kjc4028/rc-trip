@@ -37,19 +37,24 @@ public class TokenProvider implements InitializingBean {
 
 
   
-     public boolean validateToken(String token) {
-        try {
+     public String validateToken(String token) {
+      String rsCode = "";  
+      try {
            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-           return true;
+           return "101";
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
            logger.info("잘못된 JWT 서명입니다." + e);
+           rsCode = "102";
         } catch (ExpiredJwtException e) {
            logger.info("만료된 JWT 토큰입니다.");
+           rsCode ="103";
         } catch (UnsupportedJwtException e) {
            logger.info("지원되지 않는 JWT 토큰입니다.");
+           rsCode = "104";
         } catch (IllegalArgumentException e) {
            logger.info("JWT 토큰이 잘못되었습니다.");
+           rsCode = "105";
         }
-        return false;
+        return rsCode;
      }     
 }

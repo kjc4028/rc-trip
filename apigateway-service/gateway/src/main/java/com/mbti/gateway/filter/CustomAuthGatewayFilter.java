@@ -61,11 +61,16 @@ public class CustomAuthGatewayFilter extends AbstractGatewayFilterFactory<Custom
 
 
             // 토큰 검증
-            //if(!tokenString.equals("A.B.C")) {
-            if(!tokenProvider.validateToken(resolveToken(tokenString))) {
+            String tokenValidRsCd = tokenProvider.validateToken(resolveToken(tokenString));
+            if(!"101".equals(tokenValidRsCd)) {
                 log.info("filter 토큰 불일치 >>>>>>>");
-                return handleUnAuthorized(exchange); // 토큰이 일치하지 않을 때
-            }
+                if("103".equals(tokenValidRsCd)){
+                    //토큰만료 리프레시토큰 가져와 토큰 재발급 로직 필요
+                    log.info("토큰만료 리프레시토큰 가져와 토큰 재발급 로직 필요 >>>>>>>");
+                } else {
+                    return handleUnAuthorized(exchange); // 토큰이 일치하지 않을 때
+                }
+            }       
             log.info("filter end >>>>>>>");
             return chain.filter(exchange); // 토큰이 일치할 때
 
@@ -74,7 +79,6 @@ public class CustomAuthGatewayFilter extends AbstractGatewayFilterFactory<Custom
 
     private Mono<Void> handleUnAuthorized(ServerWebExchange exchange) {
         ServerHttpResponse response = exchange.getResponse();
-
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
         return response.setComplete();
     }    
