@@ -1,5 +1,7 @@
 spring:
-    config.activate.on-profile: default
+    config:
+        activate:
+            on-profile: default
     application:
         name: trip-service
     data:
@@ -16,6 +18,10 @@ spring:
             enabled: true
     freemarker:
         cache: false  
+    redis:
+        host: 127.0.0.1
+        password:
+        port: 6379            
 
 server:
     port: 8080
@@ -41,9 +47,14 @@ eureka:
         fetch-registry: true
         service-url:
             defaultZone: http://localhost:8761/eureka
+
+profileValue: default
 ---
+
 spring:
-    config.activate.on-profile: test
+    config:
+        activate:
+            on-profile: test
     application:
         name: trip-service-test
     data:
@@ -75,3 +86,5 @@ jwt:
 logging:
     level:
         org.springframework.data.mongodb.core.MongoTemplate: DEBUG    
+
+profileValue: test
