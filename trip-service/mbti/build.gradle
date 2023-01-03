@@ -25,6 +25,8 @@ ext {
 	set('springCloudVersion', "2021.0.2")
 }
  
+ ext.profile = (!project.hasProperty('profile') || !profile) ? 'local' : profile
+
 dependencies {
 	//implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
@@ -39,7 +41,10 @@ dependencies {
 
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-	
+  	// 프로덕션
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    	// 로컬
+    	//implementation 'it.ozimov:embedded-redis:0.7.2'	
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -61,8 +66,8 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-	bootRun {
-		String activeProfile = System.properties['spring.profiles.active']
-		println "zone: $activeProfile"
-		systemProperty "spring.profiles.active", activeProfile
-	}
+bootRun {
+	String activeProfile = System.properties['spring.profiles.active']
+	println "zone: $activeProfile"
+	//systemProperty "spring.profiles.active", activeProfile
+}
