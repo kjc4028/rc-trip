@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -16,18 +17,50 @@ import com.trip.mbti.rest.common.SearchDto;
 import com.trip.mbti.rest.trip.TripEntity;
 import com.trip.mbti.rest.trip.TripRequestDto;
 import com.trip.mbti.rest.trip.TripService;
+import com.trip.mbti.rest.trip.redis.TripRedisEntity;
+import com.trip.mbti.rest.trip.redis.TripRedisRepository;
 
 import ch.qos.logback.classic.Logger;
 
 
 @SpringBootTest
 @ActiveProfiles("test") 
+@EnableCaching
 class MbtiApplicationTests {
 	private final Logger log = (Logger) LoggerFactory.getLogger(this.getClass().getSimpleName());
 	
 	@Autowired
 	TripService tripService;
+
+	@Autowired
+    TripRedisRepository tripRedisRepository;
 	
+	
+	@Test
+	public void redisTest(){
+		
+		TripRedisEntity tripRedisEntity = TripRedisEntity.builder()
+		.mbtia("E")
+		.mbtib("N")
+		.mbtic("F")
+		.mbtid("P")
+		.tripNm("redisTestData")
+		.tripCts("redisTestCts")
+		.regUserId("RedistestUser").build();
+
+
+		//캐시 초기화
+		tripRedisRepository.deleteAll();
+
+		assertTrue("redis data init check", tripRedisRepository.count() == 0);
+
+		tripRedisRepository.save(tripRedisEntity);
+
+		assertTrue("redis data add check", tripRedisRepository.count() == 1);
+		
+		
+	}
+
 	@Test
 	public void insertTest(){
 		TripRequestDto tripRequestDto = new TripRequestDto();
