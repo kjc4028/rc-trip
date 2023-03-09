@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mbti.userauth.common.Message;
 import com.mbti.userauth.user.jwt.JwtFilter;
 import com.mbti.userauth.user.jwt.TokenProvider;
+import com.mbti.userauth.user.redis.UserRedisEntity;
+import com.mbti.userauth.user.redis.UserRedisRepository;
 import com.mbti.userauth.user.token.TokenEntity;
 import com.mbti.userauth.user.token.TokenService;
 
@@ -51,6 +53,12 @@ public class UserController {
 
     private final TripServiceClient tripServiceClient;
 
+    @Autowired
+    private UserRedisRepository userRedisRepository;
+
+    /**
+     * 회원가입 요청
+     */
     @PostMapping(path = "/user/signup", consumes= MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<Message> signup(@RequestBody UserEntity userEntity){
@@ -81,6 +89,9 @@ public class UserController {
         return new ResponseEntity<Message>(message, httpHeaders ,httpstatus);
     }
 
+    /*
+     * 로그인 요청
+     */
     @PostMapping(path = "/user/login", consumes= MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> authorize( @RequestBody UserEntity loginDto) {
         UsernamePasswordAuthenticationToken authenticationToken =
@@ -97,9 +108,18 @@ public class UserController {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+
+        UserRedisEntity userRedisEntity = new UserRedisEntity();
+        userRedisEntity.setAccessToken(jwt);
+        userRedisEntity.setRefreshToken(refreshJwt);
+
+        userRedisRepository.save(userRedisEntity);
         return new ResponseEntity<>(jwt, httpHeaders, HttpStatus.OK);
     }    
 
+    /*
+     * 로그아웃 요청
+     */
     @PostMapping(path = "/user/logout")
     public ResponseEntity<Message> logout(HttpServletRequest request) {
 
@@ -123,6 +143,9 @@ public class UserController {
         return new ResponseEntity<Message>(message, httpHeaders, httpstatus);
     } 
 
+    /*
+     * 클레임 조회 요청
+     */
     @GetMapping(path = "/user/claim/{claimKey}")
     public ResponseEntity<Message> getClaim(HttpServletRequest request, @PathVariable String claimKey) {
 
@@ -143,6 +166,7 @@ public class UserController {
         return new ResponseEntity<Message>(message, httpHeaders, httpstatus);
     }  
     
+    /*회원탈퇴 요청 */
     @DeleteMapping(path = "/user")
     public ResponseEntity<Message> userDelete(HttpServletRequest request){
         Message message = new Message();

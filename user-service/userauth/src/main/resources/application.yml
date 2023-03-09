@@ -11,7 +11,11 @@ spring:
             enabled: true
     freemarker:
         cache: false  
-
+    redis:
+        host: 127.0.0.1
+        password:
+        port: 6379   
+        
 server:
     port: 8081
     servlet:
