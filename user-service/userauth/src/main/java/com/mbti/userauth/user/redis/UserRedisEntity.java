@@ -18,6 +18,8 @@ import lombok.Setter;
 public class UserRedisEntity{
 
     @Id
+    private String userId;
+
     private String accessToken;
 
     private String refreshToken;

@@ -4,6 +4,7 @@ import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -56,6 +57,11 @@ public class TokenProvider implements InitializingBean {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
+    /**
+     * jwt 생성
+     * @param authentication
+     * @return
+     */
     public String createToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
            .map(GrantedAuthority::getAuthority)
@@ -72,6 +78,11 @@ public class TokenProvider implements InitializingBean {
            .compact();
      }   
 
+     /**
+      * refresh토큰 생성
+      * @param authentication
+      * @return
+      */
     public String createRefreshToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
            .map(GrantedAuthority::getAuthority)
@@ -88,6 +99,11 @@ public class TokenProvider implements InitializingBean {
            .compact();
      }    
 
+     /**
+      * 인증정보 반환
+      * @param token
+      * @return
+      */
      public Authentication getAuthentication(String token) {
         Claims claims = Jwts
                 .parserBuilder()
@@ -105,7 +121,13 @@ public class TokenProvider implements InitializingBean {
   
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
      }
-  
+     
+     /**
+      * 클레임정보 추출
+      * @param token
+      * @param claimKey
+      * @return
+      */
      public String getClaim(String token, String claimKey) {
       String resClaimValue ="";
       Claims claims = Jwts
@@ -121,6 +143,11 @@ public class TokenProvider implements InitializingBean {
       return resClaimValue;
    }
 
+   /**
+    * 토큰정보 검증
+    * @param token
+    * @return
+    */
      public boolean validateToken(String token) {
         try {
            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -137,6 +164,28 @@ public class TokenProvider implements InitializingBean {
         return false;
      }     
 
+     /**
+      * 토큰정보추출
+      * @param token
+      * @return
+      */
+     public Map<String, Object> getTokenInfo(String token){
+      Map<String, Object> claimMap = null;
+      Claims claims = Jwts.parserBuilder().setSigningKey(key).build()
+              .parseClaimsJws(token) // 파싱 및 검증, 실패 시 에러
+              .getBody();
+
+      claimMap = claims;
+
+      return claimMap;
+     }
+
+     /**
+      * header의 토큰정보 추출
+      * @param request
+      * @param authHeaderNm
+      * @return
+      */
      public String resolveToken(HttpServletRequest request, String authHeaderNm) {
       String bearerToken = request.getHeader(authHeaderNm);
       if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
@@ -145,6 +194,12 @@ public class TokenProvider implements InitializingBean {
       return null;
    }     
    
+   /**
+    * String으로 전달받은 header 인증 토큰 정보 추출
+    * @param auth
+    * @param authHeaderNm
+    * @return
+    */
    public String resolveTokenString(String auth, String authHeaderNm) {
       String bearerToken = auth;
       if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {

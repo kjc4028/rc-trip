@@ -110,6 +110,7 @@ public class UserController {
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 
         UserRedisEntity userRedisEntity = new UserRedisEntity();
+        userRedisEntity.setUserId(loginDto.getUserId());
         userRedisEntity.setAccessToken(jwt);
         userRedisEntity.setRefreshToken(refreshJwt);
 
