@@ -31,6 +31,9 @@ import com.mbti.userauth.user.token.TokenService;
 import ch.qos.logback.classic.Logger;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 회원정보 및 로그인 controller
+ */
 @RestController
 @RequiredArgsConstructor
 public class UserController {
@@ -188,4 +191,35 @@ public class UserController {
         
         return new ResponseEntity<Message>(message, httpHeaders, httpstatus);
     }
+
+    /*
+     * token refresh 요청
+     */
+    @PostMapping(path = "/user/tokenRefresh", consumes= MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> tokenRefresh( @RequestBody UserEntity loginDto) {
+        //TODO 재정의 필요
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(loginDto.getUserId(), loginDto.getUserPw());
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = tokenProvider.createToken(authentication);
+        String refreshJwt = tokenProvider.createRefreshToken(authentication);
+
+        TokenEntity tokenEntity = new TokenEntity();
+        tokenEntity.setAccessToken(jwt);
+        tokenEntity.setRefreshToken(refreshJwt);
+        tokenService.saveToken(tokenEntity);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+
+        UserRedisEntity userRedisEntity = new UserRedisEntity();
+        userRedisEntity.setUserId(loginDto.getUserId());
+        userRedisEntity.setAccessToken(jwt);
+        userRedisEntity.setRefreshToken(refreshJwt);
+
+        userRedisRepository.save(userRedisEntity);
+        return new ResponseEntity<>(jwt, httpHeaders, HttpStatus.OK);
+    }    
+
 }

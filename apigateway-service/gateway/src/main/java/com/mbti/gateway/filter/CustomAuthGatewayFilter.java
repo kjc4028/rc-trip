@@ -41,6 +41,7 @@ public class CustomAuthGatewayFilter extends AbstractGatewayFilterFactory<Custom
     public void TokenProvider(TokenProvider tokenProvider) {
         this.tokenProvider = tokenProvider;
     }
+    
     @Override
     public GatewayFilter apply(Config config) {
         return ((exchange, chain) -> {
@@ -50,7 +51,7 @@ public class CustomAuthGatewayFilter extends AbstractGatewayFilterFactory<Custom
             // Request Header 에 token 이 존재하지 않을 때
             if(!request.getHeaders().containsKey(AUTHORIZATION_HEADER)){
                 log.info("filter 토큰 미존재 >>>>>>>");
-                return handleUnAuthorized(exchange); // 401 Error
+                return handleUnAuthorized(exchange);
             }
             
             // Request Header 에서 token 문자열 받아오기
@@ -67,6 +68,7 @@ public class CustomAuthGatewayFilter extends AbstractGatewayFilterFactory<Custom
                 if("103".equals(tokenValidRsCd)){
                     //토큰만료 리프레시토큰 가져와 토큰 재발급 로직 필요
                     log.info("토큰만료 리프레시토큰 가져와 토큰 재발급 로직 필요 >>>>>>>");
+                    return handleTokenExpire(exchange);
                 } else {
                     return handleUnAuthorized(exchange); // 토큰이 일치하지 않을 때
                 }
@@ -77,9 +79,30 @@ public class CustomAuthGatewayFilter extends AbstractGatewayFilterFactory<Custom
         });
     }
 
+    /**
+     * 인증불가 상태 반환
+     * @param exchange
+     * @return
+     */
     private Mono<Void> handleUnAuthorized(ServerWebExchange exchange) {
         ServerHttpResponse response = exchange.getResponse();
+
+        response.setStatusCode(HttpStatus.BAD_REQUEST);
+
+        
+        return response.setComplete();
+    }    
+
+    /**
+     * 토큰만료 상태 반환
+     * @param exchange
+     * @return
+     */
+    private Mono<Void> handleTokenExpire(ServerWebExchange exchange) {
+        ServerHttpResponse response = exchange.getResponse();
+
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
+
         return response.setComplete();
     }    
 
