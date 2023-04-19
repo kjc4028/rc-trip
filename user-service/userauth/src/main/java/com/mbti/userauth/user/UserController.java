@@ -1,5 +1,7 @@
 package com.mbti.userauth.user;
 
+import java.util.Optional;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.LoggerFactory;
@@ -197,28 +199,50 @@ public class UserController {
      */
     @PostMapping(path = "/user/tokenRefresh", consumes= MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> tokenRefresh( @RequestBody UserEntity loginDto) {
-        //TODO 재정의 필요
+       //TODO pw없이 재발급 가능하도록 구현 필요
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getUserId(), loginDto.getUserPw());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
+        Optional<UserRedisEntity> findUserRedisEntity = userRedisRepository.findById(loginDto.getUserId());
+
         String jwt = tokenProvider.createToken(authentication);
         String refreshJwt = tokenProvider.createRefreshToken(authentication);
 
-        TokenEntity tokenEntity = new TokenEntity();
-        tokenEntity.setAccessToken(jwt);
-        tokenEntity.setRefreshToken(refreshJwt);
-        tokenService.saveToken(tokenEntity);
+        //리프레시토큰 만료여부
 
+        if(findUserRedisEntity.isPresent()){
+            log.info(">>>>>>>1");
+            if(tokenProvider.validateToken(findUserRedisEntity.get().getRefreshToken())){
+                findUserRedisEntity.get().setAccessToken(jwt);
+                userRedisRepository.save(findUserRedisEntity.get());
+                log.info(">>>>>>>2");
+            } else {
+                UserRedisEntity userRedisEntity = new UserRedisEntity();
+                userRedisEntity.setUserId(loginDto.getUserId());
+                userRedisEntity.setAccessToken(jwt);
+                userRedisEntity.setRefreshToken(refreshJwt);
+        
+                userRedisRepository.save(userRedisEntity);
+                log.info(">>>>>>>3");
+            }
+
+        } else {
+            UserRedisEntity userRedisEntity = new UserRedisEntity();
+            userRedisEntity.setUserId(loginDto.getUserId());
+            userRedisEntity.setAccessToken(jwt);
+            userRedisEntity.setRefreshToken(refreshJwt);
+    
+            userRedisRepository.save(userRedisEntity);
+            log.info(">>>>>>>4");
+        }
+    
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 
-        UserRedisEntity userRedisEntity = new UserRedisEntity();
-        userRedisEntity.setUserId(loginDto.getUserId());
-        userRedisEntity.setAccessToken(jwt);
-        userRedisEntity.setRefreshToken(refreshJwt);
-
-        userRedisRepository.save(userRedisEntity);
         return new ResponseEntity<>(jwt, httpHeaders, HttpStatus.OK);
     }    
 
