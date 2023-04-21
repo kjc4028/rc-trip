@@ -198,46 +198,32 @@ public class UserController {
      * token refresh 요청
      */
     @PostMapping(path = "/user/tokenRefresh", consumes= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> tokenRefresh( @RequestBody UserEntity loginDto) {
-       //TODO pw없이 재발급 가능하도록 구현 필요
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginDto.getUserId(), loginDto.getUserPw());
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+    public ResponseEntity<String> tokenRefresh( @RequestBody UserEntity loginDto, HttpServletRequest request) {
+        
+        String userIdTk = loginDto.getUserId();
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = tokenProvider.createToken(userIdTk);
 
+        Optional<UserRedisEntity> findUserRedisEntity = userRedisRepository.findById(userIdTk);
 
-        Optional<UserRedisEntity> findUserRedisEntity = userRedisRepository.findById(loginDto.getUserId());
-
-        String jwt = tokenProvider.createToken(authentication);
-        String refreshJwt = tokenProvider.createRefreshToken(authentication);
-
-        //리프레시토큰 만료여부
-
+        //redis 사용자의 토큰 존재여부
         if(findUserRedisEntity.isPresent()){
-            log.info(">>>>>>>1");
+            log.info("refresh-log: redis refresh token check");
             if(tokenProvider.validateToken(findUserRedisEntity.get().getRefreshToken())){
+                log.info("refresh-log: redis refresh token check expire N");
                 findUserRedisEntity.get().setAccessToken(jwt);
                 userRedisRepository.save(findUserRedisEntity.get());
-                log.info(">>>>>>>2");
+                log.info("refresh-log: access token refresh ok");
             } else {
-                UserRedisEntity userRedisEntity = new UserRedisEntity();
-                userRedisEntity.setUserId(loginDto.getUserId());
-                userRedisEntity.setAccessToken(jwt);
-                userRedisEntity.setRefreshToken(refreshJwt);
-        
-                userRedisRepository.save(userRedisEntity);
-                log.info(">>>>>>>3");
+                log.info("refresh-log: redis refresh token check expire Y");
+                userRedisRepository.deleteById(findUserRedisEntity.get().getUserId());
+                log.info("refresh-log: redis token delete");
+                return new ResponseEntity<>("redis refresh token expire delete", null, HttpStatus.OK);
             }
 
         } else {
-            UserRedisEntity userRedisEntity = new UserRedisEntity();
-            userRedisEntity.setUserId(loginDto.getUserId());
-            userRedisEntity.setAccessToken(jwt);
-            userRedisEntity.setRefreshToken(refreshJwt);
-    
-            userRedisRepository.save(userRedisEntity);
-            log.info(">>>>>>>4");
+            log.info("refresh-log: redis token no exist");
+            return new ResponseEntity<>("redis token no exist", null, HttpStatus.OK);
         }
     
         HttpHeaders httpHeaders = new HttpHeaders();

@@ -79,6 +79,24 @@ public class TokenProvider implements InitializingBean {
      }   
 
      /**
+      * jwt 생성
+      * @param userId
+      * @return
+      */
+     public String createToken(String userId) {
+
+      long now = (new Date()).getTime();
+      Date validity = new Date(now + this.tokenValidityInMilliseconds);
+      return Jwts.builder()
+         .setSubject(userId)
+         .claim(AUTHORITIES_KEY, "")
+         .claim("userId", userId)
+         .signWith(key, SignatureAlgorithm.HS512)
+         .setExpiration(validity)
+         .compact();
+   }   
+
+     /**
       * refresh토큰 생성
       * @param authentication
       * @return
@@ -98,6 +116,23 @@ public class TokenProvider implements InitializingBean {
            .setExpiration(validity)
            .compact();
      }    
+
+     /**
+      * refresh토큰 생성
+      * @param userId
+      * @return
+      */
+     public String createRefreshToken(String userId) {
+      long now = (new Date()).getTime();
+      Date validity = new Date(now + this.refreshTokenValidityInMilliseconds);
+      return Jwts.builder()
+         .setSubject(userId)
+         .claim(AUTHORITIES_KEY, "")
+         .claim("userId", userId)
+         .signWith(key, SignatureAlgorithm.HS512)
+         .setExpiration(validity)
+         .compact();
+   }  
 
      /**
       * 인증정보 반환
