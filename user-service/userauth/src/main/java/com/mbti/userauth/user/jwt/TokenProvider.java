@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletRequest;
@@ -90,7 +92,7 @@ public class TokenProvider implements InitializingBean {
       Date validity = new Date(now + this.tokenValidityInMilliseconds);
       return Jwts.builder()
          .setSubject(userId)
-         .claim(AUTHORITIES_KEY, "")
+         .claim(AUTHORITIES_KEY, "USER")
          .claim("userId", userId)
          .signWith(key, SignatureAlgorithm.HS512)
          .setExpiration(validity)
@@ -128,7 +130,7 @@ public class TokenProvider implements InitializingBean {
       Date validity = new Date(now + this.refreshTokenValidityInMilliseconds);
       return Jwts.builder()
          .setSubject(userId)
-         .claim(AUTHORITIES_KEY, "")
+         .claim(AUTHORITIES_KEY, "USER")
          .claim("userId", userId)
          .signWith(key, SignatureAlgorithm.HS512)
          .setExpiration(validity)
@@ -147,12 +149,12 @@ public class TokenProvider implements InitializingBean {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-  
-        Collection<? extends GrantedAuthority> authorities =
-           Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-              .map(SimpleGrantedAuthority::new)
-              .collect(Collectors.toList());
-  
+
+         Collection<? extends GrantedAuthority> authorities = 
+            Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+            .map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toList());
+
         User principal = new User(claims.getSubject(), "", authorities);
   
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);

@@ -48,7 +48,8 @@ public class JwtFilter extends GenericFilterBean {
                    logger.info("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
                    if(expired != null){
                      logger.info("토큰 만료");
-                     httpServletResponse.sendError(999,"expired");
+                     //httpServletResponse.sendError(999,"expired");
+                     httpServletResponse.setStatus(999);
                    }
                 }
           
