@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -198,6 +199,28 @@ public class TokenProvider implements InitializingBean {
         }
         return false;
      }     
+
+        /**
+    * 토큰정보 검증
+    * @param token
+    * @return
+    */
+    public boolean validateToken(String token, ServletRequest request) {
+      try {
+         Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+         return true;
+      } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+         logger.info("잘못된 JWT 서명입니다." + e);
+      } catch (ExpiredJwtException e) {
+         logger.info("만료된 JWT 토큰입니다.");
+         request.setAttribute("expired",e.getMessage());
+      } catch (UnsupportedJwtException e) {
+         logger.info("지원되지 않는 JWT 토큰입니다.");
+      } catch (IllegalArgumentException e) {
+         logger.info("JWT 토큰이 잘못되었습니다.");
+      }
+      return false;
+   } 
 
      /**
       * 토큰정보추출

@@ -7,7 +7,9 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,18 +35,24 @@ public class JwtFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
                 HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+                HttpServletResponse httpServletResponse = (HttpServletResponse) response;
                 String jwt = tokenProvider.resolveToken(httpServletRequest,AUTHORIZATION_HEADER);
                 String requestURI = httpServletRequest.getRequestURI();
-          
-                if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+                boolean jwtValid = tokenProvider.validateToken(jwt, request);
+                String expired = (String) request.getAttribute("expired");
+                if (StringUtils.hasText(jwt) && jwtValid && expired == null) {
                    Authentication authentication = tokenProvider.getAuthentication(jwt);
                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                   logger.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
+                   logger.info("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
                 } else {
-                   logger.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
+                   logger.info("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
+                   if(expired != null){
+                     logger.info("토큰 만료");
+                     httpServletResponse.sendError(999,"expired");
+                   }
                 }
           
-                chain.doFilter(request, response);        
+                chain.doFilter(request, httpServletResponse);        
     }
     
    //  private String resolveToken(HttpServletRequest request) {

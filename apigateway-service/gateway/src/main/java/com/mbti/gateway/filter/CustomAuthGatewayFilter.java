@@ -1,6 +1,8 @@
 package com.mbti.gateway.filter;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.slf4j.LoggerFactory;
@@ -66,8 +68,7 @@ public class CustomAuthGatewayFilter extends AbstractGatewayFilterFactory<Custom
             if(!"101".equals(tokenValidRsCd)) {
                 log.info("filter 토큰 불일치 >>>>>>>");
                 if("103".equals(tokenValidRsCd)){
-                    //토큰만료 리프레시토큰 가져와 토큰 재발급 로직 필요
-                    log.info("토큰만료 리프레시토큰 가져와 토큰 재발급 로직 필요 >>>>>>>");
+                    log.info("토큰만료 리프레시토큰 가져와 토큰 재발급>>>>>>>");
                     return handleTokenExpire(exchange);
                 } else {
                     return handleUnAuthorized(exchange); // 토큰이 일치하지 않을 때
@@ -88,7 +89,7 @@ public class CustomAuthGatewayFilter extends AbstractGatewayFilterFactory<Custom
         ServerHttpResponse response = exchange.getResponse();
 
         response.setStatusCode(HttpStatus.BAD_REQUEST);
-
+        
         
         return response.setComplete();
     }    
@@ -102,8 +103,9 @@ public class CustomAuthGatewayFilter extends AbstractGatewayFilterFactory<Custom
         ServerHttpResponse response = exchange.getResponse();
 
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
-
+        response.setRawStatusCode(999);
         return response.setComplete();
+
     }    
 
     private String resolveToken(String bearerToken) {
