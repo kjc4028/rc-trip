@@ -15,6 +15,7 @@ function TripList(props) {
     const [tripId, setTripId] = useState(null);
     const [tripDtl, setTripDtl] = useState();
     const [pageAble, setPageAble] = useState();
+    const [moreListCnt, setMoreListCnt] = useState();
 
     const pageNum = props.pageNum;
     const perPage = props.perPage;
@@ -23,13 +24,13 @@ function TripList(props) {
     useEffect(() => {
         getTrips()
         }, []);
-          
+    
     const getTrips = async () => {
     axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
     const params = { pageNum:pageNum, perPage:perPage}
     let response = await axios.get('http://localhost:5555/trips',{params});
     console.log(response);
-    setTripList(response.data.data);
+    setTripList(response.data.data.content);
     setMode("list");
     }          
     
@@ -38,10 +39,11 @@ function TripList(props) {
         const params = { pageNum:_pageNum, perPage:_perPage}
         let response = await axios.get('http://localhost:5555/trips',{params});
         console.log(response);
-        setTripList(response.data.data);
+        setTripList(response.data.data.content);
         setMode("list");
         } 
 
+        
     //상세화면으로 이동
     // function goDtl(tripId){
     //     axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
@@ -89,11 +91,45 @@ function TripList(props) {
         }
         return pageArr;
     }
+    const moreList = async (_moreListCnt) => {
+      axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
+      console.log("moreList _moreListCnt: " + _moreListCnt);
+      if(_moreListCnt === undefined){
+        _moreListCnt = 1;
+      }
+      let morePageNum = _moreListCnt+1;
+      console.log("moreList morePageNum: " + morePageNum);
+      console.log("moreList _moreListCnt: " + _moreListCnt);
+      const params = { pageNum:_moreListCnt};
+      let response = await axios.get('http://localhost:5555/trips',{params});
+      console.log("moreList be: " + response.data.data);
+      console.log("moreList af: " + response.data.data.content);
+      let originList = tripList;
+      let addList = response.data.data.content;
+      console.log("moreList originList : " + originList);
+      addList.forEach(element => {
+        originList.push(element);
+      });
+      console.log("moreList list merge: " + originList);
+      setTripList(originList);
+      setMode("addList"+morePageNum);
+      setMoreListCnt(morePageNum)
+    }
+    // function moreList(_pageNum, _perPage){
+    //   axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
+    //   const params = { pageNum:_pageNum, perPage:_perPage}
+    //   let response = axios.get('http://localhost:5555/trips',{params});
+    //   console.log("moreList : " + response);
+    //   const list = tripList.content;
+    //   list.push(response.data.data);
+    //   setTripList(list);
+    //   setMode("list");
+    // }     
 
     if(mode === "dtl"){
         return (<TripDtl tripDtl={tripDtl} pageAble={pageAble}></TripDtl>);
-    }
-    if(mode === "list"){
+    } else {
+    //if(mode === "list"){
     
         return(
             // <div className="tripList">
@@ -111,7 +147,7 @@ function TripList(props) {
             //</div>
             <>          
      <Row xs={1} md={2} className="g-4">
-      {tripList.content && tripList.content.map((trip,i) => (
+      {tripList && tripList.map((trip,i) => (
         <Col>
           <Card>
             {/* <Card.Img variant="top" src="holder.js/100px160" /> */}
@@ -132,7 +168,12 @@ function TripList(props) {
     {paging(tripList.totalPages).map((num) => (
       num
     ))} */}
-      {paginationBasic}
+      {/* {paginationBasic} */}
+
+      <button class="btn btn-outline-dark flex-shrink-0" type="button" onClick={ () => {moreList(moreListCnt);}}>
+                                <i class="bi-cart-fill me-1"></i>
+                                목록 더 불러오기
+                            </button>
              </>                         
 
         );
