@@ -1,14 +1,14 @@
 version: "3"
 
 services:
-	redis:
-		container_name: redis
-		image: redis:latest
-		ports:
-			- 6379:6379
-			
-	mongo:
-		container_name: mongo
-		image: mongo:latest
-		ports:
-			- 27017:27017
+    redis:
+        container_name: redis
+        image: redis:latest
+        ports:
+            - 6379:6379
+
+    mongo:
+        container_name: mongo
+        image: mongo:latest
+        ports:
+            - 27017:27017
