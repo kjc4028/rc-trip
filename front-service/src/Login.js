@@ -32,10 +32,13 @@ function Login() {
       console.log(res);
       console.log("res header " + res.headers.authorization);
       console.log("res data " + res.data);
+      console.log("res header userId" + res.headers);
       setData(res.data);
       let jwtToken = res.headers.authorization;
+      let userId = res.data.data.userId;
       //let jwtToken = res.data;
       localStorage.setItem("Authorization", jwtToken);
+      localStorage.setItem("userId", userId);
       setMode('loginSucc');
     });
   }

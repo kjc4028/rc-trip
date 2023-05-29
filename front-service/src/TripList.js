@@ -101,7 +101,32 @@ function TripList(props) {
       console.log("moreList morePageNum: " + morePageNum);
       console.log("moreList _moreListCnt: " + _moreListCnt);
       const params = { pageNum:_moreListCnt};
-      let response = await axios.get('http://localhost:5555/trips',{params});
+      let response = "";
+      try {
+        response = await axios.get('http://localhost:5555/trips',{params});  
+      } catch (error) {
+        console.log("error : " + error);
+        if(error.response){
+          console.log("error.response.status : " + error.response.status);  
+          if(error.response.status == "999"){
+            await axios.post('http://localhost:5555/user/tokenRefresh',{userId : localStorage.getItem("userId")}).then((res) => {
+              console.log(res);
+              console.log("res header " + res.headers.authorization);
+              console.log("res data " + res.data);
+              //setData(res.data);
+              let jwtToken = res.headers.authorization;
+              //let jwtToken = res.data;
+              localStorage.setItem("Authorization", jwtToken);
+              //setMode('loginSucc');
+            });  
+            response = await axios.get('http://localhost:5555/trips',{params});  
+          }
+        }
+        
+        
+      }
+      
+      console.log("response " + response.status)
       console.log("moreList be: " + response.data.data);
       console.log("moreList af: " + response.data.data.content);
       let originList = tripList;
@@ -149,7 +174,7 @@ function TripList(props) {
      <Row xs={1} md={2} className="g-4">
       {tripList && tripList.map((trip,i) => (
         <Col>
-          <Card>
+          <Card key ={trip._Id}>
             {/* <Card.Img variant="top" src="holder.js/100px160" /> */}
             <Card.Body>
               <Card.Title onClick={() => {goDtl(trip._Id); return false;} }>{trip.tripNm}</Card.Title>
@@ -170,8 +195,8 @@ function TripList(props) {
     ))} */}
       {/* {paginationBasic} */}
 
-      <button class="btn btn-outline-dark flex-shrink-0" type="button" onClick={ () => {moreList(moreListCnt);}}>
-                                <i class="bi-cart-fill me-1"></i>
+      <button className="btn btn-outline-dark flex-shrink-0" type="button" onClick={ () => {moreList(moreListCnt);}}>
+                                <i className="bi-cart-fill me-1"></i>
                                 목록 더 불러오기
                             </button>
              </>                         

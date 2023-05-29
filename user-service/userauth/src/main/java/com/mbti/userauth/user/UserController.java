@@ -1,5 +1,7 @@
 package com.mbti.userauth.user;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -98,7 +100,7 @@ public class UserController {
      * 로그인 요청
      */
     @PostMapping(path = "/user/login", consumes= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> authorize( @RequestBody UserEntity loginDto) {
+    public ResponseEntity<Message> authorize( @RequestBody UserEntity loginDto) {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getUserId(), loginDto.getUserPw());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -120,7 +122,20 @@ public class UserController {
         userRedisEntity.setRefreshToken(refreshJwt);
 
         userRedisRepository.save(userRedisEntity);
-        return new ResponseEntity<>(jwt, httpHeaders, HttpStatus.OK);
+
+        log.info("loginDto.getUserId() " + loginDto.getUserId());
+        httpHeaders.add("userId", loginDto.getUserId());
+        Message message = new Message();
+
+        Map<String, String> map = new HashMap<String,String>();
+        map.put("jwt", jwt);
+        map.put("userId", loginDto.getUserId());
+        message.setStatus(HttpStatus.OK);
+        message.setData(map);
+        message.setMessage("로그인 성공");    
+
+        return new ResponseEntity<Message>(message, httpHeaders ,HttpStatus.OK);
+        //return new ResponseEntity<>(jwt, httpHeaders, HttpStatus.OK);
     }    
 
     /*

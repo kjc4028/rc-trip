@@ -66,7 +66,7 @@ public class CustomAuthGatewayFilter extends AbstractGatewayFilterFactory<Custom
             // 토큰 검증
             String tokenValidRsCd = tokenProvider.validateToken(resolveToken(tokenString));
             if(!"101".equals(tokenValidRsCd)) {
-                log.info("filter 토큰 불일치 >>>>>>>");
+                log.info("filter 토큰 불일치 >>>>>>>" + tokenValidRsCd);
                 if("103".equals(tokenValidRsCd)){
                     log.info("토큰만료 리프레시토큰 가져와 토큰 재발급>>>>>>>");
                     return handleTokenExpire(exchange);
