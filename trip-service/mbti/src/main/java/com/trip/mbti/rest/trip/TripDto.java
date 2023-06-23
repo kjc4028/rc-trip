@@ -10,14 +10,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Document("trip")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TripEntity{
-    
+public class TripDto{
 
-    @Id
     private String _Id;
 
     private String tripNm;
@@ -34,15 +31,6 @@ public class TripEntity{
     
     private String regUserId;
 
-    public TripEntity(TripDto tripDto){
-        this._Id = tripDto.get_Id();
-        this.tripNm = tripDto.getTripNm();
-        this.tripCts = tripDto.getTripCts();
-        this.mbtia = tripDto.getMbtia();
-        this.mbtib = tripDto.getMbtib();
-        this.mbtic = tripDto.getMbtic();
-        this.mbtid = tripDto.getMbtid();
-        this.regUserId = tripDto.getRegUserId();
-    }
+
 
 }

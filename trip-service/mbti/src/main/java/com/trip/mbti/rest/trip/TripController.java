@@ -85,7 +85,7 @@ public class TripController {
      */
     @GetMapping(path="/trips")
     @ResponseBody
-    public ResponseEntity<Message> tirpAllPage(HttpServletRequest request, TripEntity tripentity){
+    public ResponseEntity<Message> tirpAllPage(HttpServletRequest request, TripDto tripDto){
         try {
             int pageNum = 1;
             int perPage = 10;
