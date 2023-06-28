@@ -68,12 +68,14 @@ public class UserController {
      */
     @PostMapping(path = "/user/signup", consumes= MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Message> signup(@RequestBody UserEntity userEntity){
+    public ResponseEntity<Message> signup(@RequestBody UserRequestDto userRequestDto){
         Message message = new Message();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpStatus httpstatus = HttpStatus.OK;
-        
+
+        UserEntity userEntity = new UserEntity(userRequestDto);
+
         if(userEntity.getUserId().isEmpty() || userEntity.getUserPw().isEmpty()){
             message.setStatus(httpstatus);
             message.setData("joinFail");
@@ -100,9 +102,12 @@ public class UserController {
      * 로그인 요청
      */
     @PostMapping(path = "/user/login", consumes= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Message> authorize( @RequestBody UserEntity loginDto) {
+    public ResponseEntity<Message> authorize( @RequestBody UserRequestDto userRequestDto) {
+        
+        UserEntity userEntity = new UserEntity(userRequestDto);
+        
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginDto.getUserId(), loginDto.getUserPw());
+                new UsernamePasswordAuthenticationToken(userEntity.getUserId(), userEntity.getUserPw());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.createToken(authentication);
@@ -117,19 +122,19 @@ public class UserController {
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 
         UserRedisEntity userRedisEntity = new UserRedisEntity();
-        userRedisEntity.setUserId(loginDto.getUserId());
+        userRedisEntity.setUserId(userEntity.getUserId());
         userRedisEntity.setAccessToken(jwt);
         userRedisEntity.setRefreshToken(refreshJwt);
 
         userRedisRepository.save(userRedisEntity);
 
-        log.info("loginDto.getUserId() " + loginDto.getUserId());
-        httpHeaders.add("userId", loginDto.getUserId());
+        log.info("loginDto.getUserId() " + userEntity.getUserId());
+        httpHeaders.add("userId", userEntity.getUserId());
         Message message = new Message();
 
         Map<String, String> map = new HashMap<String,String>();
         map.put("jwt", jwt);
-        map.put("userId", loginDto.getUserId());
+        map.put("userId", userEntity.getUserId());
         message.setStatus(HttpStatus.OK);
         message.setData(map);
         message.setMessage("로그인 성공");    
@@ -213,9 +218,9 @@ public class UserController {
      * token refresh 요청
      */
     @PostMapping(path = "/user/tokenRefresh", consumes= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> tokenRefresh( @RequestBody UserEntity loginDto, HttpServletRequest request) {
-        
-        String userIdTk = loginDto.getUserId();
+    public ResponseEntity<String> tokenRefresh( @RequestBody UserRequestDto userRequestDto,  HttpServletRequest request) {
+        UserEntity userEntity = new UserEntity(userRequestDto);
+        String userIdTk = userEntity.getUserId();
 
         String jwt = tokenProvider.createToken(userIdTk);
 
