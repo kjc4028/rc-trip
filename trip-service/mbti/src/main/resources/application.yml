@@ -28,10 +28,42 @@ spring:
         job:
             enabled: false
 
-             
+
+
+profileValue: default
+
+---
+
+spring:
+    config:
+        activate:
+            on-profile: test
+    application:
+        name: trip-service-test
+    data:
+        mongodb:
+            uri: mongodb://localhost:27017/mtdb
+    mvc:
+        view:
+            prefix: /WEB-INF/jsp/
+            suffix: .jsp
+    devtools:
+        livereload:
+            enabled: true
+        restart:
+            enabled: true
+    freemarker:
+        cache: false  
+    redis:
+        host: 127.0.0.1
+        password:
+        port: 6379    
+    batch:
+        job:
+            enabled: false           
 
 server:
-    port: 8080
+    port: 0
     servlet:
         jsp:
             init-parameters.development: true
@@ -46,11 +78,4 @@ logging:
         root: INFO
         org.springframework.data.mongodb.core.MongoTemplate: INFO
 
-eureka:
-    instance:
-        instance-id: trip-msa-instance
-    client:
-        register-with-eureka: true
-        fetch-registry: true
-        service-url:
-            defaultZone: http://localhost:8761/eureka
+profileValue: test
