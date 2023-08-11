@@ -39,6 +39,7 @@ dependencies {
 	implementation 'javax.servlet:jstl'
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 	implementation 'com.google.code.gson:gson:2.8.9'
+	implementation 'org.json:json:20230618'
 
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'

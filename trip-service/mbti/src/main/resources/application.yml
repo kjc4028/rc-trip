@@ -32,7 +32,7 @@ spring:
 
 profileValue: default
 
-apiServiceKey: private-key
+apiServiceKey: apiKey
 
 ---
 
@@ -82,4 +82,4 @@ logging:
 
 profileValue: test
 
-apiServiceKey: w3GiL%2BTomt%2FBTghl%2FPzM7Gf19jWohLZBv9vnxOTfPRGNzuzGn7ID%2B67kA7xGuOW1DmtWOPvVihLbtQWtJmsjfA%3D%3D
+apiServiceKey: apiKey
