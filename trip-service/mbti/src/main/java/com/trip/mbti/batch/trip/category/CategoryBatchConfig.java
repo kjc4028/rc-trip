@@ -1,8 +1,5 @@
 package com.trip.mbti.batch.trip.category;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.DuplicateJobException;
@@ -15,11 +12,11 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.json.JacksonJsonObjectReader;
 import org.springframework.batch.item.json.JsonItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
-import com.trip.mbti.rest.category.CategoryEntity;
 import com.trip.mbti.rest.category.CategoryService;
 
 @Configuration
@@ -37,25 +34,14 @@ public class CategoryBatchConfig {
     @Autowired
     public CategoryService categoryService;
 
+    @Value("${apiServiceKey}")
+    String apiServiceKey;
+    
+    
     @Bean
     public ItemReader<CategoryVo> itemReader() {
-        System.out.println("reader >>> ");
-        List<CategoryVo> list = new ArrayList<CategoryVo>();
-        List<CategoryEntity> listEntity = new ArrayList<CategoryEntity>();
-        CategoryEntity ce = new CategoryEntity();
-        ce.setCode("A01");
-        listEntity = categoryService.findByCode(ce);
-
-        System.out.println("findtest >>> " + listEntity.size());
-
-
-        for (int i = 0; i < 200; i++) {
-            CategoryVo vo = new CategoryVo();
-            vo.setA("a"+i);
-            list.add(vo);
-        }
-
-        return new CategoryItemReader(list);
+        
+        return new CategoryItemReaderLvOne(apiServiceKey);
         // ItemProcessor를 구현하고 데이터 처리 로직을 작성
     }
 

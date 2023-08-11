@@ -32,6 +32,8 @@ spring:
 
 profileValue: default
 
+apiServiceKey: private-key
+
 ---
 
 spring:
@@ -79,3 +81,5 @@ logging:
         org.springframework.data.mongodb.core.MongoTemplate: INFO
 
 profileValue: test
+
+apiServiceKey: w3GiL%2BTomt%2FBTghl%2FPzM7Gf19jWohLZBv9vnxOTfPRGNzuzGn7ID%2B67kA7xGuOW1DmtWOPvVihLbtQWtJmsjfA%3D%3D
