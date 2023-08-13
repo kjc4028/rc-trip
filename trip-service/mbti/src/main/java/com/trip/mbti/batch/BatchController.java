@@ -2,6 +2,7 @@ package com.trip.mbti.batch;
 
 import java.util.Date;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
@@ -12,13 +13,17 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+import ch.qos.logback.classic.Logger;
+
+@RestController
 @RequestMapping("/trip/batch")
 public class BatchController {
+    
+    private final Logger log = (Logger) LoggerFactory.getLogger(this.getClass().getSimpleName());
     
     @Autowired
     private JobLocator jobLocator;
@@ -37,7 +42,7 @@ public class BatchController {
             jobLauncher.run(job, builder.toJobParameters());
 
     } catch (NoSuchJobException | JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
-        e.printStackTrace();
+        log.info("batchCpntroller ex " + e);
     }
       
     }

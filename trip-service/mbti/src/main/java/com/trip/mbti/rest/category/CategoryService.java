@@ -16,13 +16,33 @@ public class CategoryService {
 
 
 
-    public List<CategoryEntity> findByCode(CategoryEntity categoryEntity) {
-       return categoryRepository.findByCode(categoryEntity); 
-    }
-    public List<CategoryEntity> findByCodeAndLevel(CategoryEntity categoryEntity) {
-       return categoryRepository.findByCodeAndLevel(categoryEntity); 
+    public List<CategoryEntity> findByCode(String code) {
+       return categoryRepository.findByCode(code); 
     }
 
+    public List<CategoryEntity> findByCodeAndLevel(String code, String level) {
+       return categoryRepository.findByCodeAndLevel(code, level); 
+    }
+
+    public List<CategoryEntity> findByCodeStartsWithAndLevel(String code, String level) {
+       return categoryRepository.findByCodeStartsWithAndLevel(code, level); 
+    }
+
+    public List<CategoryEntity> findByLevel(String level) {
+      return categoryRepository.findByLevel(level); 
+   }
+ 
+   public List<CategoryEntity> findAll() {
+      return categoryRepository.findAll(); 
+   }
+
+    public void save(CategoryEntity categoryEntity){
+      categoryRepository.save(categoryEntity);
+    }
+
+    public void deleteAll(){
+      categoryRepository.deleteAll();
+    }
 
    
 }

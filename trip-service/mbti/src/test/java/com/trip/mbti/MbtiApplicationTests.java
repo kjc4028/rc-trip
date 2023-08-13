@@ -21,7 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.trip.mbti.batch.trip.category.CategoryVo;
+import com.trip.mbti.batch.trip.category.CategoryDto;
 import com.trip.mbti.rest.common.SearchDto;
 import com.trip.mbti.rest.trip.TripEntity;
 import com.trip.mbti.rest.trip.TripRequestDto;
@@ -143,7 +143,7 @@ class MbtiApplicationTests {
 		
 	}
 
-	@Test
+	//@Test
 	public void extApiCall(){
 		try {
             // URL 객체 생성
@@ -171,9 +171,9 @@ class MbtiApplicationTests {
 
 			ObjectMapper objectMapper = new ObjectMapper();
 			objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
-			List<CategoryVo> list = objectMapper.readValue(itemObj.toString(), new TypeReference<List<CategoryVo>>() {});
+			List<CategoryDto> list = objectMapper.readValue(itemObj.toString(), new TypeReference<List<CategoryDto>>() {});
 	
-			for (CategoryVo categoryVo : list) {
+			for (CategoryDto categoryVo : list) {
 				System.out.println("Name: " + categoryVo.getCode());			
 			}
 

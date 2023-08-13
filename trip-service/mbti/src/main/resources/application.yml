@@ -27,12 +27,16 @@ spring:
     batch:
         job:
             enabled: false
+            names: ${job.name:NONE}
 
-
+logging:
+    level:
+        root: INFO
+        org.springframework.data.mongodb.core.MongoTemplate: INFO
 
 profileValue: default
 
-apiServiceKey: apiKey
+apiServiceKey: 
 
 ---
 
@@ -62,7 +66,8 @@ spring:
         port: 6379    
     batch:
         job:
-            enabled: false           
+            enabled: false
+            names: ${job.name:NONE}       
 
 server:
     port: 0
@@ -82,4 +87,4 @@ logging:
 
 profileValue: test
 
-apiServiceKey: apiKey
+apiServiceKey: 
