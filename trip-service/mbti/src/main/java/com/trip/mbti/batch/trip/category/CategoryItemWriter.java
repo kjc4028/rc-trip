@@ -28,11 +28,10 @@ public class CategoryItemWriter implements ItemWriter<CategoryDto> {
     @Override
     public void write(List<? extends CategoryDto> items) throws Exception {
         
-        System.out.println(">> " + items.toString());
         log.info(">>>>>>>>>>batchpoint CategoryItemWriter write");
         log.info(">>>>>>>>>>batchpoint CategoryItemWriter write items " + items.toString());
         for (CategoryDto categoryDto : items) {
-            System.out.println("> " + categoryDto.toString());
+            log.info("> " + categoryDto.toString());
             CategoryEntity categoryEntity = categoryDto.toEntity();
             categoryEntity.setLevel(categoryLevel);
 

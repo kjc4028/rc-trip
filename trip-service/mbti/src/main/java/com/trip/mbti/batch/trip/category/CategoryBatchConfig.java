@@ -32,12 +32,13 @@ import ch.qos.logback.classic.Logger;
 @Configuration
 @EnableBatchProcessing
 public class CategoryBatchConfig extends DefaultBatchConfigurer {
-   
+
     private final Logger log = (Logger) LoggerFactory.getLogger(this.getClass().getSimpleName());
-    
+
     @Override
     public void setDataSource(DataSource dataSource) {
     }
+
     @Autowired
     public JobBuilderFactory jobBuilderFactory;
 
@@ -52,20 +53,22 @@ public class CategoryBatchConfig extends DefaultBatchConfigurer {
 
     @Value("${apiServiceKey}")
     String apiServiceKey;
-    
-    
+
+    static final int CHUNK_SIZE = 10;
+
     @Bean
     @StepScope
     public ItemReader<CategoryDto> itemReader() {
         log.info(">>>>>>>>>>batchpoint itemReader");
-        return new CategoryItemReaderLvOne(apiServiceKey, "1", categoryService);
+        return new CategoryItemReaderByLevel(apiServiceKey, "1", categoryService);
         // ItemProcessor를 구현하고 데이터 처리 로직을 작성
     }
+
     @Bean
     @StepScope
     public ItemReader<CategoryDto> itemReaderStep2() {
         log.info(">>>>>>>>>>batchpoint itemReaderStep2");
-        return new CategoryItemReaderLvOne(apiServiceKey, "2", categoryService);
+        return new CategoryItemReaderByLevel(apiServiceKey, "2", categoryService);
         // ItemProcessor를 구현하고 데이터 처리 로직을 작성
     }
 
@@ -73,7 +76,7 @@ public class CategoryBatchConfig extends DefaultBatchConfigurer {
     @StepScope
     public ItemReader<CategoryDto> itemReaderStep3() {
         log.info(">>>>>>>>>>batchpoint itemReaderStep3");
-        return new CategoryItemReaderLvOne(apiServiceKey, "3", categoryService);
+        return new CategoryItemReaderByLevel(apiServiceKey, "3", categoryService);
         // ItemProcessor를 구현하고 데이터 처리 로직을 작성
     }
 
@@ -92,6 +95,7 @@ public class CategoryBatchConfig extends DefaultBatchConfigurer {
         return new CategoryItemWriter("2", categoryService);
         // ItemWriter를 구현하고 데이터를 출력하는 로직을 작성
     }
+
     @Bean
     @StepScope
     public ItemWriter<CategoryDto> itemWriterStep3() {
@@ -114,26 +118,24 @@ public class CategoryBatchConfig extends DefaultBatchConfigurer {
     @Bean
     @JobScope
     public Step step() {
-       log.info(">>>>>>>>>>batchpoint step");
+        log.info(">>>>>>>>>>batchpoint step");
+
         return stepBuilderFactory.get("step")
-                .<CategoryDto, CategoryDto>chunk(1) // Chunk 사이즈 설정
+                .<CategoryDto, CategoryDto>chunk(CHUNK_SIZE) // Chunk 사이즈 설정
                 .reader(itemReader())
-                //.reader(jsonItemReader())
-                // .processor(itemProcessor())
                 .writer(itemWriter())
                 .startLimit(10)
                 .allowStartIfComplete(true)
                 .build();
     }
+
     @Bean
     @JobScope
     public Step step2() {
-    log.info(">>>>>>>>>>batchpoint step2");
+        log.info(">>>>>>>>>>batchpoint step2");
         return stepBuilderFactory.get("step2")
-                .<CategoryDto, CategoryDto>chunk(1) // Chunk 사이즈 설정
+                .<CategoryDto, CategoryDto>chunk(CHUNK_SIZE) // Chunk 사이즈 설정
                 .reader(itemReaderStep2())
-                //.reader(jsonItemReader())
-                // .processor(itemProcessor())
                 .writer(itemWriterStep2())
                 .startLimit(10)
                 .allowStartIfComplete(true)
@@ -143,12 +145,10 @@ public class CategoryBatchConfig extends DefaultBatchConfigurer {
     @Bean
     @JobScope
     public Step step3() {
-    log.info(">>>>>>>>>>batchpoint step3");
+        log.info(">>>>>>>>>>batchpoint step3");
         return stepBuilderFactory.get("step3")
-                .<CategoryDto, CategoryDto>chunk(10) // Chunk 사이즈 설정
+                .<CategoryDto, CategoryDto>chunk(CHUNK_SIZE) // Chunk 사이즈 설정
                 .reader(itemReaderStep3())
-                //.reader(jsonItemReader())
-                // .processor(itemProcessor())
                 .writer(itemWriterStep3())
                 .startLimit(10)
                 .allowStartIfComplete(true)
@@ -157,13 +157,15 @@ public class CategoryBatchConfig extends DefaultBatchConfigurer {
 
     @Bean
     public Job job() {
-         log.info(">>>>>>>>>>batchpoint job");
-                Job job = jobBuilderFactory.get("jobcategoty")
+        log.info(">>>>>>>>>>batchpoint job");
+        Job job = jobBuilderFactory.get("jobcategoty")
                 .incrementer(new RunIdIncrementer())
-                //.start(step2())
                 .start(step())
-                .next(step2())
-                //.next(step3())
+                .on("*")
+                .to(step2())
+                .on("*")
+                .to(step3())
+                .end()
                 .build();
         ReferenceJobFactory factory = new ReferenceJobFactory(job);
         try {
@@ -176,15 +178,15 @@ public class CategoryBatchConfig extends DefaultBatchConfigurer {
         return job;
     }
 
-    //@Bean
+    // @Bean
     public Job job2() {
-         log.info(">>>>>>>>>>batchpoint job2");
-                Job job = jobBuilderFactory.get("jobtest2")
+        log.info(">>>>>>>>>>batchpoint job2");
+        Job job = jobBuilderFactory.get("jobcategoty2")
                 .incrementer(new RunIdIncrementer())
-                //.start(step2())
+                // .start(step2())
                 .start(step2())
-                //.next(step2())
-                //.next(step3())
+                // .next(step2())
+                // .next(step3())
                 .build();
         ReferenceJobFactory factory = new ReferenceJobFactory(job);
         try {

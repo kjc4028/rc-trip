@@ -13,6 +13,7 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,9 +32,12 @@ public class BatchController {
     @Autowired
     private JobLauncher jobLauncher;
 
-    @RequestMapping("/{jobname}")
+    /*
+     * 배치 수동 호출
+     */
+    @GetMapping("/{jobname}")
     public void batch(@PathVariable String jobname){
-     System.out.println("batch call >>>>");
+     log.info("batch call >>>> " + jobname);
         try {
           
             Job job =  jobLocator.getJob(jobname);

@@ -9,6 +9,8 @@ import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.lang.Nullable;
 
+import com.trip.mbti.batch.exception.DuplicationDataException;
+
 public class CategoryItemReader implements ItemReader<CategoryDto>  {
     private Iterator<CategoryDto> iterator;
     private List<CategoryDto> list;
@@ -22,7 +24,7 @@ public class CategoryItemReader implements ItemReader<CategoryDto>  {
     @Nullable
     public CategoryDto read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
         System.out.println("readtest>>> ");
-
+       
         return iterator.hasNext() ? iterator.next() : null;
     }
 
