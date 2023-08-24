@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.trip.mbti.batch.common.ApiReaderInterface;
 import com.trip.mbti.batch.exception.DuplicationDataException;
 import com.trip.mbti.rest.category.CategoryEntity;
 import com.trip.mbti.rest.category.CategoryService;
@@ -27,7 +28,7 @@ import com.trip.mbti.rest.category.CategoryService;
 import ch.qos.logback.classic.Logger;
 
 @Component
-public class CategoryItemReaderByLevel implements ItemReader<CategoryDto>  {
+public class CategoryItemReaderByLevel implements ItemReader<CategoryDto>, ApiReaderInterface<CategoryDto>  {
     
     private final Logger log = (Logger) LoggerFactory.getLogger(this.getClass().getSimpleName());
 
@@ -68,6 +69,7 @@ public class CategoryItemReaderByLevel implements ItemReader<CategoryDto>  {
     /**
      * 카테고리 코드 데이터 공공데이터API 호출
      */
+    @Override
     public List<CategoryDto> callApi(){
         log.info(">>>>>>>>>>batchpoint callAPi");
         try {
@@ -199,6 +201,7 @@ public class CategoryItemReaderByLevel implements ItemReader<CategoryDto>  {
     /*
      * 수신된 json 데이터 list형으로 반환
      */
+    @Override
     public List<CategoryDto> recJsonToList(String jsonContent){
         log.info(">>>>>>>>>>batchpoint CategoryItemReaderLvOne recJsonToList");
         try {

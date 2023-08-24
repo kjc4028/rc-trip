@@ -30,7 +30,6 @@ import com.trip.mbti.rest.category.CategoryService;
 import ch.qos.logback.classic.Logger;
 
 @Configuration
-@EnableBatchProcessing
 public class CategoryBatchConfig extends DefaultBatchConfigurer {
 
     private final Logger log = (Logger) LoggerFactory.getLogger(this.getClass().getSimpleName());
@@ -156,7 +155,7 @@ public class CategoryBatchConfig extends DefaultBatchConfigurer {
     }
 
     @Bean
-    public Job job() {
+    public Job jobcategoty() {
         log.info(">>>>>>>>>>batchpoint job");
         Job job = jobBuilderFactory.get("jobcategoty")
                 .incrementer(new RunIdIncrementer())

@@ -15,7 +15,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableEurekaClient
 @EnableFeignClients
 @EnableCaching
-//@EnableBatchProcessing
+@EnableBatchProcessing
 public class MbtiApplication {
 
 
