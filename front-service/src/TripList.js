@@ -109,21 +109,26 @@ function TripList(props) {
         if(error.response){
           console.log("error.response.status : " + error.response.status);  
           if(error.response.status == "999"){
-            await axios.post('http://localhost:5555/user/tokenRefresh',{userId : localStorage.getItem("userId")}).then((res) => {
-              console.log(res);
-              console.log("res header " + res.headers.authorization);
-              console.log("res data " + res.data);
-              //setData(res.data);
-              let jwtToken = res.headers.authorization;
-              //let jwtToken = res.data;
-              localStorage.setItem("Authorization", jwtToken);
-              //setMode('loginSucc');
-            });  
-            response = await axios.get('http://localhost:5555/trips',{params});  
+            // 토큰 갱신 시도
+            try {
+              await axios.post('http://localhost:5555/user/tokenRefresh',{userId : localStorage.getItem("userId")}).then((res) => {
+                console.log(res);
+                console.log("res header " + res.headers.authorization);
+                console.log("res data " + res.data);
+                let jwtToken = res.headers.authorization;
+                localStorage.setItem("Authorization", jwtToken);
+              });  
+              response = await axios.get('http://localhost:5555/trips',{params});  
+            } catch (refreshError) {
+              // 토큰 갱신 실패 시
+              alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+              localStorage.removeItem("Authorization");
+              localStorage.removeItem("userId");
+              window.location.href = "/login"; // 로그인 페이지로 리다이렉트
+              return;
+            }
           }
         }
-        
-        
       }
       
       console.log("response " + response.status)
@@ -157,19 +162,6 @@ function TripList(props) {
     //if(mode === "list"){
     
         return(
-            // <div className="tripList">
-            //     trip list
-            //     <ul>
-            //         {tripList.content && tripList.content.map(trip => (
-            //             <li key={trip._Id}>
-            //                 <a href="#" onClick={() => {goDtl(trip._Id); return false;} }>{trip.tripNm}</a>
-            //             </li>
-            //         ))}
-            //     </ul>
-            //     <div>
-            //             {paging(tripList.totalPages)}
-            //     </div>
-            //</div>
             <>          
      <Row xs={1} md={2} className="g-4">
       {tripList && tripList.map((trip,i) => (
@@ -186,20 +178,18 @@ function TripList(props) {
         </Col>
       ))}
     </Row>
-    {/* <div>
-        {paging(tripList.totalPages)}
-
-    </div>
-    {paging(tripList.totalPages).map((num) => (
-      num
-    ))} */}
-      {/* {paginationBasic} */}
-
+    {(!tripList || tripList.length === 0) && (
+      <div className="text-center my-5">
+        <p>데이터가 없습니다.</p>
+      </div>
+    )}
+    <div className="text-center my-4">
       <button className="btn btn-outline-dark flex-shrink-0" type="button" onClick={ () => {moreList(moreListCnt);}}>
-                                <i className="bi-cart-fill me-1"></i>
-                                목록 더 불러오기
-                            </button>
-             </>                         
+        <i className="bi-cart-fill me-1"></i>
+        목록 더 불러오기
+      </button>
+    </div>
+    </>                         
 
         );
 
