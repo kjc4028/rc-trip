@@ -1,4 +1,4 @@
-package com.trip.mbti.batch.trip.category;
+package com.trip.info.batch.trip.category;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -20,10 +20,10 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.trip.mbti.batch.common.ApiReaderInterface;
-import com.trip.mbti.batch.exception.DuplicationDataException;
-import com.trip.mbti.rest.category.CategoryEntity;
-import com.trip.mbti.rest.category.CategoryService;
+import com.trip.info.batch.common.ApiReaderInterface;
+import com.trip.info.batch.exception.DuplicationDataException;
+import com.trip.info.rest.category.CategoryEntity;
+import com.trip.info.rest.category.CategoryService;
 
 import ch.qos.logback.classic.Logger;
 
@@ -40,14 +40,15 @@ public class CategoryItemReaderByLevel implements ItemReader<CategoryDto>, ApiRe
 
     private Iterator<CategoryDto> iterator;
 
+    private List<CategoryDto> dataList;
+
     public CategoryItemReaderByLevel(){
 
     }
 
     public CategoryItemReaderByLevel(List<CategoryDto> inputList){
         this.iterator = inputList.iterator();
-
-
+        this.dataList = inputList;
     }
 
     public CategoryItemReaderByLevel(String apiKey, String categoryLevel, CategoryService categoryService){
@@ -62,8 +63,8 @@ public class CategoryItemReaderByLevel implements ItemReader<CategoryDto>, ApiRe
         log.info(">>>>>>>>>>batchpoint CategoryItemReaderLvOne dataList" + dataList.toString());
         if(dataList != null){
             this.iterator = dataList.iterator();
+            this.dataList = dataList;
         }
-
     }
 
     /**
@@ -87,8 +88,9 @@ public class CategoryItemReaderByLevel implements ItemReader<CategoryDto>, ApiRe
                         throw new DuplicationDataException("데이터 존재");
                     }
 
-                    String apiUrl = "https://apis.data.go.kr/B551011/KorService1/categoryCode1?MobileOS=ETC&MobileApp=AppTest&serviceKey="+apiServiceKey+"&_type=json";
-
+                    String encodedApiKey = java.net.URLEncoder.encode(apiServiceKey, "UTF-8");
+                    String apiUrl = "https://apis.data.go.kr/B551011/KorService1/categoryCode1?MobileOS=ETC&MobileApp=AppTest&serviceKey="+encodedApiKey+"&_type=json";
+                    log.info(">>>>>>>>>>batchpoint CategoryItemReaderLvOne apiUrl" + apiUrl);
                     // URL 객체 생성
                     URL url = new URL(apiUrl);
             
@@ -117,7 +119,8 @@ public class CategoryItemReaderByLevel implements ItemReader<CategoryDto>, ApiRe
                     for (CategoryEntity category : codeList) {
                         sb.append("&cat1="+category.getCode());
 
-                        String apiUrl = "https://apis.data.go.kr/B551011/KorService1/categoryCode1?MobileOS=ETC&MobileApp=AppTest&serviceKey="+apiServiceKey+"&_type=json"+sb.toString();
+                        String encodedApiKey = java.net.URLEncoder.encode(apiServiceKey, "UTF-8");
+                        String apiUrl = "https://apis.data.go.kr/B551011/KorService1/categoryCode1?MobileOS=ETC&MobileApp=AppTest&serviceKey="+encodedApiKey+"&_type=json"+sb.toString();
 
                         // URL 객체 생성
                         URL url = new URL(apiUrl);
@@ -152,25 +155,26 @@ public class CategoryItemReaderByLevel implements ItemReader<CategoryDto>, ApiRe
                         for (CategoryEntity category2 : codeList2) {
                             sb.append("&cat1="+category.getCode()+"&cat2="+category2.getCode());
 
-                        String apiUrl = "https://apis.data.go.kr/B551011/KorService1/categoryCode1?MobileOS=ETC&MobileApp=AppTest&serviceKey="+apiServiceKey+"&_type=json"+sb.toString();
+                            String encodedApiKey = java.net.URLEncoder.encode(apiServiceKey, "UTF-8");
+                            String apiUrl = "https://apis.data.go.kr/B551011/KorService1/categoryCode1?MobileOS=ETC&MobileApp=AppTest&serviceKey="+encodedApiKey+"&_type=json"+sb.toString();
 
-                        // URL 객체 생성
-                        URL url = new URL(apiUrl);
+                            // URL 객체 생성
+                            URL url = new URL(apiUrl);
                 
-                        // URL을 통해 연결을 열고 데이터를 읽을 BufferedReader 생성
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+                            // URL을 통해 연결을 열고 데이터를 읽을 BufferedReader 생성
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
                 
-                        String line;
-                        StringBuilder content = new StringBuilder();
+                            String line;
+                            StringBuilder content = new StringBuilder();
                 
-                        // 데이터를 읽어옴
-                        while ((line = reader.readLine()) != null) {
-                            content.append(line);
-                        }
+                            // 데이터를 읽어옴
+                            while ((line = reader.readLine()) != null) {
+                                content.append(line);
+                            }
                 
-                        list.addAll(recJsonToList(content.toString()));
-                        reader.close();
-                        sb = new StringBuffer();
+                            list.addAll(recJsonToList(content.toString()));
+                            reader.close();
+                            sb = new StringBuffer();
                         }
                     }            
                 }
@@ -191,11 +195,16 @@ public class CategoryItemReaderByLevel implements ItemReader<CategoryDto>, ApiRe
 
     @Override
     @Nullable
-    public CategoryDto read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-		log.info(">>>>>>>>>>batchpoint CategoryItemReaderLvOne read");
-        log.info(">>>>>>>>>>batchpoint CategoryItemReaderLvOne read iter: "+iterator.toString());
-
-        return iterator.hasNext() ? iterator.next() : null;
+    public CategoryDto read() throws Exception {
+        log.info(">>>>>>>>>>batchpoint CategoryItemReaderLvOne read");
+        log.info(">>>>>>>>>>batchpoint CategoryItemReaderLvOne read iter: " + dataList.iterator());
+        if (dataList == null || dataList.isEmpty()) {
+            return null;
+        }
+        if (dataList.iterator().hasNext()) {
+            return dataList.iterator().next();
+        }
+        return null;
     }
 
     /*

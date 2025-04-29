@@ -1,4 +1,4 @@
-package com.trip.mbti.rest.category;
+package com.trip.info.rest.category;
 
 
 import org.springframework.data.annotation.Id;

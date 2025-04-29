@@ -1,4 +1,4 @@
-package com.trip.mbti.batch.trip.category;
+package com.trip.info.batch.trip.category;
 
 import java.util.Iterator;
 import java.util.List;
@@ -9,7 +9,7 @@ import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.lang.Nullable;
 
-import com.trip.mbti.batch.exception.DuplicationDataException;
+import com.trip.info.batch.exception.DuplicationDataException;
 
 public class CategoryItemReader implements ItemReader<CategoryDto>  {
     private Iterator<CategoryDto> iterator;

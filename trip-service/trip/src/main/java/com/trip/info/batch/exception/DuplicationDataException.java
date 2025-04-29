@@ -1,4 +1,4 @@
-package com.trip.mbti.batch.exception;
+package com.trip.info.batch.exception;
 
 public class DuplicationDataException extends Exception {
     

@@ -1,4 +1,4 @@
-package com.trip.mbti.batch.trip.tripinfo;
+package com.trip.info.batch.trip.tripinfo;
 
 import javax.sql.DataSource;
 
@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.trip.mbti.rest.trip.TripService;
+import com.trip.info.rest.trip.TripService;
 
 import ch.qos.logback.classic.Logger;
 
@@ -30,8 +30,6 @@ import ch.qos.logback.classic.Logger;
 public class TripInfoBatchConfig {
 
     private final Logger log = (Logger) LoggerFactory.getLogger(this.getClass().getSimpleName());
-
-
 
     @Autowired
     public JobBuilderFactory jobBuilderFactory;
@@ -45,36 +43,32 @@ public class TripInfoBatchConfig {
     @Autowired
     public TripService tripService;
     
-    @Value("${apiServiceKey}")
-    String apiServiceKey;
-    
     static final int CHUNK_SIZE = 10;
     
     @Bean
     @StepScope
-    public ItemReader<TripInfoDto> TripInfoItemReader() {
+    public ItemReader<TripInfoDto> TripInfoItemReader(@Value("#{jobParameters['apiKey']}") String apiKey) {
         log.info(">>>>>>>>>>batchpoint itemReader");
-        return new TripInfoReader(apiServiceKey, tripService);
-        // ItemProcessor를 구현하고 데이터 처리 로직을 작성
+        log.info("API Key in TripInfoItemReader: " + apiKey);
+        return new TripInfoReader(apiKey, tripService);
     }
-    
     
     @Bean
     @StepScope
     public ItemWriter<TripInfoDto> TripInfoItemWriter() {
         log.info(">>>>>>>>>>batchpoint itemWriter");
         return new TripInfoWriter(tripService);
-        // ItemWriter를 구현하고 데이터를 출력하는 로직을 작성
     }
     
     @Bean
     @JobScope
-    public Step TripInfoStep() {
+    public Step TripInfoStep(@Value("#{jobParameters['apiKey']}") String apiKey) {
         log.info(">>>>>>>>>>batchpoint step");
+        log.info("API Key in TripInfoStep: " + apiKey);
 
         return stepBuilderFactory.get("TripInfoStep")
-                .<TripInfoDto, TripInfoDto>chunk(CHUNK_SIZE) // Chunk 사이즈 설정
-                .reader(TripInfoItemReader())
+                .<TripInfoDto, TripInfoDto>chunk(CHUNK_SIZE)
+                .reader(TripInfoItemReader(apiKey))
                 .writer(TripInfoItemWriter())
                 .startLimit(10)
                 .allowStartIfComplete(true)
@@ -85,13 +79,13 @@ public class TripInfoBatchConfig {
     public Job TripInfoJob() {
         log.info(">>>>>>>>>>batchpoint jobtripinfo job");
         Job job = jobBuilderFactory.get("jobtripinfo")
-                .incrementer(new RunIdIncrementer()).start(TripInfoStep())
-                    .build();
+                .incrementer(new RunIdIncrementer())
+                .start(TripInfoStep(null))
+                .build();
         ReferenceJobFactory factory = new ReferenceJobFactory(job);
         try {
             jobRegistry.register(factory);
         } catch (DuplicateJobException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

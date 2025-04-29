@@ -1,4 +1,4 @@
-package com.trip.mbti.batch.common;
+package com.trip.info.batch.common;
 
 import java.util.List;
 

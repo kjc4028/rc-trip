@@ -18,6 +18,9 @@ import Header from './Header';
 
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import AdminMenu from './AdminMenu';
+import TripManagement from './TripManagement';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -30,6 +33,9 @@ root.render(
         <Route path="trip-list" element={<TripList />} />
         <Route path="trip-srch-multi" element={<TripSrchMulti />} />
         <Route path="header" element={<Header />} />
+        <Route path="admin" element={<AdminMenu />} />
+        <Route path="admin/trips" element={<TripManagement />} />
+      
       </Routes>
     </BrowserRouter>    
     {/* <App /> */}

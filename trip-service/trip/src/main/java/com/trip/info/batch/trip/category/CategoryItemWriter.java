@@ -1,12 +1,12 @@
-package com.trip.mbti.batch.trip.category;
+package com.trip.info.batch.trip.category;
 
 import java.util.List;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemWriter;
 
-import com.trip.mbti.rest.category.CategoryEntity;
-import com.trip.mbti.rest.category.CategoryService;
+import com.trip.info.rest.category.CategoryEntity;
+import com.trip.info.rest.category.CategoryService;
 
 import ch.qos.logback.classic.Logger;
 

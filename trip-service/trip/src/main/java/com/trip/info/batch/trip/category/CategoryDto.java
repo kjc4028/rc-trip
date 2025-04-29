@@ -1,6 +1,6 @@
-package com.trip.mbti.batch.trip.category;
+package com.trip.info.batch.trip.category;
 
-import com.trip.mbti.rest.category.CategoryEntity;
+import com.trip.info.rest.category.CategoryEntity;
 
 import lombok.Data;
 

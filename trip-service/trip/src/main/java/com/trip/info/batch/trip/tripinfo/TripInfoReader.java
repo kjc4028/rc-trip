@@ -1,11 +1,13 @@
-package com.trip.mbti.batch.trip.tripinfo;
+package com.trip.info.batch.trip.tripinfo;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.io.IOException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -19,8 +21,8 @@ import org.springframework.lang.Nullable;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.trip.mbti.batch.common.ApiReaderInterface;
-import com.trip.mbti.rest.trip.TripService;
+import com.trip.info.batch.common.ApiReaderInterface;
+import com.trip.info.rest.trip.TripService;
 
 import ch.qos.logback.classic.Logger;
 
@@ -63,8 +65,9 @@ public class TripInfoReader implements ItemReader<TripInfoDto>, ApiReaderInterfa
         try {
             List<TripInfoDto> list = new ArrayList<TripInfoDto>();
             
-            String apiUrl = "https://apis.data.go.kr/B551011/KorService1/searchFestival1?MobileOS=ETC&MobileApp=AppTest&eventStartDate=20230101&serviceKey="+apiServiceKey+"&_type=json&numOfRows=800";
-    
+            String encodedApiKey = java.net.URLEncoder.encode(apiServiceKey, "UTF-8");
+            String apiUrl = "https://apis.data.go.kr/B551011/KorService1/searchFestival1?MobileOS=ETC&MobileApp=AppTest&eventStartDate=20230101&serviceKey="+encodedApiKey+"&_type=json&numOfRows=800";
+            log.info(">>>>>>>>>>batchpoint TripInfoReader callApi apiUrl" + apiUrl);
             // URL 객체 생성
             URL url = new URL(apiUrl);
     
@@ -111,5 +114,34 @@ public class TripInfoReader implements ItemReader<TripInfoDto>, ApiReaderInterfa
             return null;
         }
         
+    }
+
+    private String callApi(String apiUrl) throws IOException {
+        log.info(">>>>>>>>>>batchpoint TripInfoReader callApi apiUrl" + apiUrl);
+        try {
+            URL url = new URL(apiUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Content-type", "application/json");
+            
+            BufferedReader rd;
+            if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+                rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            } else {
+                rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+            }
+            
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = rd.readLine()) != null) {
+                sb.append(line);
+            }
+            rd.close();
+            conn.disconnect();
+            return sb.toString();
+        } catch (IOException e) {
+            log.info(">>>>>>>>>>batchpoint callApi exception" + e);
+            throw e;
+        }
     }
 }
