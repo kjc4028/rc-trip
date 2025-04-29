@@ -2,9 +2,14 @@ package com.trip.info;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +18,16 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.trip.info.rest.common.SearchDto;
+import com.trip.info.rest.trip.TripEntity;
+import com.trip.info.rest.trip.TripRequestDto;
+import com.trip.info.rest.trip.TripService;
+import com.trip.info.rest.trip.redis.TripRedisEntity;
+import com.trip.info.rest.trip.redis.TripRedisRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.trip.info.batch.trip.category.CategoryDto;
 import com.trip.info.rest.common.SearchDto;
 import com.trip.info.rest.trip.TripEntity;
 import com.trip.info.rest.trip.TripRequestDto;
@@ -28,7 +43,9 @@ import ch.qos.logback.classic.Logger;
 @EnableCaching
 class MbtiApplicationTests {
 	private final Logger log = (Logger) LoggerFactory.getLogger(this.getClass().getSimpleName());
-	
+
+	static String apiServiceKey = "";
+
 	@Autowired
 	TripService tripService;
 
@@ -131,4 +148,51 @@ class MbtiApplicationTests {
 
 		
 	}
+
+	//@Test
+	public void extApiCall(){
+		try {
+            // URL 객체 생성
+            URL url = new URL("https://apis.data.go.kr/B551011/KorService1/categoryCode1?MobileOS=ETC&MobileApp=AppTest&serviceKey="+apiServiceKey+"&_type=json&cat1=C01");
+
+            // URL을 통해 연결을 열고 데이터를 읽을 BufferedReader 생성
+            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+
+
+
+            String line;
+            StringBuilder content = new StringBuilder();
+
+            // 데이터를 읽어옴
+            while ((line = reader.readLine()) != null) {
+                content.append(line);
+            }
+
+			String callResultJson = content.toString();
+			JSONObject parsed_data = new JSONObject(callResultJson);
+			JSONObject responseObj = parsed_data.getJSONObject("response");
+			JSONObject bodyObj = responseObj.getJSONObject("body");
+			JSONObject itemsObj = bodyObj.getJSONObject("items");
+			JSONArray itemObj = itemsObj.getJSONArray("item");
+
+			ObjectMapper objectMapper = new ObjectMapper();
+			objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+			List<CategoryDto> list = objectMapper.readValue(itemObj.toString(), new TypeReference<List<CategoryDto>>() {});
+	
+			for (CategoryDto categoryVo : list) {
+				System.out.println("Name: " + categoryVo.getCode());			
+			}
+
+            // 읽어온 데이터 출력
+            System.out.println(content.toString());
+
+            // 리더를 닫음
+            reader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+	
+
+
 }
