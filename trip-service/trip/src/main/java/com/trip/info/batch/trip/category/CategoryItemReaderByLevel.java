@@ -40,19 +40,15 @@ public class CategoryItemReaderByLevel implements ItemReader<CategoryDto>, ApiRe
 
     private Iterator<CategoryDto> iterator;
 
-    private List<CategoryDto> dataList;
-
     public CategoryItemReaderByLevel(){
 
     }
 
     public CategoryItemReaderByLevel(List<CategoryDto> inputList){
         this.iterator = inputList.iterator();
-        this.dataList = inputList;
     }
 
     public CategoryItemReaderByLevel(String apiKey, String categoryLevel, CategoryService categoryService){
-        //this.iterator = inputList.iterator();
         log.info(">>>>>>>>>>batchpoint CategoryItemReaderLvOne param3");
         this.apiServiceKey = apiKey;
         this.categoryLevel = categoryLevel;
@@ -63,7 +59,6 @@ public class CategoryItemReaderByLevel implements ItemReader<CategoryDto>, ApiRe
         log.info(">>>>>>>>>>batchpoint CategoryItemReaderLvOne dataList" + dataList.toString());
         if(dataList != null){
             this.iterator = dataList.iterator();
-            this.dataList = dataList;
         }
     }
 
@@ -197,12 +192,10 @@ public class CategoryItemReaderByLevel implements ItemReader<CategoryDto>, ApiRe
     @Nullable
     public CategoryDto read() throws Exception {
         log.info(">>>>>>>>>>batchpoint CategoryItemReaderLvOne read");
-        log.info(">>>>>>>>>>batchpoint CategoryItemReaderLvOne read iter: " + dataList.iterator());
-        if (dataList == null || dataList.isEmpty()) {
-            return null;
-        }
-        if (dataList.iterator().hasNext()) {
-            return dataList.iterator().next();
+        if (iterator != null && iterator.hasNext()) {
+            CategoryDto item = iterator.next();
+            log.info(">>>>>>>>>>batchpoint CategoryItemReaderLvOne read item: " + item);
+            return item;
         }
         return null;
     }

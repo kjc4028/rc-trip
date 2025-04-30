@@ -25,6 +25,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
+import com.trip.info.batch.exception.DuplicationDataException;
 import com.trip.info.rest.category.CategoryService;
 
 import ch.qos.logback.classic.Logger;
@@ -113,6 +114,8 @@ public class CategoryBatchConfig extends DefaultBatchConfigurer {
         return stepBuilderFactory.get("step")
                 .<CategoryDto, CategoryDto>chunk(CHUNK_SIZE)
                 .reader(itemReader(null))
+                .faultTolerant()
+                .noSkip(DuplicationDataException.class)
                 .writer(itemWriter())
                 .startLimit(10)
                 .allowStartIfComplete(true)
@@ -126,6 +129,8 @@ public class CategoryBatchConfig extends DefaultBatchConfigurer {
         return stepBuilderFactory.get("step2")
                 .<CategoryDto, CategoryDto>chunk(CHUNK_SIZE)
                 .reader(itemReaderStep2(null))
+                .faultTolerant()
+                .noSkip(DuplicationDataException.class)
                 .writer(itemWriterStep2())
                 .startLimit(10)
                 .allowStartIfComplete(true)
@@ -139,6 +144,8 @@ public class CategoryBatchConfig extends DefaultBatchConfigurer {
         return stepBuilderFactory.get("step3")
                 .<CategoryDto, CategoryDto>chunk(CHUNK_SIZE)
                 .reader(itemReaderStep3(null))
+                .faultTolerant()
+                .noSkip(DuplicationDataException.class)
                 .writer(itemWriterStep3())
                 .startLimit(10)
                 .allowStartIfComplete(true)
