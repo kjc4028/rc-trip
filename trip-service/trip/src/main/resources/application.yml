@@ -1,7 +1,8 @@
+---
 spring:
     config:
         activate:
-            on-profile: default
+            on-profile: local
     application:
         name: trip-service
     data:
@@ -34,10 +35,74 @@ logging:
         root: INFO
         org.springframework.data.mongodb.core.MongoTemplate: INFO
 
-profileValue: default
+profileValue: local
 
 apiServiceKey: 
 
+security:
+  mock-user:
+    enabled: true
+    username: local-user
+    roles: USER
+
+eureka:
+  client:
+    enabled: false
+
+jwt:
+    header: Authorization
+    secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
+    token-validity-in-seconds: 86400 
+---
+
+spring:
+    config:
+        activate:
+            on-profile: dev
+    application:
+        name: trip-service
+    data:
+        mongodb:
+            host: 127.0.0.1
+            port: 27017
+            database: mtdb
+    mvc:
+        view:
+            prefix: /WEB-INF/jsp/
+            suffix: .jsp
+    devtools:
+        livereload:
+            enabled: true
+        restart:
+            enabled: true
+    freemarker:
+        cache: false  
+    redis:
+        host: 127.0.0.1
+        password:
+        port: 6379
+    batch:
+        job:
+            enabled: false
+            names: ${job.name:NONE}
+
+jwt:
+    header: Authorization
+    secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
+    token-validity-in-seconds: 86400 
+
+logging:
+    level:
+        root: INFO
+        org.springframework.data.mongodb.core.MongoTemplate: INFO
+
+profileValue: dev
+
+apiServiceKey: 
+
+eureka:
+  client:
+    enabled: true
 ---
 
 spring:
@@ -88,3 +153,7 @@ logging:
 profileValue: test
 
 apiServiceKey: 
+
+eureka:
+  client:
+    enabled: true
