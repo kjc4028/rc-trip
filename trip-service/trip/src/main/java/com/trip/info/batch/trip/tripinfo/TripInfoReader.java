@@ -66,7 +66,7 @@ public class TripInfoReader implements ItemReader<TripInfoDto>, ApiReaderInterfa
             List<TripInfoDto> list = new ArrayList<TripInfoDto>();
             
             String encodedApiKey = java.net.URLEncoder.encode(apiServiceKey, "UTF-8");
-            String apiUrl = "https://apis.data.go.kr/B551011/KorService1/searchFestival1?MobileOS=ETC&MobileApp=AppTest&eventStartDate=20230101&serviceKey="+encodedApiKey+"&_type=json&numOfRows=800";
+            String apiUrl = "https://apis.data.go.kr/B551011/KorService1/searchFestival1?MobileOS=ETC&MobileApp=AppTest&eventStartDate=20230101&serviceKey="+encodedApiKey+"&_type=json&numOfRows=100";
             log.info(">>>>>>>>>>batchpoint TripInfoReader callApi apiUrl" + apiUrl);
             // URL 객체 생성
             URL url = new URL(apiUrl);
@@ -80,7 +80,8 @@ public class TripInfoReader implements ItemReader<TripInfoDto>, ApiReaderInterfa
             while ((line = reader.readLine()) != null) {
                 content.append(line);
             }
-    
+            
+            log.info(">>>contentView " + content.toString());
             list.addAll(recJsonToList(content.toString()));
             reader.close();
             

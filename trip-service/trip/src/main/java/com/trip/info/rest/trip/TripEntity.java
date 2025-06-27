@@ -20,6 +20,8 @@ public class TripEntity{
     @Id
     private String _Id;
 
+    private String contentId;
+
     private String tripNm;
 
     private String tripCts;
@@ -34,6 +36,17 @@ public class TripEntity{
     
     private String regUserId;
 
+    private float score1;
+    private float score2;
+    private float score3;
+    private float score4;
+    private float score5;
+    private float score6;
+    private float score7;
+    private float score8;
+    private float score9;
+    private float score10;
+
     public TripEntity(TripDto tripDto){
         this._Id = tripDto.get_Id();
         this.tripNm = tripDto.getTripNm();
@@ -43,6 +56,17 @@ public class TripEntity{
         this.mbtic = tripDto.getMbtic();
         this.mbtid = tripDto.getMbtid();
         this.regUserId = tripDto.getRegUserId();
+
+        this.score1 = tripDto.getScore1();
+        this.score2 = tripDto.getScore2();
+        this.score3 = tripDto.getScore3();
+        this.score4 = tripDto.getScore4();
+        this.score5 = tripDto.getScore5();
+        this.score6 = tripDto.getScore6();
+        this.score7 = tripDto.getScore7();
+        this.score8 = tripDto.getScore8();
+        this.score9 = tripDto.getScore9();
+
     }
 
 }
