@@ -49,6 +49,7 @@ public class TripEntity{
 
     public TripEntity(TripDto tripDto){
         this._Id = tripDto.get_Id();
+        this.contentId = tripDto.getContentId();
         this.tripNm = tripDto.getTripNm();
         this.tripCts = tripDto.getTripCts();
         this.mbtia = tripDto.getMbtia();

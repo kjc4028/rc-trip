@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 public class TripDto{
 
     private String _Id;
+    
+    private String contentId;
 
     private String tripNm;
 
@@ -45,6 +47,7 @@ public class TripDto{
     public static TripDto from(TripEntity tripEntity) {
         TripDto dto = new TripDto();
         dto.set_Id(tripEntity.get_Id());
+        dto.setContentId(tripEntity.getContentId());
         dto.setTripNm(tripEntity.getTripNm());
         dto.setTripCts(tripEntity.getTripCts());
         dto.setMbtia(tripEntity.getMbtia());
@@ -69,6 +72,7 @@ public class TripDto{
        public TripEntity toEntity() {
         return TripEntity.builder()
         .tripNm(tripNm)
+        .tripCts(tripCts)
         ._Id(_Id)
         .regUserId(regUserId)
         .score1(score1)

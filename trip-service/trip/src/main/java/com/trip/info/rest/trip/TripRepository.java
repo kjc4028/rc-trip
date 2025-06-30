@@ -6,6 +6,7 @@ import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -23,4 +24,7 @@ public interface TripRepository extends MongoRepository<TripEntity, String> {
     Page<TripEntity> findByMbtiaInAndMbtibInAndMbticInAndMbtidIn(Set<String> mbtiAList, Set<String> mbtiBList, Set<String> mbtiCList, Set<String> mbtiDList,Pageable pageable);
     
     void deleteByRegUserId(String regUserId);
+
+    @Query("{ '$or': [ { 'tripCts': { '$exists': false } }, { 'tripCts': { '$eq': null } }, { 'tripCts': { '$size': 0 } } ] }")
+    List<TripEntity> findByTripCtsNotExistsOrNullOrEmpty();
 }

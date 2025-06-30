@@ -59,4 +59,8 @@ public class TripService {
     public void deleteByRegUserId(String regUserId){
         tripRepository.deleteByRegUserId(regUserId);
     }
+
+    public List<TripEntity> findByTripCtsNotExistsOrNullOrEmpty(){
+        return tripRepository.findByTripCtsNotExistsOrNullOrEmpty();
+    }
 }
