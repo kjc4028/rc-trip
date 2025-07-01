@@ -36,16 +36,16 @@ public class TripEntity{
     
     private String regUserId;
 
-    private float score1;
-    private float score2;
-    private float score3;
-    private float score4;
-    private float score5;
-    private float score6;
-    private float score7;
-    private float score8;
-    private float score9;
-    private float score10;
+    private Double score1;
+    private Double score2;
+    private Double score3;
+    private Double score4;
+    private Double score5;
+    private Double score6;
+    private Double score7;
+    private Double score8;
+    private Double score9;
+    private Double score10;
 
     public TripEntity(TripDto tripDto){
         this._Id = tripDto.get_Id();

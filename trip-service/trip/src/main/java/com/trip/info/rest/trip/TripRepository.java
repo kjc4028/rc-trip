@@ -27,4 +27,20 @@ public interface TripRepository extends MongoRepository<TripEntity, String> {
 
     @Query("{ '$or': [ { 'tripCts': { '$exists': false } }, { 'tripCts': { '$eq': null } }, { 'tripCts': { '$size': 0 } } ] }")
     List<TripEntity> findByTripCtsNotExistsOrNullOrEmpty();
+
+    @Query("""
+    {
+        "$and": [
+            { "$or": [ { "score1": null }, { "score1": 0 } ] },
+            { "$or": [ { "score2": null }, { "score2": 0 } ] },
+            { "$or": [ { "score3": null }, { "score3": 0 } ] },
+            { "$or": [ { "score4": null }, { "score4": 0 } ] },
+            { "$or": [ { "score5": null }, { "score5": 0 } ] },
+            { "$or": [ { "score6": null }, { "score6": 0 } ] },
+            { "$or": [ { "score7": null }, { "score7": 0 } ] },
+            { "$or": [ { "score8": null }, { "score8": 0 } ] },
+        ]
+    }
+    """)
+    List<TripEntity> findByAllScoreNotExistsOrNullOrEmpty();
 }

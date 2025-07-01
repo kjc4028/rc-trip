@@ -63,4 +63,10 @@ public class TripService {
     public List<TripEntity> findByTripCtsNotExistsOrNullOrEmpty(){
         return tripRepository.findByTripCtsNotExistsOrNullOrEmpty();
     }
+    
+    public List<TripEntity> findByAllScoreNotExistsOrNullOrEmpty(){
+        return tripRepository.findByAllScoreNotExistsOrNullOrEmpty();
+    }
+
+
 }

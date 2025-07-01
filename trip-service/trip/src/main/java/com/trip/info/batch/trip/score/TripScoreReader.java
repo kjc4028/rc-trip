@@ -8,8 +8,6 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 
 import com.trip.info.rest.trip.TripDto;
 import com.trip.info.rest.trip.TripEntity;
@@ -20,29 +18,32 @@ import ch.qos.logback.classic.Logger;
 public class TripScoreReader implements ItemReader<TripDto> {
 private final Logger log = (Logger) LoggerFactory.getLogger(this.getClass().getSimpleName());
 
-    @Autowired
     private TripService tripService;
 
+    private List<TripDto> list = new ArrayList<>();
+    private int currentIndex = 0;
+
     public TripScoreReader(TripService tripService){
-        // this.tripService = tripService;
+        this.tripService = tripService;
+        List<TripEntity> dataList = tripService.findByAllScoreNotExistsOrNullOrEmpty();
+        if(dataList != null){
+            for (TripEntity tripEntity : dataList) {
+                this.list.add(new TripDto().from(tripEntity));
+            }
+        }        
     }
 
     @Override
     public TripDto read()
             throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-        Page<TripEntity> page = tripService.findAllTripPage(1, 10);
-        
-        List<TripDto> list = new ArrayList<>();
 
-        for (TripEntity tripEntity : page.toList()) {
-            TripDto tripDto = new TripDto();
-            tripDto = tripDto.from(tripEntity);
-            list.add(tripDto);
-            log.info(">>> listtest " + tripDto.toString());
-            log.info(">>> tripEntity " + tripEntity.toString());
+        if (currentIndex < list.size()) {
+            return list.get(currentIndex++);
+        } else {
+            // 리스트의 모든 아이템을 다 읽었으면 null을 반환하여 읽기 종료를 알립니다.
+            currentIndex = 0; // 필요하다면 다음 Step 실행을 위해 초기화
+            return null;
         }
-        return list.iterator().hasNext() ? list.iterator().next() : null;
-        
     }
     
 }

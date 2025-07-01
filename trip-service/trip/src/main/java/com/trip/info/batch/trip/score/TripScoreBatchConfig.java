@@ -11,16 +11,14 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.configuration.support.ReferenceJobFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.trip.info.batch.trip.tripinfo.TripInfoDto;
-import com.trip.info.batch.trip.tripinfo.TripInfoReader;
-import com.trip.info.batch.trip.tripinfo.TripInfoWriter;
+import com.trip.info.rest.score.ScoreService;
 import com.trip.info.rest.trip.TripDto;
 import com.trip.info.rest.trip.TripService;
 
@@ -42,6 +40,9 @@ public class TripScoreBatchConfig {
     
     @Autowired
     public TripService tripService;
+
+    @Autowired
+    public ScoreService scoreService;
     
     static final int CHUNK_SIZE = 10;
     
@@ -54,10 +55,19 @@ public class TripScoreBatchConfig {
     
     @Bean
     @StepScope
+    public ItemProcessor<TripDto, TripDto> TripScoreItemProcessor() {
+        log.info(">>>>>>>>>>batchpoint itemReader");
+        return new TripScoreProcess(scoreService);
+    }
+
+    @Bean
+    @StepScope
     public ItemWriter<TripDto> TripScoreItemWriter() {
         log.info(">>>>>>>>>>batchpoint itemWriter");
-        return new TripScoreWriter();
+        return new TripScoreWriter(tripService);
     }
+
+ 
     
     @Bean
     @JobScope
@@ -67,6 +77,7 @@ public class TripScoreBatchConfig {
         return stepBuilderFactory.get("TripScoreStep")
                 .<TripDto, TripDto>chunk(CHUNK_SIZE)
                 .reader(TripScoreItemReader())
+                .processor(TripScoreItemProcessor())
                 .writer(TripScoreItemWriter())
                 .startLimit(10)
                 .allowStartIfComplete(true)
