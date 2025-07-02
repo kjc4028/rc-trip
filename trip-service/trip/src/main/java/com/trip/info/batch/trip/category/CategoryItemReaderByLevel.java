@@ -11,9 +11,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.NonTransientResourceException;
-import org.springframework.batch.item.ParseException;
-import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
@@ -110,7 +107,7 @@ public class CategoryItemReaderByLevel implements ItemReader<CategoryDto>, ApiRe
                     }
                     categoryEntity.setLevel("1");
                     List<CategoryEntity> codeList = categoryService.findByLevel("1");
-                    System.out.println("category find by level codeList" + codeList.toString());
+                    log.info("category find by level codeList" + codeList.toString());
                     for (CategoryEntity category : codeList) {
                         sb.append("&cat1="+category.getCode());
 
@@ -209,7 +206,7 @@ public class CategoryItemReaderByLevel implements ItemReader<CategoryDto>, ApiRe
         try {
             List<CategoryDto> list = new ArrayList<CategoryDto>();
             String callResultJson = jsonContent;
-            System.out.println("callResultJson " + callResultJson);
+            log.info("callResultJson " + callResultJson);
             JSONObject parsed_data = new JSONObject(callResultJson);
             JSONObject responseObj = parsed_data.getJSONObject("response");
             JSONObject bodyObj = responseObj.getJSONObject("body");

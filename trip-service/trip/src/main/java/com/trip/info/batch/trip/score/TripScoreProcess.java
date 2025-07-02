@@ -16,17 +16,27 @@ public class TripScoreProcess implements ItemProcessor<TripDto, TripDto>{
 
     private final Logger log = (Logger) LoggerFactory.getLogger(this.getClass().getSimpleName());
 
+    String apiServiceKey;
+
     private ScoreService scoreService;
     
-    public TripScoreProcess(ScoreService scoreService){
+    public TripScoreProcess(ScoreService scoreService, String apiKey){
         this.scoreService = scoreService;
+        this.apiServiceKey = apiKey;
     }
 
     @Override
     @Nullable
     public TripDto process(@NonNull TripDto item) throws Exception {
-        Map<String, Object> extScoreMap = scoreService.extractClsScore(item.getTripCts());
-        log.info("extScoreMap " + extScoreMap.toString());
+        String inputData = "";
+
+        if(item.getTripCts() != null && !"".equals(item.getTripCts())){
+            inputData = item.getTripCts();
+        } else if (item.getTripNm() != null && !"".equals(item.getTripNm())){
+            inputData = item.getTripNm();
+        }
+
+        Map<String, Object> extScoreMap = scoreService.extractClsScore(inputData, apiServiceKey);
         if(extScoreMap != null){
             Double score1 = (Double)extScoreMap.get("힐링");
             Double score2 = (Double)extScoreMap.get("액티비티");

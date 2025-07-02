@@ -44,8 +44,6 @@ public class TripEntity{
     private Double score6;
     private Double score7;
     private Double score8;
-    private Double score9;
-    private Double score10;
 
     public TripEntity(TripDto tripDto){
         this._Id = tripDto.get_Id();
@@ -66,7 +64,6 @@ public class TripEntity{
         this.score6 = tripDto.getScore6();
         this.score7 = tripDto.getScore7();
         this.score8 = tripDto.getScore8();
-        this.score9 = tripDto.getScore9();
 
     }
 

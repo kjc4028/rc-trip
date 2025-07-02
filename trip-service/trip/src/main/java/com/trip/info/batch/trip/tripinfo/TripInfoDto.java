@@ -1,6 +1,5 @@
 package com.trip.info.batch.trip.tripinfo;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.trip.info.rest.trip.TripEntity;
 
 import lombok.Data;

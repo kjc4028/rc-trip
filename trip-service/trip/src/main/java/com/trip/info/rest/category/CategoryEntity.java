@@ -1,7 +1,6 @@
 package com.trip.info.rest.category;
 
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;

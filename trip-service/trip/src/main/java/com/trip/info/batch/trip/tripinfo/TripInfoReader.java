@@ -1,13 +1,13 @@
 package com.trip.info.batch.trip.tripinfo;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.io.IOException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -70,9 +70,11 @@ public class TripInfoReader implements ItemReader<TripInfoDto>, ApiReaderInterfa
             log.info(">>>>>>>>>>batchpoint TripInfoReader callApi apiUrl" + apiUrl);
             // URL 객체 생성
             URL url = new URL(apiUrl);
-    
+            HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
+            httpConn.setConnectTimeout(1000); //서버 연결 제한 시간
+            httpConn.setReadTimeout(1000);  // 서버 연결 후 데이터 read 제한 시간    
             // URL을 통해 연결을 열고 데이터를 읽을 BufferedReader 생성
-            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream(), "UTF-8"));
             String line;
             StringBuilder content = new StringBuilder();
     
@@ -88,8 +90,8 @@ public class TripInfoReader implements ItemReader<TripInfoDto>, ApiReaderInterfa
             return list; 
         } catch (Exception e) {
             log.info(">>>>>>>>>>batchpoint callApi exception" + e);
+            return null;
         }
-        return null;
     }
 
     @Override
@@ -98,7 +100,7 @@ public class TripInfoReader implements ItemReader<TripInfoDto>, ApiReaderInterfa
         try {
             List<TripInfoDto> list = new ArrayList<TripInfoDto>();
             String callResultJson = jsonContent;
-            System.out.println("callResultJson " + callResultJson);
+            log.info("callResultJson " + callResultJson);
             JSONObject parsed_data = new JSONObject(callResultJson);
             JSONObject responseObj = parsed_data.getJSONObject("response");
             JSONObject bodyObj = responseObj.getJSONObject("body");
@@ -124,7 +126,8 @@ public class TripInfoReader implements ItemReader<TripInfoDto>, ApiReaderInterfa
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Content-type", "application/json");
-            
+            conn.setConnectTimeout(1000); //서버 연결 제한 시간
+            conn.setReadTimeout(1000);  // 서버 연결 후 데이터 read 제한 시간
             BufferedReader rd;
             if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
                 rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));

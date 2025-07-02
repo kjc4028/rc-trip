@@ -23,12 +23,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ScoreService {
     
-    private static final String API_TOKEN = "";
+    
     private static final String API_URL = "https://api-inference.huggingface.co/models/MoritzLaurer/mDeBERTa-v3-base-mnli-xnli";
         private final Logger log = (Logger) LoggerFactory.getLogger(this.getClass().getSimpleName());
-    public Map<String, Object> extractClsScore(String inputs){
+    public Map<String, Object> extractClsScore(String inputs, String apiKey){
  
-
+        if(inputs == null || "".equals(inputs)){
+            return null;
+        }
 
         String convertText = inputs.replaceAll("\\r?\\n", "");
         convertText = convertText.replaceAll("[^a-zA-Z0-9가-힣 .,]", "");
@@ -55,7 +57,7 @@ public class ScoreService {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(API_URL))
-                .header("Authorization", "Bearer " + API_TOKEN)
+                .header("Authorization", "Bearer " + apiKey)
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(jsonInputString))
                 .build();

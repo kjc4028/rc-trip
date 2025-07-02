@@ -15,6 +15,7 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -55,9 +56,9 @@ public class TripScoreBatchConfig {
     
     @Bean
     @StepScope
-    public ItemProcessor<TripDto, TripDto> TripScoreItemProcessor() {
+    public ItemProcessor<TripDto, TripDto> TripScoreItemProcessor(@Value("#{jobParameters['apiKey']}") String apiKey) {
         log.info(">>>>>>>>>>batchpoint itemReader");
-        return new TripScoreProcess(scoreService);
+        return new TripScoreProcess(scoreService, apiKey);
     }
 
     @Bean
@@ -77,7 +78,7 @@ public class TripScoreBatchConfig {
         return stepBuilderFactory.get("TripScoreStep")
                 .<TripDto, TripDto>chunk(CHUNK_SIZE)
                 .reader(TripScoreItemReader())
-                .processor(TripScoreItemProcessor())
+                .processor(TripScoreItemProcessor(null))
                 .writer(TripScoreItemWriter())
                 .startLimit(10)
                 .allowStartIfComplete(true)

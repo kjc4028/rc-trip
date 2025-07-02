@@ -2,6 +2,7 @@ package com.trip.info.batch.trip.tripDtlInfo;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.json.JSONArray;
@@ -10,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trip.info.rest.trip.TripDto;
@@ -46,9 +46,12 @@ public class TripDtlInfoProcess implements ItemProcessor<TripDto,TripDto> {
             log.info(">>>>>>>>>>batchpoint TripDtlInfoReader callApi apiUrl" + apiUrl);
             // URL 객체 생성
             URL url = new URL(apiUrl);
-    
+            HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
+            httpConn.setConnectTimeout(1000); //서버 연결 제한 시간
+            httpConn.setReadTimeout(1000);  // 서버 연결 후 데이터 read 제한 시간
+
             // URL을 통해 연결을 열고 데이터를 읽을 BufferedReader 생성
-            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream(), "UTF-8"));
             String line;
             StringBuilder content = new StringBuilder();
     
@@ -74,7 +77,7 @@ public class TripDtlInfoProcess implements ItemProcessor<TripDto,TripDto> {
         try {
             TripDtlInfoDto dtlInfoDto = new TripDtlInfoDto();
             String callResultJson = jsonContent;
-            System.out.println("callResultJson " + callResultJson);
+            log.info("callResultJson " + callResultJson);
             JSONObject parsed_data = new JSONObject(callResultJson);
             JSONObject responseObj = parsed_data.getJSONObject("response");
             JSONObject bodyObj = responseObj.getJSONObject("body");

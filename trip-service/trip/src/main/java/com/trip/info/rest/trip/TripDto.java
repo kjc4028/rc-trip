@@ -41,7 +41,6 @@ public class TripDto{
     private Double score6;
     private Double score7;
     private Double score8;
-    private Double score9;
 
 
     public static TripDto from(TripEntity tripEntity) {
@@ -63,7 +62,6 @@ public class TripDto{
         dto.setScore6(tripEntity.getScore6());
         dto.setScore7(tripEntity.getScore7());
         dto.setScore8(tripEntity.getScore8());
-        dto.setScore9(tripEntity.getScore9());
        
         return dto;
     }
@@ -84,7 +82,6 @@ public class TripDto{
         .score6(score6)
         .score7(score7)
         .score8(score8)
-        .score9(score9)
         .build();
     }
 
