@@ -297,6 +297,22 @@ public class TripController {
         TripEntity tripEntity = tripRequestDto.toEntity();
         tripService.deleteByRegUserId(tripEntity.getRegUserId());
     }
-    
+
+
+    @GetMapping(path = "/trips/aggregation")
+    @ResponseBody
+    public ResponseEntity<Message> runAggregationWithProjection(){
+        HttpHeaders headers = new HttpHeaders();
+        Message message = new Message();
+        HashMap<String, Object> resMap = new HashMap<>();
+
+        tripService.aggreatedTotalCase();
+
+        message.setStatus(HttpStatus.OK);
+        message.setData(resMap);
+        message.setMessage("정상호출");
+        
+        return new ResponseEntity<>(message, headers, HttpStatus.OK);
+    }   
     
 }
