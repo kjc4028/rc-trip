@@ -21,6 +21,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import AdminMenu from './AdminMenu';
 import TripManagement from './TripManagement';
 
+import TripStyleSelector from "./TripStyleSelector";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -35,6 +36,7 @@ root.render(
         <Route path="header" element={<Header />} />
         <Route path="admin" element={<AdminMenu />} />
         <Route path="admin/trips" element={<TripManagement />} />
+        <Route path="style" element={<TripStyleSelector />} />
       
       </Routes>
     </BrowserRouter>    
