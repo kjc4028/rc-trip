@@ -58,7 +58,7 @@ public class TripSmrController {
                 responseData.put("totalCnt", tripList.size());
                 String resData = om.writeValueAsString(tripList) + om.writeValueAsString(responseData);
                 message.setStatus(HttpStatus.OK);
-                message.setData(resData);
+                message.setData(tripList);
                 message.setMessage("정상호출");
             } catch (JsonProcessingException e) {
                 e.printStackTrace();

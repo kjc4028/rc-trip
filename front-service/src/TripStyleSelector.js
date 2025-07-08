@@ -6,6 +6,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Pagination from 'react-bootstrap/Pagination';
 import axios from "axios";
+import TripDtl from './TripDtl';
 
 const styles = [
   { code: 1, label: "힐링" },
@@ -20,6 +21,10 @@ const styles = [
 
 function TripStyleSelector({ onSelect }) {
   const [selectedItems, setSelectedItems] = useState([]);
+  const [recommendedTrips, setRecommendedTrips] = useState([]);
+  const [mode, setMode] = useState('select'); // 'select', 'list', 'dtl'
+  const [tripDtl, setTripDtl] = useState(null);
+  const [pageAble, setPageAble] = useState(null); // 필요시 사용
 
   const handleSelect = (code) => {
     if (selectedItems.includes(code)) {
@@ -48,11 +53,54 @@ function TripStyleSelector({ onSelect }) {
           params: { selectedItems: selectedItems.join(",") }
         }
       );
-      alert("여행지 추천 결과: " + JSON.stringify(response.data));
+      setRecommendedTrips(response.data.data);
     } catch (error) {
       alert("여행지 추천 결과를 불러오지 못했습니다.");
     }
   };
+
+  // TripList의 goDtl과 유사한 함수
+  const goDtl = async (tripId) => {
+    axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
+    try {
+      let response = await axios.get('http://localhost:5555/trips/' + tripId);
+      setTripDtl(response.data.data);
+      setMode('dtl');
+      setPageAble(null); // 필요시 전달
+    } catch (error) {
+      alert('상세 정보를 불러오지 못했습니다.');
+    }
+  };
+
+  // TripDtl에서 목록으로 돌아가기
+  const handleBackToList = () => {
+    setMode('top3');
+  };
+
+  // TripList 스타일 카드 렌더링 함수
+  const renderTripCards = (trips) => (
+    <Row xs={1} md={1} className="g-4" style={{ justifyContent: "center" }}>
+      {(Array.isArray(trips) ? trips : []).map((trip, i) => (
+        <Col key={trip._Id || i} style={{ display: "flex", justifyContent: "center" }}>
+          <Card style={{ minWidth: "320px", maxWidth: "480px", width: "100%", cursor: 'pointer' }}
+            onClick={() => goDtl(trip._Id)}>
+            {/* <Card.Img variant="top" src="holder.js/100px160" /> */}
+            <Card.Body>
+              <Card.Title>{trip.tripNm}</Card.Title>
+              <Card.Text>
+                {trip.tripCts}
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+      ))}
+    </Row>
+  );
+
+  // 렌더링 분기
+  if (mode === 'dtl' && tripDtl) {
+    return <TripDtl tripDtl={tripDtl} pageAble={pageAble} onBack={handleBackToList} />;
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh" }}>
@@ -102,10 +150,17 @@ function TripStyleSelector({ onSelect }) {
           opacity: selectedItems.length === 3 ? 1 : 0.5
         }}
         disabled={selectedItems.length !== 3}
-        onClick={handleCheckTrips}
+        onClick={() => { setMode('top3'); handleCheckTrips(); }}
       >
         여행지 확인하기
       </button>
+      {/* 추천 결과가 있을 때 TripList 스타일로 표시 */}
+      {mode === 'top3' && recommendedTrips && recommendedTrips.length > 0 && (
+        <div style={{ width: "100%", marginTop: "40px", justifyContent: "center"}}>
+          <h4 style={{ textAlign: "center" }}>추천 여행지 목록</h4>
+          {renderTripCards(recommendedTrips)}
+        </div>
+      )}
     </div>
   );
 }

@@ -166,11 +166,29 @@ function TripList(props) {
      <Row xs={1} md={2} className="g-4">
       {tripList && tripList.map((trip,i) => (
         <Col>
-          <Card key ={trip._Id}>
+          <Card key ={trip._Id} style={{ height: '320px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             {/* <Card.Img variant="top" src="holder.js/100px160" /> */}
-            <Card.Body>
-              <Card.Title onClick={() => {goDtl(trip._Id); return false;} }>{trip.tripNm}</Card.Title>
-              <Card.Text onClick={() => {goDtl(trip._Id); return false;} }>
+            <Card.Body style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <Card.Title onClick={() => {goDtl(trip._Id); return false;} } style={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                fontWeight: 'bold',
+                fontSize: '1.2rem',
+                marginBottom: '0.5rem',
+              }}>{trip.tripNm}</Card.Title>
+              <Card.Text onClick={() => {goDtl(trip._Id); return false;} } style={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                display: '-webkit-box',
+                WebkitLineClamp: 4,
+                WebkitBoxOrient: 'vertical',
+                whiteSpace: 'normal',
+                fontSize: '1rem',
+                color: '#333',
+                minHeight: '72px',
+                maxHeight: '96px',
+              }}>
                 {trip.tripCts}
               </Card.Text>
             </Card.Body>
