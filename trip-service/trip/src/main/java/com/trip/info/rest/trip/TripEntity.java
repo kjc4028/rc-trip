@@ -1,6 +1,8 @@
 package com.trip.info.rest.trip;
 
 
+import java.io.Serializable;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,8 +16,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TripEntity{
+public class TripEntity implements Serializable {
     
+    private static final long serialVersionUID = 1L;
 
     @Id
     private String _Id;

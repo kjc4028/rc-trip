@@ -12,7 +12,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -23,13 +25,27 @@ import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators;
 import org.springframework.stereotype.Service;
 
+import com.trip.info.rest.smr.TripSmrEntity;
+import com.trip.info.rest.smr.TripSmrService;
+import com.trip.info.rest.trip.redis.TripRedisRepository;
+
+import ch.qos.logback.classic.Logger;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class TripService {
+
+    private final Logger log = (Logger) LoggerFactory.getLogger(this.getClass().getSimpleName());
+
     @Autowired
     private TripRepository tripRepository;
+
+    @Autowired
+    private TripSmrService tripSmrService;
+
+    @Autowired
+    private TripRedisRepository tripRedisRepository;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -216,6 +232,26 @@ public class TripService {
 
         createAggregatedCollection(groups, "trip", "trip_smr");
         System.out.println("'smr' 컬렉션 생성이 요청되었습니다.");
+    }
+
+
+    public List<TripEntity> findByContentIdIn(List<String> contentId) {
+        return tripRepository.findByContentIdIn(contentId);
+    }
+
+    @Cacheable(value = "top3preference", key = "#combinedPreference + ':'")
+    public List<TripEntity> findTop3ByPreference(String combinedPreference) {
+        log.info("call findTop3ByPreference...");
+        // List<TripSmrEntity> resultList = tripSmrService.findTop3ByTotalSumDesc(combinedPreference);
+        List<TripSmrEntity> resultList = tripSmrService.findTop3ByDynamicTotalSumDesc(combinedPreference);     
+
+        List<String> contentIds = new ArrayList<>();
+        for (TripSmrEntity smrEntity : resultList) {
+            contentIds.add(smrEntity.getContentId());
+        }
+        
+        log.info("contentIds " + contentIds);
+        return tripRepository.findByContentIdIn(contentIds);
     }
 
 }

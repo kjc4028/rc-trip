@@ -43,4 +43,6 @@ public interface TripRepository extends MongoRepository<TripEntity, String> {
     }
     """)
     List<TripEntity> findByAllScoreNotExistsOrNullOrEmpty();
+
+    List<TripEntity> findByContentIdIn(List<String> contentId);
 }
