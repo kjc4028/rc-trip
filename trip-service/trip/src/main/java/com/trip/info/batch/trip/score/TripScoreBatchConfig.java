@@ -1,4 +1,4 @@
-package com.trip.info.batch.trip.tripinfo;
+package com.trip.info.batch.trip.score;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -11,6 +11,7 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.configuration.support.ReferenceJobFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.trip.info.rest.score.ScoreService;
+import com.trip.info.rest.trip.TripDto;
 import com.trip.info.rest.trip.TripService;
 
 import ch.qos.logback.classic.Logger;
 
 @Configuration
-public class TripInfoBatchConfig {
+public class TripScoreBatchConfig {
 
     private final Logger log = (Logger) LoggerFactory.getLogger(this.getClass().getSimpleName());
 
@@ -38,45 +41,56 @@ public class TripInfoBatchConfig {
     
     @Autowired
     public TripService tripService;
+
+    @Autowired
+    public ScoreService scoreService;
     
     static final int CHUNK_SIZE = 10;
     
     @Bean
     @StepScope
-    public ItemReader<TripInfoDto> TripInfoItemReader(@Value("#{jobParameters['apiKey']}") String apiKey) {
-        log.info(">>>>>>>>>>batchpoint itemReader");
-        log.info("API Key in TripInfoItemReader: " + apiKey);
-        return new TripInfoReader(apiKey, tripService);
+    public ItemReader<TripDto> TripScoreItemReader() {
+        log.info(">>>>>>>>>>batchpoint score itemReader");
+        return new TripScoreReader(tripService);
     }
     
     @Bean
     @StepScope
-    public ItemWriter<TripInfoDto> TripInfoItemWriter() {
-        log.info(">>>>>>>>>>batchpoint itemWriter");
-        return new TripInfoWriter(tripService);
+    public ItemProcessor<TripDto, TripDto> TripScoreItemProcessor(@Value("#{jobParameters['apiKey']}") String apiKey) {
+        log.info(">>>>>>>>>>batchpoint itemReader");
+        return new TripScoreProcess(scoreService, apiKey);
     }
+
+    @Bean
+    @StepScope
+    public ItemWriter<TripDto> TripScoreItemWriter() {
+        log.info(">>>>>>>>>>batchpoint itemWriter");
+        return new TripScoreWriter(tripService);
+    }
+
+ 
     
     @Bean
     @JobScope
-    public Step TripInfoStep(@Value("#{jobParameters['apiKey']}") String apiKey) {
+    public Step TripScoreStep() {
         log.info(">>>>>>>>>>batchpoint step");
-        log.info("API Key in TripInfoStep: " + apiKey);
 
-        return stepBuilderFactory.get("TripInfoStep")
-                .<TripInfoDto, TripInfoDto>chunk(CHUNK_SIZE)
-                .reader(TripInfoItemReader(apiKey))
-                .writer(TripInfoItemWriter())
+        return stepBuilderFactory.get("TripScoreStep")
+                .<TripDto, TripDto>chunk(CHUNK_SIZE)
+                .reader(TripScoreItemReader())
+                .processor(TripScoreItemProcessor(null))
+                .writer(TripScoreItemWriter())
                 .startLimit(10)
                 .allowStartIfComplete(true)
                 .build();
     }
     
     @Bean
-    public Job TripInfoJob() {
-        log.info(">>>>>>>>>>batchpoint jobtripinfo job");
-        Job job = jobBuilderFactory.get("jobtripinfo")
+    public Job TripScoreJob() {
+        log.info(">>>>>>>>>>batchpoint jobtripscore job");
+        Job job = jobBuilderFactory.get("jobtripsscore")
                 .incrementer(new RunIdIncrementer())
-                .start(TripInfoStep(null))
+                .start(TripScoreStep())
                 .build();
         ReferenceJobFactory factory = new ReferenceJobFactory(job);
         try {

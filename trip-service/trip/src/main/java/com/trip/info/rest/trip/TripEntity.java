@@ -1,6 +1,8 @@
 package com.trip.info.rest.trip;
 
 
+import java.io.Serializable;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,11 +16,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TripEntity{
+public class TripEntity implements Serializable {
     
+    private static final long serialVersionUID = 1L;
 
     @Id
     private String _Id;
+
+    private String contentId;
 
     private String tripNm;
 
@@ -34,8 +39,18 @@ public class TripEntity{
     
     private String regUserId;
 
+    private Double score1;
+    private Double score2;
+    private Double score3;
+    private Double score4;
+    private Double score5;
+    private Double score6;
+    private Double score7;
+    private Double score8;
+
     public TripEntity(TripDto tripDto){
         this._Id = tripDto.get_Id();
+        this.contentId = tripDto.getContentId();
         this.tripNm = tripDto.getTripNm();
         this.tripCts = tripDto.getTripCts();
         this.mbtia = tripDto.getMbtia();
@@ -43,6 +58,16 @@ public class TripEntity{
         this.mbtic = tripDto.getMbtic();
         this.mbtid = tripDto.getMbtid();
         this.regUserId = tripDto.getRegUserId();
+
+        this.score1 = tripDto.getScore1();
+        this.score2 = tripDto.getScore2();
+        this.score3 = tripDto.getScore3();
+        this.score4 = tripDto.getScore4();
+        this.score5 = tripDto.getScore5();
+        this.score6 = tripDto.getScore6();
+        this.score7 = tripDto.getScore7();
+        this.score8 = tripDto.getScore8();
+
     }
 
 }

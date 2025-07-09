@@ -33,7 +33,9 @@ if(mode === "list"){
                         <p class="lead">{props.tripDtl.tripCts}</p>
                         <div class="d-flex">
                             {/* <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1"   /> */}
-                            <button class="btn btn-outline-dark flex-shrink-0" type="button" onClick={ () => {goList(props.pageAble.perPage, props.pageAble.pageNum);}}>
+                            <button class="btn btn-outline-dark flex-shrink-0" type="button" onClick={ () => {
+                                if(props.onBack){ props.onBack('top3'); } else { goList(props.pageAble?.perPage, props.pageAble?.pageNum); }
+                            }}>
                                 <i class="bi-cart-fill me-1"></i>
                                 목록으로
                             </button>

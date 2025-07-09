@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
@@ -156,9 +157,11 @@ class MbtiApplicationTests {
 		try {
             // URL 객체 생성
             URL url = new URL("https://apis.data.go.kr/B551011/KorService1/categoryCode1?MobileOS=ETC&MobileApp=AppTest&serviceKey="+apiServiceKey+"&_type=json&cat1=C01");
-
+            HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
+            httpConn.setConnectTimeout(1000); //서버 연결 제한 시간
+            httpConn.setReadTimeout(1000);  // 서버 연결 후 데이터 read 제한 시간
             // URL을 통해 연결을 열고 데이터를 읽을 BufferedReader 생성
-            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
 
 
 
@@ -182,16 +185,16 @@ class MbtiApplicationTests {
 			List<CategoryDto> list = objectMapper.readValue(itemObj.toString(), new TypeReference<List<CategoryDto>>() {});
 	
 			for (CategoryDto categoryVo : list) {
-				System.out.println("Name: " + categoryVo.getCode());			
+				log.info("Name: " + categoryVo.getCode());			
 			}
 
             // 읽어온 데이터 출력
-            System.out.println(content.toString());
+            log.info(content.toString());
 
             // 리더를 닫음
             reader.close();
         } catch (Exception e) {
-            e.printStackTrace();
+			log.error("extApiCall EX " + e);
         }
     }
 	

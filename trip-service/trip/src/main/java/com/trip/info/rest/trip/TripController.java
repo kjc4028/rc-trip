@@ -14,8 +14,6 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,7 +24,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -297,6 +294,22 @@ public class TripController {
         TripEntity tripEntity = tripRequestDto.toEntity();
         tripService.deleteByRegUserId(tripEntity.getRegUserId());
     }
-    
+
+
+    @GetMapping(path = "/trips/aggregation")
+    @ResponseBody
+    public ResponseEntity<Message> runAggregationWithProjection(){
+        HttpHeaders headers = new HttpHeaders();
+        Message message = new Message();
+        HashMap<String, Object> resMap = new HashMap<>();
+
+        tripService.aggreatedTotalCase();
+
+        message.setStatus(HttpStatus.OK);
+        message.setData(resMap);
+        message.setMessage("정상호출");
+        
+        return new ResponseEntity<>(message, headers, HttpStatus.OK);
+    }   
     
 }

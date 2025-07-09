@@ -54,7 +54,7 @@ function Login() {
     );
   } else if(mode === "loginSucc"){
     //return <TripList></TripList>
-    window.location.replace("/trip-list");
+    window.location.replace("/style");
   } else {
     return (
       <div className="Loin">

@@ -18,6 +18,8 @@ public class TripRedisEntity{
     @Id
     private String _Id;
 
+    private String contentId;
+
     private String tripNm;
 
     private String tripCts;

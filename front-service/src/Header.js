@@ -31,8 +31,9 @@ function Header() {
             <Nav className="me-auto">
               <Nav.Link as={Link} to="/">Home</Nav.Link>
               <Nav.Link as={Link} to="trip-list">전체여행목록</Nav.Link>
-              <Nav.Link as={Link} to="trip-srch-base">혼자 여행가기</Nav.Link>
-              <Nav.Link as={Link} to="trip-srch-multi">다같이 여행가기</Nav.Link>
+              <Nav.Link as={Link} to="style">여행스타일추천</Nav.Link>
+              {/* <Nav.Link as={Link} to="trip-srch-base">혼자 여행가기</Nav.Link>
+              <Nav.Link as={Link} to="trip-srch-multi">다같이 여행가기</Nav.Link> */}
               <Nav.Link as={Link} to="admin">관리자 메뉴</Nav.Link>
               <Nav.Link as={Link} to="admin/trips">여행지 관리</Nav.Link>
               <Nav.Link onClick={logout}>로그아웃</Nav.Link>

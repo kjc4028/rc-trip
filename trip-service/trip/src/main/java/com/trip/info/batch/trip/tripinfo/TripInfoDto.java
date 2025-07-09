@@ -32,6 +32,7 @@ public class TripInfoDto {
     public TripEntity toEntity() {
         return TripEntity.builder()
         .tripNm(title)
+        .contentId(contentid)
         .build();
     }
     
