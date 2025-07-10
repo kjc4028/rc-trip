@@ -30,7 +30,11 @@ spring:
                 - id: user-service
                   uri: lb://USER-SERVICE
                   predicates:
-                    - Path=/user/**                                                   
+                    - Path=/user/**
+                - id: search-service
+                  uri: lb://SEARCH-SERVICE
+                  predicates:
+                    - Path=/search/**
                 
 jwt:
     header: Authorization
