@@ -1,4 +1,4 @@
-package com.trip.info.rest.trip;
+package com.trip.info.core.trip;
 
 
 import org.springframework.cloud.openfeign.FeignClient;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import com.trip.info.rest.common.Message;
+import com.trip.info.core.common.Message;
 
 @FeignClient(name="USER-SERVICE")
 public interface UserServiceClient {

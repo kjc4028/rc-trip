@@ -1,4 +1,4 @@
-package com.trip.info.rest.category;
+package com.trip.info.core.category;
 
 
 import org.springframework.data.mongodb.core.mapping.Document;

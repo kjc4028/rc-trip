@@ -19,22 +19,16 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.trip.info.rest.common.SearchDto;
-import com.trip.info.rest.trip.TripEntity;
-import com.trip.info.rest.trip.TripRequestDto;
-import com.trip.info.rest.trip.TripService;
-import com.trip.info.rest.trip.redis.TripRedisEntity;
-import com.trip.info.rest.trip.redis.TripRedisRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trip.info.batch.trip.category.CategoryDto;
-import com.trip.info.rest.common.SearchDto;
-import com.trip.info.rest.trip.TripEntity;
-import com.trip.info.rest.trip.TripRequestDto;
-import com.trip.info.rest.trip.TripService;
-import com.trip.info.rest.trip.redis.TripRedisEntity;
-import com.trip.info.rest.trip.redis.TripRedisRepository;
+import com.trip.info.core.common.SearchDto;
+import com.trip.info.core.trip.TripEntity;
+import com.trip.info.core.trip.TripRequestDto;
+import com.trip.info.core.trip.TripService;
+import com.trip.info.core.trip.redis.TripRedisEntity;
+import com.trip.info.core.trip.redis.TripRedisRepository;
 
 import ch.qos.logback.classic.Logger;
 

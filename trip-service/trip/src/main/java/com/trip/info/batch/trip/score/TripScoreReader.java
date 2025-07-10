@@ -9,9 +9,9 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
-import com.trip.info.rest.trip.TripDto;
-import com.trip.info.rest.trip.TripEntity;
-import com.trip.info.rest.trip.TripService;
+import com.trip.info.core.trip.TripDto;
+import com.trip.info.core.trip.TripEntity;
+import com.trip.info.core.trip.TripService;
 
 import ch.qos.logback.classic.Logger;
 

@@ -1,4 +1,4 @@
-package com.trip.info.rest.score;
+package com.trip.info.core.score;
 
 import java.io.IOException;
 import java.lang.reflect.Type;

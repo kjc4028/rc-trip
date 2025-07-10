@@ -1,6 +1,6 @@
 package com.trip.info.batch.trip.tripinfo;
 
-import com.trip.info.rest.trip.TripEntity;
+import com.trip.info.core.trip.TripEntity;
 
 import lombok.Data;
 

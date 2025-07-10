@@ -13,8 +13,8 @@ import org.springframework.batch.item.ItemProcessor;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.trip.info.rest.trip.TripDto;
-import com.trip.info.rest.trip.TripService;
+import com.trip.info.core.trip.TripDto;
+import com.trip.info.core.trip.TripService;
 
 public class TripDtlInfoProcess implements ItemProcessor<TripDto,TripDto> {
 

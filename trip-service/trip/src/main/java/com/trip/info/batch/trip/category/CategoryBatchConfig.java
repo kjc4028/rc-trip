@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
 import com.trip.info.batch.exception.DuplicationDataException;
-import com.trip.info.rest.category.CategoryService;
+import com.trip.info.core.category.CategoryService;
 
 import ch.qos.logback.classic.Logger;
 

@@ -22,7 +22,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trip.info.batch.common.ApiReaderInterface;
-import com.trip.info.rest.trip.TripService;
+import com.trip.info.core.trip.TripService;
 
 import ch.qos.logback.classic.Logger;
 

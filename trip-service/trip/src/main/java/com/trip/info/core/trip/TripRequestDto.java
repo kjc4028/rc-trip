@@ -1,4 +1,4 @@
-package com.trip.info.rest.trip;
+package com.trip.info.core.trip;
 
 import lombok.Data;
 

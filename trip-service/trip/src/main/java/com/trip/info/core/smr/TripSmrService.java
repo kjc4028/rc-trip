@@ -1,4 +1,4 @@
-package com.trip.info.rest.smr;
+package com.trip.info.core.smr;
 
 import java.util.Arrays;
 import java.util.List;

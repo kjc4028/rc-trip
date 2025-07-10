@@ -19,8 +19,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trip.info.batch.common.ApiReaderInterface;
 import com.trip.info.batch.exception.DuplicationDataException;
-import com.trip.info.rest.category.CategoryEntity;
-import com.trip.info.rest.category.CategoryService;
+import com.trip.info.core.category.CategoryEntity;
+import com.trip.info.core.category.CategoryService;
 
 import ch.qos.logback.classic.Logger;
 

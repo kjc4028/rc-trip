@@ -5,8 +5,8 @@ import java.util.List;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemWriter;
 
-import com.trip.info.rest.category.CategoryEntity;
-import com.trip.info.rest.category.CategoryService;
+import com.trip.info.core.category.CategoryEntity;
+import com.trip.info.core.category.CategoryService;
 
 import ch.qos.logback.classic.Logger;
 

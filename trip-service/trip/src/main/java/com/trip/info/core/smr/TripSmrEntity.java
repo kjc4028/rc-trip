@@ -1,4 +1,4 @@
-package com.trip.info.rest.smr;
+package com.trip.info.core.smr;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

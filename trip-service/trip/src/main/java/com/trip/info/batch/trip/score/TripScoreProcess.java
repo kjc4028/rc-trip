@@ -7,8 +7,8 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
-import com.trip.info.rest.score.ScoreService;
-import com.trip.info.rest.trip.TripDto;
+import com.trip.info.core.score.ScoreService;
+import com.trip.info.core.trip.TripDto;
 
 import ch.qos.logback.classic.Logger;
 

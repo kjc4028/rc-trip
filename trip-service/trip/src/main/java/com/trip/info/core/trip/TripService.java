@@ -1,4 +1,4 @@
-package com.trip.info.rest.trip;
+package com.trip.info.core.trip;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.addFields;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
@@ -25,9 +25,9 @@ import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators;
 import org.springframework.stereotype.Service;
 
-import com.trip.info.rest.smr.TripSmrEntity;
-import com.trip.info.rest.smr.TripSmrService;
-import com.trip.info.rest.trip.redis.TripRedisRepository;
+import com.trip.info.core.smr.TripSmrEntity;
+import com.trip.info.core.smr.TripSmrService;
+import com.trip.info.core.trip.redis.TripRedisRepository;
 
 import ch.qos.logback.classic.Logger;
 import lombok.RequiredArgsConstructor;

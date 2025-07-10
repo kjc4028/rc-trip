@@ -1,6 +1,6 @@
-package com.trip.info.rest.common;
+package com.trip.info.core.common;
 
-import com.trip.info.rest.trip.TripEntity;
+import com.trip.info.core.trip.TripEntity;
 
 import lombok.Data;
 

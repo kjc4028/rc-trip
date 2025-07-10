@@ -1,0 +1,54 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "DiscoveryApplication",
+            "request": "launch",
+            "mainClass": "com.mbti.discovery.DiscoveryApplication",
+            "projectName": "discovery",
+            "vmArgs": "-Dspring.profiles.active=dev"
+        },
+        {
+            "type": "java",
+            "name": "GatewayApplication",
+            "request": "launch",
+            "mainClass": "com.mbti.gateway.GatewayApplication",
+            "projectName": "gateway",
+            "vmArgs": "-Dspring.profiles.active=dev"
+        },
+        {
+            "type": "java",
+            "name": "TripApplication",
+            "request": "launch",
+            "mainClass": "com.trip.info.TripApplication",
+            "projectName": "mbti-trip",
+            "vmArgs": "-Dspring.profiles.active=dev"
+        },
+        {
+            "type": "java",
+            "name": "UserauthApplication",
+            "request": "launch",
+            "mainClass": "com.mbti.userauth.UserauthApplication",
+            "projectName": "userauth",
+            "vmArgs": "-Dspring.profiles.active=dev"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-SrchApplication<srch>",
+            "request": "launch",
+            "mainClass": "com.search.srch.SrchApplication",
+            "projectName": "srch",
+            "vmArgs": "-Dspring.profiles.active=dev"
+        }
+    ]
+}

@@ -1,4 +1,4 @@
-package com.trip.info.rest.common;
+package com.trip.info.core.common;
 
 import org.springframework.http.HttpStatus;
 

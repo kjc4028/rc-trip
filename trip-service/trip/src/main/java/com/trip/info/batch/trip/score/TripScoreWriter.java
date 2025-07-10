@@ -5,9 +5,9 @@ import java.util.List;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemWriter;
 
-import com.trip.info.rest.trip.TripDto;
-import com.trip.info.rest.trip.TripEntity;
-import com.trip.info.rest.trip.TripService;
+import com.trip.info.core.trip.TripDto;
+import com.trip.info.core.trip.TripEntity;
+import com.trip.info.core.trip.TripService;
 
 import ch.qos.logback.classic.Logger;
 

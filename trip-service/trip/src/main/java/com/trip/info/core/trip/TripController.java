@@ -1,4 +1,4 @@
-package com.trip.info.rest.trip;
+package com.trip.info.core.trip;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -29,10 +29,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.trip.info.rest.common.MbtiCommUtil;
-import com.trip.info.rest.common.Message;
-import com.trip.info.rest.common.PageDto;
-import com.trip.info.rest.common.SearchDto;
+import com.trip.info.core.common.MbtiCommUtil;
+import com.trip.info.core.common.Message;
+import com.trip.info.core.common.PageDto;
+import com.trip.info.core.common.SearchDto;
 
 import ch.qos.logback.classic.Logger;
 import lombok.RequiredArgsConstructor;

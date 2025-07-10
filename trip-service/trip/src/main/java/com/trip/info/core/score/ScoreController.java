@@ -1,4 +1,4 @@
-package com.trip.info.rest.score;
+package com.trip.info.core.score;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

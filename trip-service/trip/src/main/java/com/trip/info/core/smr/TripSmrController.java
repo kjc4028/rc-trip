@@ -1,4 +1,4 @@
-package com.trip.info.rest.smr;
+package com.trip.info.core.smr;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.trip.info.rest.common.Message;
-import com.trip.info.rest.trip.TripEntity;
-import com.trip.info.rest.trip.TripService;
+import com.trip.info.core.common.Message;
+import com.trip.info.core.trip.TripEntity;
+import com.trip.info.core.trip.TripService;
 
 import lombok.RequiredArgsConstructor;
 
