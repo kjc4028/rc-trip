@@ -1,0 +1,53 @@
+---
+spring:
+    config:
+        activate:
+            on-profile: local
+    application:
+        name: search-service
+    data:
+        mongodb:
+            uri: mongodb://127.0.0.1:27017/mtdb   
+    elasticsearch:
+        uris: http://127.0.0.1:9200
+
+server:
+    port: 8082
+
+logging:
+    level:
+        root: INFO
+
+eureka:    
+    client:
+        enabled: false  
+---
+spring:
+    config:
+        activate:
+            on-profile: dev
+    application:
+        name: search-service
+    data:
+        mongodb:
+            uri: mongodb://127.0.0.1:27017/mtdb   
+    elasticsearch:
+        uris: http://127.0.0.1:9200
+
+server:
+    port: 8082
+
+
+logging:
+    level:
+        root: INFO
+
+eureka:    
+    instance:
+        instance-id: search-msa-instance
+    client:
+        enabled: true
+        register-with-eureka: true
+        fetch-registry: true
+        service-url:
+            defaultZone: http://localhost:8761/eureka    
