@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -15,6 +16,9 @@ public class TripEmbeddingService {
     private MongoTemplate mongoTemplate;
     private final RestTemplate restTemplate = new RestTemplate();
 
+    @Value("${embedurl}")
+    private String embedUrl;
+
     public void embedAllTrips() {
         List<TripEntity> trips = mongoTemplate.findAll(TripEntity.class, "trip");
         System.out.println("trips size >>> " + trips.size());
@@ -23,7 +27,7 @@ public class TripEmbeddingService {
             Map<String, String> request = new HashMap<>();
             request.put("sentence", trip.getTripCts());
             EmbeddingResponse response = restTemplate.postForObject(
-                "http://localhost:5000/embed",
+                embedUrl,
                 request,
                 EmbeddingResponse.class
             );

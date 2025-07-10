@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -26,11 +27,14 @@ public class TripSearchService {
     private ElasticsearchClient elasticsearchClient;
     private final RestTemplate restTemplate = new RestTemplate();
 
+    @Value("${embedurl}")
+    private String embedUrl;
+
     public List<TripEntity> searchBySentence(String sentence) throws IOException {
         Map<String, String> request = new HashMap<>();
         request.put("sentence", sentence);
         EmbeddingResponse response = restTemplate.postForObject(
-            "http://localhost:5000/embed",
+            embedUrl,
             request,
             EmbeddingResponse.class
         );

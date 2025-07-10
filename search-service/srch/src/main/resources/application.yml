@@ -21,6 +21,8 @@ logging:
 eureka:    
     client:
         enabled: false  
+
+embedurl: http://localhost:5000/embed
 ---
 spring:
     config:
@@ -50,4 +52,6 @@ eureka:
         register-with-eureka: true
         fetch-registry: true
         service-url:
-            defaultZone: http://localhost:8761/eureka    
+            defaultZone: http://localhost:8761/eureka
+
+embedurl: http://localhost:5555/embed

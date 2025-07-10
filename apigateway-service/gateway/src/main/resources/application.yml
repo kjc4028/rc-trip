@@ -35,6 +35,10 @@ spring:
                   uri: lb://SEARCH-SERVICE
                   predicates:
                     - Path=/search/**
+                - id: embedding-service
+                  uri: lb://EMBEDDING-SERVICE
+                  predicates:
+                    - Path=/embed/**
                 
 jwt:
     header: Authorization
