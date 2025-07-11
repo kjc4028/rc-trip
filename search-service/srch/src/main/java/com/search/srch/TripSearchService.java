@@ -55,15 +55,10 @@ public class TripSearchService {
             .index("trip")
             .query(query)
             .size(10)
-            .source(SourceConfig.of(src -> src.filter(f -> f.includes("id", "tripCts", "embeddingScore"))))
+            .source(SourceConfig.of(src -> src.filter(f -> f.includes("_id", "contentId", "tripCts", "tripNm"))))
         );
         SearchResponse<TripEntity> responseEs = elasticsearchClient.search(searchRequest, TripEntity.class);
         return responseEs.hits().hits().stream().map(Hit::source).collect(Collectors.toList());
     }
 
-    public static class EmbeddingResponse {
-        private List<Double> embedding;
-        public List<Double> getEmbedding() { return embedding; }
-        public void setEmbedding(List<Double> embedding) { this.embedding = embedding; }
-    }
 } 
