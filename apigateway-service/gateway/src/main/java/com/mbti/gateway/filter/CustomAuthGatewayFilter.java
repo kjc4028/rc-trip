@@ -88,7 +88,8 @@ public class CustomAuthGatewayFilter extends AbstractGatewayFilterFactory<Custom
     private Mono<Void> handleUnAuthorized(ServerWebExchange exchange) {
         ServerHttpResponse response = exchange.getResponse();
 
-        response.setStatusCode(HttpStatus.BAD_REQUEST);
+        // response.setStatusCode(HttpStatus.BAD_REQUEST);
+        response.setRawStatusCode(998);
         
         
         return response.setComplete();
