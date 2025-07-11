@@ -247,9 +247,9 @@ public class TripController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping(path = "/trips/{_id}")
+    @GetMapping(path = "/trips/{contentId}")
     @ResponseBody
-    public ResponseEntity<Message> tripSelectOne(@PathVariable String _id) throws JsonProcessingException{
+    public ResponseEntity<Message> tripSelectOne(@PathVariable String contentId) throws JsonProcessingException{
         ObjectMapper om = new ObjectMapper();
         HttpHeaders headers = new HttpHeaders();
         Message message = new Message();
@@ -257,7 +257,8 @@ public class TripController {
 
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-        Optional<TripEntity> base_trip = tripService.findOneById(_id);
+        // Optional<TripEntity> base_trip = tripService.findOneById(_id);
+        Optional<TripEntity> base_trip = tripService.findOneByContentId(contentId);
         
         resMap = om.convertValue(base_trip.get(), HashMap.class);
 

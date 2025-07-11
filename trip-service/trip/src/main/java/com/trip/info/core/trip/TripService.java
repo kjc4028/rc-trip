@@ -254,4 +254,8 @@ public class TripService {
         return tripRepository.findByContentIdIn(contentIds);
     }
 
+    public Optional<TripEntity> findOneByContentId(String contentId) {
+        return tripRepository.findOneByContentId(contentId);
+    }
+
 }
