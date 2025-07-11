@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { BASE_URL } from './axiosConfig';
 import React, { useState, useEffect } from "react";
 import TripList from "./TripList";
 

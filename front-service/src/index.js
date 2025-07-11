@@ -8,6 +8,9 @@ import {
 } from "react-router-dom";
 import { Link } from "react-router-dom";
 
+// axios 인터셉터 설정을 위한 import
+import './axiosConfig';
+
 import App from './App';
 
 import Join from './Join';
@@ -22,6 +25,8 @@ import AdminMenu from './AdminMenu';
 import TripManagement from './TripManagement';
 
 import TripStyleSelector from "./TripStyleSelector";
+import TalkSearch from "./TalkSearch";
+import ErrorPage from './ErrorPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -37,7 +42,8 @@ root.render(
         <Route path="admin" element={<AdminMenu />} />
         <Route path="admin/trips" element={<TripManagement />} />
         <Route path="style" element={<TripStyleSelector />} />
-      
+        <Route path="talk" element={<TalkSearch />} />
+        <Route path="error" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>    
     {/* <App /> */}

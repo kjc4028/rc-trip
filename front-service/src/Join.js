@@ -1,5 +1,5 @@
 
-import axios from "axios";
+import axios, { BASE_URL } from './axiosConfig';
 import { useState } from "react";
 import Login from "./Login";
 import { Row, Col, Form, Container, Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
@@ -18,7 +18,7 @@ function Join() {
 
   //가입버튼
   function joinBtn(){
-    axios.post('http://localhost:5555/user/signup',{
+    axios.post(`${BASE_URL}/user/signup`,{
       userId: document.getElementById("userId").value,
       userPw: document.getElementById("userPw").value
     }, {responseType:'json', headers:{"Content-Type": "application/json"}})

@@ -5,7 +5,7 @@ import CardGroup from 'react-bootstrap/CardGroup';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Pagination from 'react-bootstrap/Pagination';
-import axios from "axios";
+import axios, { BASE_URL } from './axiosConfig';
 import TripDtl from './TripDtl';
 
 const styles = [
@@ -48,7 +48,7 @@ function TripStyleSelector({ onSelect }) {
     try {
         axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
         const response = await axios.get(
-        `http://localhost:5555/trips/trip-smr/top3`,
+        `${BASE_URL}/trips/trip-smr/top3`,
         {
           params: { selectedItems: selectedItems.join(",") }
         }
@@ -63,7 +63,7 @@ function TripStyleSelector({ onSelect }) {
   const goDtl = async (tripId) => {
     axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
     try {
-      let response = await axios.get('http://localhost:5555/trips/' + tripId);
+      let response = await axios.get(`${BASE_URL}/trips/${tripId}`);
       setTripDtl(response.data.data);
       setMode('dtl');
       setPageAble(null); // 필요시 전달
@@ -81,9 +81,9 @@ function TripStyleSelector({ onSelect }) {
   const renderTripCards = (trips) => (
     <Row xs={1} md={1} className="g-4" style={{ justifyContent: "center" }}>
       {(Array.isArray(trips) ? trips : []).map((trip, i) => (
-        <Col key={trip._Id || i} style={{ display: "flex", justifyContent: "center" }}>
+        <Col key={trip.contentId || i} style={{ display: "flex", justifyContent: "center" }}>
           <Card style={{ minWidth: "320px", maxWidth: "480px", width: "100%", cursor: 'pointer' }}
-            onClick={() => goDtl(trip._Id)}>
+            onClick={() => goDtl(trip.contentId)}>
             {/* <Card.Img variant="top" src="holder.js/100px160" /> */}
             <Card.Body>
               <Card.Title>{trip.tripNm}</Card.Title>

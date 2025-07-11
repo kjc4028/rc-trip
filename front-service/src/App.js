@@ -7,6 +7,7 @@ import TripList from './TripList';
 import TripDtl from './TripDtl';
 import AdminMenu from './AdminMenu';
 import TripStyleSelector from "./TripStyleSelector";
+import TalkSearch from "./TalkSearch";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -22,6 +23,7 @@ function App() {
           <Route path="/trip/:id" element={<TripDtl />} />
           <Route path="/admin/*" element={<AdminMenu />} />
           <Route path="/style" element={<TripStyleSelector />} />
+          <Route path="/talk" element={<TalkSearch />} />
         </Routes>
       </div>
     </Router>

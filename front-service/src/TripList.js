@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { BASE_URL } from './axiosConfig';
 import React, { useState, useEffect } from "react";
 import TripDtl from "./TripDtl";
 import Button from 'react-bootstrap/Button';
@@ -28,7 +28,7 @@ function TripList(props) {
     const getTrips = async () => {
     axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
     const params = { pageNum:pageNum, perPage:perPage}
-    let response = await axios.get('http://localhost:5555/trips',{params});
+    let response = await axios.get(`${BASE_URL}/trips`,{params});
     console.log(response);
     setTripList(response.data.data.content);
     setMode("list");
@@ -37,28 +37,16 @@ function TripList(props) {
     const getTripsPage = async (_pageNum, _perPage) => {
         axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
         const params = { pageNum:_pageNum, perPage:_perPage}
-        let response = await axios.get('http://localhost:5555/trips',{params});
+        let response = await axios.get(`${BASE_URL}/trips`,{params});
         console.log(response);
         setTripList(response.data.data.content);
         setMode("list");
         } 
-
-        
-    //상세화면으로 이동
-    // function goDtl(tripId){
-    //     axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
-    //     axios.get('http://localhost:5555/trips/'+tripId,{}, {responseType:'json', headers:{"Content-Type": "application/json"}})
-    // .then((res) => {
-    //     console.log(res.data.message);
-    //     //setData(res.data.message);
-    // });
-    // }
-
           
     const goDtl = async (tripId) => {
         axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
        // axios.get('http://localhost:5555/trips/'+tripId,{}, {responseType:'json', headers:{"Content-Type": "application/json"}})
-        let response = await axios.get('http://localhost:5555/trips/'+tripId);
+        let response = await axios.get(`${BASE_URL}/trips/${tripId}`);
         console.log(response);
         setTripDtl(response.data.data);
         console.log(response.data.data);
@@ -103,7 +91,7 @@ function TripList(props) {
       const params = { pageNum:_moreListCnt};
       let response = "";
       try {
-        response = await axios.get('http://localhost:5555/trips',{params});  
+        response = await axios.get(`${BASE_URL}/trips`,{params});  
       } catch (error) {
         console.log("error : " + error);
         if(error.response){
@@ -111,14 +99,14 @@ function TripList(props) {
           if(error.response.status == "999"){
             // 토큰 갱신 시도
             try {
-              await axios.post('http://localhost:5555/user/tokenRefresh',{userId : localStorage.getItem("userId")}).then((res) => {
+              await axios.post(`${BASE_URL}/user/tokenRefresh`,{userId : localStorage.getItem("userId")}).then((res) => {
                 console.log(res);
                 console.log("res header " + res.headers.authorization);
                 console.log("res data " + res.data);
                 let jwtToken = res.headers.authorization;
                 localStorage.setItem("Authorization", jwtToken);
               });  
-              response = await axios.get('http://localhost:5555/trips',{params});  
+              response = await axios.get(`${BASE_URL}/trips`,{params});  
             } catch (refreshError) {
               // 토큰 갱신 실패 시
               alert("세션이 만료되었습니다. 다시 로그인해주세요.");
@@ -166,10 +154,10 @@ function TripList(props) {
      <Row xs={1} md={2} className="g-4">
       {tripList && tripList.map((trip,i) => (
         <Col>
-          <Card key ={trip._Id} style={{ height: '320px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <Card key ={trip.contentId} style={{ height: '320px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             {/* <Card.Img variant="top" src="holder.js/100px160" /> */}
             <Card.Body style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              <Card.Title onClick={() => {goDtl(trip._Id); return false;} } style={{
+              <Card.Title onClick={() => {goDtl(trip.contentId); return false;} } style={{
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
@@ -177,7 +165,7 @@ function TripList(props) {
                 fontSize: '1.2rem',
                 marginBottom: '0.5rem',
               }}>{trip.tripNm}</Card.Title>
-              <Card.Text onClick={() => {goDtl(trip._Id); return false;} } style={{
+              <Card.Text onClick={() => {goDtl(trip.contentId); return false;} } style={{
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 display: '-webkit-box',

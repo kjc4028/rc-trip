@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Container, Modal, Form } from 'react-bootstrap';
-import axios from 'axios';
+import axios, { BASE_URL } from './axiosConfig';
 
 const TripManagement = () => {
   const [trips, setTrips] = useState([]);
@@ -25,7 +25,7 @@ const TripManagement = () => {
 
   const handleSubmit = async () => {
     try {
-      await axios.get(`http://localhost:5555/trips/batch/all?apiKey=${apiKey}`);
+      await axios.get(`${BASE_URL}/trips/batch/all?apiKey=${apiKey}`);
       handleClose();
     } catch (error) {
       console.error('Error running batch:', error);
