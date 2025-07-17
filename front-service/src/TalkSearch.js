@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import axios, { BASE_URL } from './axiosConfig';
+import apiClient, { BASE_URL } from './axiosConfig';
 import TripDtl from './TripDtl';
 
 function TalkSearch() {
@@ -24,8 +24,8 @@ function TalkSearch() {
     setError(null);
     setResults([]);
     try {
-      axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
-      const response = await axios.post(
+      apiClient.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
+      const response = await apiClient.post(
         `${BASE_URL}/search/talk`,
         { sentence }
       );
@@ -39,9 +39,9 @@ function TalkSearch() {
 
   // TripStyleSelector의 goDtl과 유사한 함수
   const goDtl = async (tripId) => {
-    axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
+    apiClient.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
     try {
-      let response = await axios.get(`${BASE_URL}/trips/${tripId}`);
+      let response = await apiClient.get(`${BASE_URL}/trips/${tripId}`);
       setTripDtl(response.data.data);
       setMode('dtl');
       setPageAble(null); // 필요시 전달

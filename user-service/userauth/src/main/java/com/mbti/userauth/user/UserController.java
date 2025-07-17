@@ -220,18 +220,24 @@ public class UserController {
     @PostMapping(path = "/user/tokenRefresh", consumes= MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> tokenRefresh( @RequestBody UserRequestDto userRequestDto,  HttpServletRequest request) {
         UserEntity userEntity = new UserEntity(userRequestDto);
-        String userIdTk = userEntity.getUserId();
+        String userIdForToken = userEntity.getUserId();
 
-        String jwt = tokenProvider.createToken(userIdTk);
+        String jwt = tokenProvider.createToken(userIdForToken);
+        String refreshJwt = tokenProvider.createRefreshToken(userIdForToken);
 
-        Optional<UserRedisEntity> findUserRedisEntity = userRedisRepository.findById(userIdTk);
+        Optional<UserRedisEntity> findUserRedisEntity = userRedisRepository.findById(userIdForToken);
 
         //redis 사용자의 토큰 존재여부
         if(findUserRedisEntity.isPresent()){
-            log.info("refresh-log: redis refresh token check");
+            log.info("[tokenRefresh] 기존 redis accessToken: {}", findUserRedisEntity.get().getAccessToken());
+            log.info("[tokenRefresh] 기존 redis refreshToken: {}", findUserRedisEntity.get().getRefreshToken());
             if(tokenProvider.validateToken(findUserRedisEntity.get().getRefreshToken())){
                 log.info("refresh-log: redis refresh token check expire N");
                 findUserRedisEntity.get().setAccessToken(jwt);
+                findUserRedisEntity.get().setRefreshToken(refreshJwt);
+                findUserRedisEntity.get().setUserId(userIdForToken);
+                log.info("[tokenRefresh] 갱신될 accessToken: {}", jwt);
+                log.info("[tokenRefresh] 갱신될 refreshToken: {}", refreshJwt);
                 userRedisRepository.save(findUserRedisEntity.get());
                 log.info("refresh-log: access token refresh ok");
             } else {

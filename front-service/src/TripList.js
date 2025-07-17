@@ -1,4 +1,4 @@
-import axios, { BASE_URL } from './axiosConfig';
+import apiClient, { BASE_URL } from './axiosConfig';
 import React, { useState, useEffect } from "react";
 import TripDtl from "./TripDtl";
 import Button from 'react-bootstrap/Button';
@@ -26,28 +26,35 @@ function TripList(props) {
         }, []);
     
     const getTrips = async () => {
-    axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
+    apiClient.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
     const params = { pageNum:pageNum, perPage:perPage}
-    let response = await axios.get(`${BASE_URL}/trips`,{params});
+    let response = await apiClient.get(`${BASE_URL}/trips`,{params});
     console.log(response);
-    setTripList(response.data.data.content);
-    setMode("list");
-    }          
-    
+      if(response === undefined || response.status !== 200) {
+          console.error("Failed to fetch trips:");
+      } else {
+          setTripList(response.data.data.content);
+          setMode("list");
+      }
+    }
     const getTripsPage = async (_pageNum, _perPage) => {
-        axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
+        apiClient.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
         const params = { pageNum:_pageNum, perPage:_perPage}
-        let response = await axios.get(`${BASE_URL}/trips`,{params});
+        let response = await apiClient.get(`${BASE_URL}/trips`,{params});
         console.log(response);
         setTripList(response.data.data.content);
         setMode("list");
         } 
           
     const goDtl = async (tripId) => {
-        axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
+        apiClient.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
        // axios.get('http://localhost:5555/trips/'+tripId,{}, {responseType:'json', headers:{"Content-Type": "application/json"}})
-        let response = await axios.get(`${BASE_URL}/trips/${tripId}`);
+        let response = await apiClient.get(`${BASE_URL}/trips/${tripId}`);
         console.log(response);
+        if(response ==undefined || response.status !== 200) {
+            console.error("Failed to fetch trip details");
+            return;
+        }
         setTripDtl(response.data.data);
         console.log(response.data.data);
         setTripId(tripId);
@@ -80,7 +87,7 @@ function TripList(props) {
         return pageArr;
     }
     const moreList = async (_moreListCnt) => {
-      axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
+      apiClient.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
       console.log("moreList _moreListCnt: " + _moreListCnt);
       if(_moreListCnt === undefined){
         _moreListCnt = 1;
@@ -91,7 +98,7 @@ function TripList(props) {
       const params = { pageNum:_moreListCnt};
       let response = "";
       try {
-        response = await axios.get(`${BASE_URL}/trips`,{params});  
+        response = await apiClient.get(`${BASE_URL}/trips`,{params});  
       } catch (error) {
         console.log("error : " + error);
         if(error.response){
@@ -99,14 +106,14 @@ function TripList(props) {
           if(error.response.status == "999"){
             // 토큰 갱신 시도
             try {
-              await axios.post(`${BASE_URL}/user/tokenRefresh`,{userId : localStorage.getItem("userId")}).then((res) => {
+              await apiClient.post(`${BASE_URL}/user/tokenRefresh`,{userId : localStorage.getItem("userId")}).then((res) => {
                 console.log(res);
                 console.log("res header " + res.headers.authorization);
                 console.log("res data " + res.data);
                 let jwtToken = res.headers.authorization;
                 localStorage.setItem("Authorization", jwtToken);
               });  
-              response = await axios.get(`${BASE_URL}/trips`,{params});  
+              response = await apiClient.get(`${BASE_URL}/trips`,{params});  
             } catch (refreshError) {
               // 토큰 갱신 실패 시
               alert("세션이 만료되었습니다. 다시 로그인해주세요.");

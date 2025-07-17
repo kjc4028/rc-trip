@@ -36,6 +36,8 @@ public class JwtFilter extends GenericFilterBean {
             throws IOException, ServletException {
                 HttpServletRequest httpServletRequest = (HttpServletRequest) request;
                 HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+
+                
                 String jwt = tokenProvider.resolveToken(httpServletRequest,AUTHORIZATION_HEADER);
                 String requestURI = httpServletRequest.getRequestURI();
                 boolean jwtValid = tokenProvider.validateToken(jwt, request);

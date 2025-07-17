@@ -7,6 +7,7 @@ import Row from 'react-bootstrap/Row';
 import Pagination from 'react-bootstrap/Pagination';
 import axios, { BASE_URL } from './axiosConfig';
 import TripDtl from './TripDtl';
+import apiClient from "./axiosConfig";
 
 const styles = [
   { code: 1, label: "힐링" },
@@ -46,14 +47,18 @@ function TripStyleSelector({ onSelect }) {
   const handleCheckTrips = async () => {
     if (selectedItems.length !== 3) return;
     try {
-        axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
-        const response = await axios.get(
+        // axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
+        const response = await apiClient.get(
         `${BASE_URL}/trips/trip-smr/top3`,
         {
           params: { selectedItems: selectedItems.join(",") }
         }
       );
-      setRecommendedTrips(response.data.data);
+      if (response === undefined || response.status !== 200) {
+        return;
+      } else {
+        setRecommendedTrips(response.data.data);
+      }
     } catch (error) {
       alert("여행지 추천 결과를 불러오지 못했습니다.");
     }

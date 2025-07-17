@@ -1,4 +1,4 @@
-import axios, { BASE_URL } from './axiosConfig';
+import apiClient, { BASE_URL } from './axiosConfig';
 import React, { useState, useEffect } from "react";
 import TripDtl from "./TripDtl";
 function TripSrchMulti(props) {
@@ -20,23 +20,23 @@ function TripSrchMulti(props) {
         }, []);
           
     const getTrips = async () => {
-    axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
+    apiClient.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
     const params = { pageNum:pageNum, perPage:perPage}
-    let response = await axios.get(`${BASE_URL}/trips/searching/multi`,{params});
+    let response = await apiClient.get(`${BASE_URL}/trips/searching/multi`,{params});
     console.log(response);
     setTripList(response.data.data);
     setMode("list");
     }          
     
     const getTripsPage = async (_pageNum, _perPage, mbtiArr) => {
-        axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
+        apiClient.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
         console.log(mbtiArr);
         const srchMbtia = mbtiArr.A.join(",");
         const srchMbtib = mbtiArr.B.join(",");
         const srchMbtic = mbtiArr.C.join(",");
         const srchMbtid = mbtiArr.D.join(",");
         const params = { pageNum:_pageNum, perPage:_perPage, srchMbtia:srchMbtia, srchMbtib:srchMbtib, srchMbtic:srchMbtic, srchMbtid:srchMbtid}
-        let response = await axios.get(`${BASE_URL}/trips/searching/multi`,{params});
+        let response = await apiClient.get(`${BASE_URL}/trips/searching/multi`,{params});
         console.log(response);
         setTripList(response.data.data);
         setMode("list");
@@ -44,9 +44,9 @@ function TripSrchMulti(props) {
 
           
     const goDtl = async (tripId) => {
-        axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
+        apiClient.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
        // axios.get('http://localhost:5555/trips/'+tripId,{}, {responseType:'json', headers:{"Content-Type": "application/json"}})
-        let response = await axios.get(`${BASE_URL}/trips/`+tripId);
+        let response = await apiClient.get(`${BASE_URL}/trips/`+tripId);
         console.log(response);
         setTripDtl(response.data.data);
         console.log(response.data.data);

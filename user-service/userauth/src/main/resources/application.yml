@@ -25,7 +25,7 @@ server:
 jwt:
     header: Authorization
     secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
-    token-validity-in-seconds: 60
+    token-validity-in-seconds: 30
     refresh-token-validity-in-seconds: 1800
     
 logging:

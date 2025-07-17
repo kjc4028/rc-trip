@@ -17,6 +17,7 @@ spring:
         restart:
             enabled: true
     application:
+    
         name: apigateway-service
     cloud:
         gateway:
@@ -25,8 +26,8 @@ spring:
                   uri: lb://TRIP-SERVICE
                   predicates:
                     - Path=/trips/**
-                  filters: 
-                    - CustomAuthGatewayFilter       
+                  # filters: 
+                  #   - CustomAuthGatewayFilter       
                 - id: user-service
                   uri: lb://USER-SERVICE
                   predicates:
