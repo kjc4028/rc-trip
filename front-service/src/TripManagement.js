@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Container, Modal, Form } from 'react-bootstrap';
-import axios, { BASE_URL } from './axiosConfig';
+import api from './axiosConfig';
 
 const TripManagement = () => {
   const [trips, setTrips] = useState([]);
@@ -9,7 +9,7 @@ const TripManagement = () => {
 
   useEffect(() => {
     // TODO: API 연동
-    // axios.get('/api/admin/trips')
+    // api.get('/api/admin/trips')
     //   .then(response => setTrips(response.data))
     //   .catch(error => console.error('Error fetching trips:', error));
   }, []);
@@ -25,7 +25,7 @@ const TripManagement = () => {
 
   const handleSubmit = async () => {
     try {
-      await axios.get(`${BASE_URL}/trips/batch/all?apiKey=${apiKey}`);
+      await api.get(`/trips/batch/all?apiKey=${apiKey}`);
       handleClose();
     } catch (error) {
       console.error('Error running batch:', error);

@@ -5,7 +5,7 @@ import CardGroup from 'react-bootstrap/CardGroup';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Pagination from 'react-bootstrap/Pagination';
-import axios, { BASE_URL } from './axiosConfig';
+import api from './axiosConfig';
 import TripDtl from './TripDtl';
 
 const styles = [
@@ -46,9 +46,8 @@ function TripStyleSelector({ onSelect }) {
   const handleCheckTrips = async () => {
     if (selectedItems.length !== 3) return;
     try {
-        axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
-        const response = await axios.get(
-        `${BASE_URL}/trips/trip-smr/top3`,
+        const response = await api.get(
+        `/trips/trip-smr/top3`,
         {
           params: { selectedItems: selectedItems.join(",") }
         }
@@ -61,9 +60,8 @@ function TripStyleSelector({ onSelect }) {
 
   // TripList의 goDtl과 유사한 함수
   const goDtl = async (tripId) => {
-    axios.defaults.headers.common['Authorization'] = localStorage.getItem("Authorization");
     try {
-      let response = await axios.get(`${BASE_URL}/trips/${tripId}`);
+      let response = await api.get(`/trips/${tripId}`);
       setTripDtl(response.data.data);
       setMode('dtl');
       setPageAble(null); // 필요시 전달

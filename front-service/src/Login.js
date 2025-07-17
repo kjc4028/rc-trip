@@ -1,5 +1,5 @@
 import { type } from "@testing-library/user-event/dist/type";
-import axios, { BASE_URL } from './axiosConfig';
+import api from './axiosConfig';
 import { useState } from "react";
 import Join from "./Join";
 import TripList from "./TripList";
@@ -24,7 +24,7 @@ function Login() {
   const [mode, setMode] = useState(null);
 
   function loginBtn(){
-    axios.post(`${BASE_URL}/user/login`,{
+    api.post(`/user/login`,{
       userId: document.getElementById("userId").value,
       userPw: document.getElementById("userPw").value
     }, {responseType:'json', headers:{"Content-Type": "application/json"}})

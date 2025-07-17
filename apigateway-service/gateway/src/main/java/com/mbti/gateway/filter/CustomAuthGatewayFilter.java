@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Arrays;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,11 +45,24 @@ public class CustomAuthGatewayFilter extends AbstractGatewayFilterFactory<Custom
         this.tokenProvider = tokenProvider;
     }
     
+    // 토큰 검증 예외 URL 목록
+    private static final List<String> EXCLUDE_URLS = Arrays.asList(
+        "/user/tokenRefresh" // 프론트에서 사용하는 토큰 갱신 URL
+    );
+
     @Override
     public GatewayFilter apply(Config config) {
         return ((exchange, chain) -> {
             log.info("filter start >>>>>>>");
             ServerHttpRequest request = exchange.getRequest();
+            String path = request.getURI().getPath();
+
+            // 예외 URL은 토큰 검증 없이 통과
+            if (EXCLUDE_URLS.contains(path)) {
+                log.info("토큰 검증 예외 URL: " + path);
+                return chain.filter(exchange);
+            }
+
             log.info(""+request.getHeaders());
             // Request Header 에 token 이 존재하지 않을 때
             if(!request.getHeaders().containsKey(AUTHORIZATION_HEADER)){
