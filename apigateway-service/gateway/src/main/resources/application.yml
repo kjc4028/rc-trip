@@ -20,25 +20,33 @@ spring:
         name: apigateway-service
     cloud:
         gateway:
-            routes:
-                - id: trip-service
-                  uri: lb://TRIP-SERVICE
-                  predicates:
-                    - Path=/trips/**
-                  filters: 
-                    - CustomAuthGatewayFilter       
-                - id: user-service
-                  uri: lb://USER-SERVICE
-                  predicates:
-                    - Path=/user/**
-                - id: search-service
-                  uri: lb://SEARCH-SERVICE
-                  predicates:
-                    - Path=/search/**
-                - id: embedding-service
-                  uri: lb://EMBEDDING-SERVICE
-                  predicates:
-                    - Path=/embed/**
+          globalcors:
+              corsConfigurations:
+                '[/**]':
+                  allowedOrigins: "http://localhost:3000"
+                  allowedMethods: "GET,POST,PUT,DELETE,OPTIONS"
+                  allowedHeaders: "*"
+                  exposedHeaders: "Authorization"
+                  allowCredentials: true
+          routes:
+              - id: trip-service
+                uri: lb://TRIP-SERVICE
+                predicates:
+                  - Path=/trips/**
+                filters: 
+                  - CustomAuthGatewayFilter       
+              - id: user-service
+                uri: lb://USER-SERVICE
+                predicates:
+                  - Path=/user/**
+              - id: search-service
+                uri: lb://SEARCH-SERVICE
+                predicates:
+                  - Path=/search/**
+              - id: embedding-service
+                uri: lb://EMBEDDING-SERVICE
+                predicates:
+                  - Path=/embed/**
                 
 jwt:
     header: Authorization
@@ -48,3 +56,4 @@ jwt:
 logging:
     level:
         root: INFO
+
