@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserRequestDto {
     
-    private String _id;
+    // private String _id;
 
     private String userId;
     

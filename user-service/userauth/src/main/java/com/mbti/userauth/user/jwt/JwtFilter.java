@@ -9,7 +9,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,8 @@ public class JwtFilter extends GenericFilterBean {
     private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
- 
+    private static final String REFRESH_URL = "/user/tokenRefresh";
+
     @Autowired
     private TokenProvider tokenProvider;
  
@@ -34,10 +34,21 @@ public class JwtFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-                HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-                HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+            
+             
+
+               HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+               HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+               String requestURI = httpServletRequest.getRequestURI();
+        
+               //토큰 재발급 URL인 경우, 토큰 검증 로직을 실행하지 않고 다음 필터로 넘김
+               if (requestURI.equals(REFRESH_URL)) {
+                     chain.doFilter(request, response);
+                     return;
+               }
+
                 String jwt = tokenProvider.resolveToken(httpServletRequest,AUTHORIZATION_HEADER);
-                String requestURI = httpServletRequest.getRequestURI();
+                
                 boolean jwtValid = tokenProvider.validateToken(jwt, request);
                 String expired = (String) request.getAttribute("expired");
                 if (StringUtils.hasText(jwt) && jwtValid && expired == null) {
