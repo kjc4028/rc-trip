@@ -1,33 +1,65 @@
-# mbti_trip_service
 
-* ### 서비스 구성도
-<img src="https://user-images.githubusercontent.com/29012197/189926018-cec4ef8a-5798-49fb-b7f5-aff316eaf12d.png" width="800"/>
+
+### AI 기반 관광지 추천 서비스
+
+#### 📖 프로젝트 소개
+
+사용자의 여행 스타일에 최적화된 관광지를 추천하는 Spring Boot 기반 MSA(Microservice Architecture) 프로젝트입니다.
+
+Hugging Face의 오픈소스 AI 모델을 활용하여, 사용자 여행 경험을 통해 맞춤 관광정보를 제공하는 것을 목표로 합니다.
 
 ---
-* ### 프로젝트 설명
-  * 선택한 MBTI에 맞는 여행지를 추천해주는 서비스 입니다. 해당 프로젝트는 Spting Boot 기반 MSA 환경의 프로젝트로 각 서비스 간의 통신은 openfeign을 사용하였으며 사용자 인증은 JWT 방식을 사용하였습니다.
+#### ✨ 주요 기능
+
+여행 스타일 기반 추천: 사용자가 선호하는 여행 키워드(예: #힐링, #액티비티, #미식)를 선택하면, 취향 조합에 맞는 관광지를 즉시 추천합니다.
+
+'톡' 추천 (자연어 기반 추천): "조용하고 경치 좋은 곳에서 산책하고 싶어"와 같이 자유로운 문장으로 원하는 여행 스타일을 입력하면, 의미를 분석하여 가장 유사한 관광지를 추천합니다.
+
+JWT 기반의 안전한 인증/인가: Access Token과 Refresh Token을 활용한 JWT 인증 방식을 도입하여 보안성을 높이고, API Gateway에서 모든 요청의 토큰을 검증하여 안정적인 서비스 환경을 제공합니다.
+
 ---
-* ### 프로젝트별 설명
+#### 🛠️ 기술 스택 및 핵심 설계
 
-  * #### apigateway-service
-    * API Gateway의 역할
-    * 요청에 따라 처리를 할 서비스로 요청 전달
-    * 모든 요청은 해당 서비스에서 JWT 검증 후 동작
-  * #### discovery-service
-    * Service discovery 역할
-    * 각 서비스의 IP와 PORT 정보 관리  
-  * #### user-service
-    * 회원가입, 로그인, 인증/인가 담당
-    * JWT 토큰 발급
-    * mongoDB와 통신
-    * openfeign으로 trip-service와 통신
-  * #### trip-service
-    * 여행 검색 서비스 제공
-    * RESTful API 구현
-    * mongoDB와 통신
-    * openfeign으로 user-service와 통신
+- 추천 방식
+    - 여행 스타일 추천
+        - 데이터 수집: 한국관광공사의 '국문 관광정보 서비스' OpenAPI를 활용하여 국내 관광지 데이터를 주기적으로 수집합니다.
+        - 취향 점수화: 자연어 추론(NLI) 모델을 사용해 각 관광지 소개글이 사전에 정의된 여행 스타일(키워드)과 얼마나 관련이 있는지 점수화합니다.
+        - 결과 캐싱: 사용자가 선택할 수 있는 모든 취향 조합에 대해 상위 추천 관광지 목록을 미리 계산하여 Redis에 캐싱해두고, 요청 시 빠른 응답 속도를 보장합니다.
+    - '톡' 추천 (자연어 기반 추천)
+        - 텍스트 임베딩: Sentence Transformer 모델을 활용하여 모든 관광지 소개글을 벡터(Vector)로 변환하고 데이터베이스에 저장합니다.
+        - 유사도 검색: 사용자가 입력한 문장 또한 동일한 모델로 임베딩한 후, Elasticsearch의 벡터 검색(Vector Search) 기능을 통해 의미적으로 가장 유사한 관광지 벡터를 찾아 추천합니다.
 
+- 적용 AI 모델
+    - 자연어 추론 및 분류 모델 (NLI)
+        - 모델: MoritzLaurer/mDeBERTa-v3-base-mnli-xnli
+        - 활용: '여행 스타일 추천' 기능에서 관광지 소개글과 여행 스타일 키워드 간의 관련성을 점수화하는 데 사용합니다. (Hugging Face API 호출)
+    - 문장 임베딩 모델
+        - 모델: all-MiniLM-L6-v2
+        - 활용: '톡' 추천 기능에서 관광지 소개글과 사용자 입력 문장을 벡터로 변환하는 데 사용합니다. (Hugging Face sentence-transformers 프레임워크)
+- 인증 방식
+    - 인증/인가: JWT (JSON Web Token) 방식을 사용합니다.
+    - 토큰 관리: RefreshToken을 적용하여 AccessToken 만료 시 자동으로 토큰을 갱신하는 기능을 구현했습니다.
+    - 게이트웨이: API Gateway에서 모든 서비스의 엔드포인트에 대한 요청을 받으며, 라우팅 전 토큰 유효성을 우선 검증합니다.
 
+---
+#### 🖥️ 시스템 구성도
+<img width="1901" height="1069" alt="서비스 구성도" src="https://github.com/user-attachments/assets/3edece1c-30db-4ab4-b8f6-f21216ba7744"/>
 
+---
+#### 🏛️ 시스템 아키텍처 (MSA)
 
-
+- Service Name	주요 역할
+    - apigateway-service
+        - API Gateway의 역할을 수행하며, 모든 요청에 대한 JWT 검증 및 서비스별 라우팅을 담당합니다.
+    - discovery-service
+        - Eureka를 이용한 Service Discovery 서버로, 각 서비스의 IP와 Port 정보를 관리합니다.
+    - user-service
+        - 회원가입, 로그인 등 사용자 관리 및 인증/인가를 총괄하며, JWT 토큰의 발급 및 재발급을 담당합니다.
+    - trip-service
+        -	관광 정보 추천의 핵심 비즈니스 로직을 처리합니다. 배치(Batch) 작업을 통해 관광 데이터를 수집하고, AI 모델을 활용한 추천 데이터를 생성/갱신합니다.
+    - search-service
+        -	벡터 검색 기능을 담당합니다. 사용자 입력 문장을 임베딩하고, Elasticsearch에 벡터 검색을 요청하여 결과를 반환합니다.
+    - embedding-service
+        -	텍스트 임베딩 모델을 통해 입력된 문장의 벡터 값을 추출하여 제공하는 독립 서비스입니다.
+    - front-service
+        -	React 기반의 사용자 인터페이스(UI)를 제공합니다.
