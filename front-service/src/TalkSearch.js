@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -6,6 +7,14 @@ import api from './axiosConfig';
 import TripDtl from './TripDtl';
 
 function TalkSearch() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const token = localStorage.getItem('Authorization');
+    if (!token) {
+      navigate('/auth-required');
+    }
+  }, [navigate]);
+
   const [sentence, setSentence] = useState("");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);

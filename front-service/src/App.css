@@ -36,3 +36,93 @@
     transform: rotate(360deg);
   }
 }
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+}
+
+.auth-panel {
+  background: #fff;
+  padding: 2.5rem 2rem 2rem 2rem;
+  border-radius: 1.2rem;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+  min-width: 340px;
+  max-width: 600px !important;
+  width: 100%;
+}
+
+.auth-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #222;
+}
+
+.auth-link {
+  margin-top: 1.2rem;
+  font-size: 1rem;
+}
+.auth-link a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 0.2rem;
+}
+.auth-link a:hover {
+  text-decoration: underline;
+}
+
+.auth-error {
+  color: #e74c3c;
+  margin-bottom: 1rem;
+  font-size: 0.98rem;
+  text-align: left;
+}
+
+/* Header/Navbar 모던 스타일 */
+.Header .navbar {
+  background: linear-gradient(90deg, #e0eafc 0%, #cfdef3 100%);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  border-radius: 0 0 1.2rem 1.2rem;
+  padding: 0.7rem 1.5rem;
+}
+.Header .navbar-brand {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #1976d2 !important;
+  letter-spacing: 1px;
+}
+.Header .navbar-nav .nav-link {
+  color: #333 !important;
+  font-size: 1.08rem;
+  font-weight: 500;
+  margin-right: 0.7rem;
+  border-radius: 0.5rem;
+  transition: background 0.18s, color 0.18s;
+  padding: 0.45rem 1.1rem;
+}
+.Header .navbar-nav .nav-link:hover,
+.Header .navbar-nav .nav-link:focus {
+  background: #e3f0fc;
+  color: #1976d2 !important;
+}
+.Header .navbar-nav .nav-link.active {
+  background: #1976d2;
+  color: #fff !important;
+}
+.Header .navbar-toggler {
+  border: none;
+  background: #e3f0fc;
+  border-radius: 0.5rem;
+}
+.Header .navbar-toggler:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #1976d2;
+}
+.Header .navbar-collapse {
+  border-radius: 0.7rem;
+}

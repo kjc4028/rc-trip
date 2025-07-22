@@ -1,10 +1,18 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { Nav, Navbar, Container } from 'react-bootstrap';
 import TripManagement from './TripManagement';
 
-const AdminMenu = () => {
+function AdminMenu(props) {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const token = localStorage.getItem('Authorization');
+    if (!token) {
+      navigate('/auth-required');
+    }
+  }, [navigate]);
+
   return (
     <>
       <Navbar bg="dark" variant="dark" expand="lg">

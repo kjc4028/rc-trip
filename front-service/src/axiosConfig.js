@@ -53,14 +53,13 @@ api.interceptors.response.use(
         return Promise.reject(refreshError);
       }
     } else if (error.response && error.response.status === 998) {
-      alert("토큰정보가 없거나 불일치합니다. 다시 로그인해주시기바랍니다.");
       // localStorage에서 인증 정보 제거
       localStorage.removeItem("Authorization");
       localStorage.removeItem("userId");
-      // 로그인 페이지로 리다이렉트
-      window.location.href = "/login";
+      // 인증 안내 페이지로 이동
+      window.location.href = "/auth-required";
     } else {
-      alert("알 수 없는 오류 발생하였습니다.");
+      window.location.href = "/error";
     }
     // return Promise.reject(error);
   }

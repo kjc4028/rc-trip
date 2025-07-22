@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Table, Button, Container, Modal, Form } from 'react-bootstrap';
 import api from './axiosConfig';
 
@@ -7,12 +8,15 @@ const TripManagement = () => {
   const [showModal, setShowModal] = useState(false);
   const [apiKey, setApiKey] = useState('');
 
+
+
+  const navigate = useNavigate();
   useEffect(() => {
-    // TODO: API 연동
-    // api.get('/api/admin/trips')
-    //   .then(response => setTrips(response.data))
-    //   .catch(error => console.error('Error fetching trips:', error));
-  }, []);
+    const token = localStorage.getItem('Authorization');
+    if (!token) {
+      navigate('/auth-required');
+    }
+  }, [navigate]);
 
   const handleRunBatch = () => {
     setShowModal(true);

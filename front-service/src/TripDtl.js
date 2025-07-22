@@ -24,11 +24,11 @@ if(mode === "list"){
                 <div class="row gx-4 gx-lg-5 align-items-center">
                     <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src={defaultDtlImg} alt="여행상세 기본 이미지"/></div>
                     <div class="col-md-6">
-                        <div class="small mb-1">TRIP-ID : {props.tripDtl._Id}</div>
+                        {/* <div class="small mb-1">TRIP-ID : {props.tripDtl._Id}</div> */}
                         <h1 class="display-5 fw-bolder">{props.tripDtl.tripNm}</h1>
                         <div class="fs-5 mb-5">
                             {/* <span class="text-decoration-line-through">$45.00</span> */}
-                            <span>MBTI : {props.tripDtl.mbtia}{props.tripDtl.mbtib}{props.tripDtl.mbtic}{props.tripDtl.mbtid}</span>
+                            {/* <span>MBTI : {props.tripDtl.mbtia}{props.tripDtl.mbtib}{props.tripDtl.mbtic}{props.tripDtl.mbtid}</span> */}
                         </div>
                         <p class="lead">{props.tripDtl.tripCts}</p>
                         <div class="d-flex">

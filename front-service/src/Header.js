@@ -76,18 +76,18 @@ function Header() {
       <div className="Header">
       <Navbar bg="light" expand="lg" expanded={expanded} onToggle={(expanded) => setExpanded(expanded)} ref={navbarRef}>
         <Container>
-          <Navbar.Brand as={Link} to="/" onClick={() => setExpanded(false)}>MBTI TRIP</Navbar.Brand>
+          <Navbar.Brand as={Link} to="/" onClick={() => setExpanded(false)}>RC-TRIP</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               <Nav.Link as={Link} to="/" onClick={() => setExpanded(false)}>Home</Nav.Link>
-              <Nav.Link as={Link} to="trip-list" onClick={() => setExpanded(false)}>전체여행목록</Nav.Link>
-              <Nav.Link as={Link} to="style" onClick={() => setExpanded(false)}>여행스타일추천</Nav.Link>
-              <Nav.Link as={Link} to="talk" onClick={() => setExpanded(false)}>톡추천</Nav.Link>
+              <Nav.Link as={Link} to="/trip-list" onClick={() => setExpanded(false)}>전체여행목록</Nav.Link>
+              <Nav.Link as={Link} to="/style" onClick={() => setExpanded(false)}>여행스타일추천</Nav.Link>
+              <Nav.Link as={Link} to="/talk" onClick={() => setExpanded(false)}>톡추천</Nav.Link>
               {/* <Nav.Link as={Link} to="trip-srch-base">혼자 여행가기</Nav.Link>
               <Nav.Link as={Link} to="trip-srch-multi">다같이 여행가기</Nav.Link> */}
-              <Nav.Link as={Link} to="admin" onClick={() => setExpanded(false)}>관리자 메뉴</Nav.Link>
-              <Nav.Link as={Link} to="admin/trips" onClick={() => setExpanded(false)}>여행지 관리</Nav.Link>
+              {/* <Nav.Link as={Link} to="admin" onClick={() => setExpanded(false)}>관리자 메뉴</Nav.Link> */}
+              <Nav.Link as={Link} to="/admin/trips" onClick={() => setExpanded(false)}>여행지 관리</Nav.Link>
               {userId ? (
                 <>
                   <Nav.Link style={{ color: '#007bff', fontWeight: 'bold' }}>{userId}</Nav.Link>

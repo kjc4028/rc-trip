@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import CardGroup from 'react-bootstrap/CardGroup';
@@ -20,6 +21,13 @@ const styles = [
 ];
 
 function TripStyleSelector({ onSelect }) {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const token = localStorage.getItem('Authorization');
+    if (!token) {
+      navigate('/auth-required');
+    }
+  }, [navigate]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [recommendedTrips, setRecommendedTrips] = useState([]);
   const [mode, setMode] = useState('select'); // 'select', 'list', 'dtl'
