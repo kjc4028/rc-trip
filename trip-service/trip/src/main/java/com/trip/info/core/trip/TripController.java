@@ -297,7 +297,7 @@ public class TripController {
     }
 
 
-    @GetMapping(path = "/trips/aggregation")
+    @PostMapping(path = "/trips/aggregation")
     @ResponseBody
     public ResponseEntity<Message> runAggregationWithProjection(){
         HttpHeaders headers = new HttpHeaders();

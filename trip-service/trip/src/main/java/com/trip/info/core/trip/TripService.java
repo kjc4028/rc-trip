@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.bson.Document;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -205,7 +206,7 @@ public class TripService {
         Aggregation aggregation = newAggregation(pipeline);
 
         // 6. 집계 쿼리를 실행합니다.
-        mongoTemplate.aggregate(aggregation, sourceCollection, Void.class);
+        mongoTemplate.aggregate(aggregation, sourceCollection, Document.class);
     }
 
     /**
